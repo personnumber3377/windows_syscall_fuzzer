@@ -1,0 +1,1286 @@
+warning: D3DBLEND -> D3DBLEND: D3DBLEND: Recursive by-value type encountered.
+warning: D3DBRANCH -> D3DBRANCH -> _D3DBRANCH.dwMask: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DBRANCH -> D3DBRANCH -> _D3DBRANCH.dwValue: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DBRANCH -> D3DBRANCH -> _D3DBRANCH.bNegate: BOOL: No extracted declaration or atomic mapping exists.
+warning: D3DBRANCH -> D3DBRANCH -> _D3DBRANCH.dwOffset: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DCLIPSTATUS -> D3DCLIPSTATUS -> _D3DCLIPSTATUS.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DCLIPSTATUS -> D3DCLIPSTATUS -> _D3DCLIPSTATUS.dwStatus: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DCMPFUNC -> D3DCMPFUNC: D3DCMPFUNC: Recursive by-value type encountered.
+warning: D3DCULL -> D3DCULL: D3DCULL: Recursive by-value type encountered.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwDevCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dtcTransformCaps -> D3DTRANSFORMCAPS: struct _D3DTRANSFORMCAPS: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.bClipping: WINBOOL: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dlcLightingCaps -> D3DLIGHTINGCAPS -> _D3DLIGHTINGCAPS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dlcLightingCaps -> D3DLIGHTINGCAPS -> _D3DLIGHTINGCAPS.dwCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dlcLightingCaps -> D3DLIGHTINGCAPS -> _D3DLIGHTINGCAPS.dwLightingModel: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dlcLightingCaps -> D3DLIGHTINGCAPS -> _D3DLIGHTINGCAPS.dwNumLights: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dpcLineCaps -> D3DPRIMCAPS -> _D3dPrimCaps.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dpcLineCaps -> D3DPRIMCAPS -> _D3dPrimCaps.dwMiscCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dpcLineCaps -> D3DPRIMCAPS -> _D3dPrimCaps.dwRasterCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dpcLineCaps -> D3DPRIMCAPS -> _D3dPrimCaps.dwZCmpCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dpcLineCaps -> D3DPRIMCAPS -> _D3dPrimCaps.dwSrcBlendCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dpcLineCaps -> D3DPRIMCAPS -> _D3dPrimCaps.dwDestBlendCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dpcLineCaps -> D3DPRIMCAPS -> _D3dPrimCaps.dwAlphaCmpCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dpcLineCaps -> D3DPRIMCAPS -> _D3dPrimCaps.dwShadeCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dpcLineCaps -> D3DPRIMCAPS -> _D3dPrimCaps.dwTextureCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dpcLineCaps -> D3DPRIMCAPS -> _D3dPrimCaps.dwTextureFilterCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dpcLineCaps -> D3DPRIMCAPS -> _D3dPrimCaps.dwTextureBlendCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dpcLineCaps -> D3DPRIMCAPS -> _D3dPrimCaps.dwTextureAddressCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dpcLineCaps -> D3DPRIMCAPS -> _D3dPrimCaps.dwStippleWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dpcLineCaps -> D3DPRIMCAPS -> _D3dPrimCaps.dwStippleHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwDeviceRenderBitDepth: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwDeviceZBufferBitDepth: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwMaxBufferSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwMaxVertexCount: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwMinTextureWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwMinTextureHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwMaxTextureWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwMaxTextureHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwMinStippleWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwMaxStippleWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwMinStippleHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwMaxStippleHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwMaxTextureRepeat: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwMaxTextureAspectRatio: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwMaxAnisotropy: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwStencilCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwFVFCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.dwTextureOpCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.wMaxTextureBlendStages: WORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC -> D3DDEVICEDESC -> _D3DDeviceDesc.wMaxSimultaneousTextures: WORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwDevCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwDeviceRenderBitDepth: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwDeviceZBufferBitDepth: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwMinTextureWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwMinTextureHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwMaxTextureWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwMaxTextureHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwMaxTextureRepeat: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwMaxTextureAspectRatio: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwMaxAnisotropy: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwStencilCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwFVFCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwTextureOpCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.wMaxTextureBlendStages: WORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.wMaxSimultaneousTextures: WORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwMaxActiveLights: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.deviceGUID: GUID: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.wMaxUserClipPlanes: WORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.wMaxVertexBlendMatrices: WORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwVertexProcessingCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwReserved1: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwReserved2: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwReserved3: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVICEDESC7 -> D3DDEVICEDESC7 -> _D3DDeviceDesc7.dwReserved4: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTUREMANAGER -> D3DDEVINFO_TEXTUREMANAGER -> _D3DDEVINFO_TEXTUREMANAGER.bThrashing: WINBOOL: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTUREMANAGER -> D3DDEVINFO_TEXTUREMANAGER -> _D3DDEVINFO_TEXTUREMANAGER.dwApproxBytesDownloaded: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTUREMANAGER -> D3DDEVINFO_TEXTUREMANAGER -> _D3DDEVINFO_TEXTUREMANAGER.dwNumEvicts: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTUREMANAGER -> D3DDEVINFO_TEXTUREMANAGER -> _D3DDEVINFO_TEXTUREMANAGER.dwNumVidCreates: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTUREMANAGER -> D3DDEVINFO_TEXTUREMANAGER -> _D3DDEVINFO_TEXTUREMANAGER.dwNumTexturesUsed: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTUREMANAGER -> D3DDEVINFO_TEXTUREMANAGER -> _D3DDEVINFO_TEXTUREMANAGER.dwNumUsedTexInVid: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTUREMANAGER -> D3DDEVINFO_TEXTUREMANAGER -> _D3DDEVINFO_TEXTUREMANAGER.dwWorkingSet: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTUREMANAGER -> D3DDEVINFO_TEXTUREMANAGER -> _D3DDEVINFO_TEXTUREMANAGER.dwWorkingSetBytes: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTUREMANAGER -> D3DDEVINFO_TEXTUREMANAGER -> _D3DDEVINFO_TEXTUREMANAGER.dwTotalManaged: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTUREMANAGER -> D3DDEVINFO_TEXTUREMANAGER -> _D3DDEVINFO_TEXTUREMANAGER.dwTotalBytes: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTUREMANAGER -> D3DDEVINFO_TEXTUREMANAGER -> _D3DDEVINFO_TEXTUREMANAGER.dwLastPri: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTURING -> D3DDEVINFO_TEXTURING -> _D3DDEVINFO_TEXTURING.dwNumLoads: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTURING -> D3DDEVINFO_TEXTURING -> _D3DDEVINFO_TEXTURING.dwApproxBytesLoaded: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTURING -> D3DDEVINFO_TEXTURING -> _D3DDEVINFO_TEXTURING.dwNumPreLoads: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTURING -> D3DDEVINFO_TEXTURING -> _D3DDEVINFO_TEXTURING.dwNumSet: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTURING -> D3DDEVINFO_TEXTURING -> _D3DDEVINFO_TEXTURING.dwNumCreates: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTURING -> D3DDEVINFO_TEXTURING -> _D3DDEVINFO_TEXTURING.dwNumDestroys: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTURING -> D3DDEVINFO_TEXTURING -> _D3DDEVINFO_TEXTURING.dwNumSetPriorities: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTURING -> D3DDEVINFO_TEXTURING -> _D3DDEVINFO_TEXTURING.dwNumSetLODs: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTURING -> D3DDEVINFO_TEXTURING -> _D3DDEVINFO_TEXTURING.dwNumLocks: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDEVINFO_TEXTURING -> D3DDEVINFO_TEXTURING -> _D3DDEVINFO_TEXTURING.dwNumGetDCs: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DDP_PTRSTRIDE -> D3DDP_PTRSTRIDE -> _D3DDP_PTRSTRIDE.lpvData: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DDP_PTRSTRIDE -> D3DDP_PTRSTRIDE -> _D3DDP_PTRSTRIDE.dwStride: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DEXECUTEBUFFERDESC -> D3DEXECUTEBUFFERDESC -> _D3DExecuteBufferDesc.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DEXECUTEBUFFERDESC -> D3DEXECUTEBUFFERDESC -> _D3DExecuteBufferDesc.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DEXECUTEBUFFERDESC -> D3DEXECUTEBUFFERDESC -> _D3DExecuteBufferDesc.dwCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DEXECUTEBUFFERDESC -> D3DEXECUTEBUFFERDESC -> _D3DExecuteBufferDesc.dwBufferSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DEXECUTEBUFFERDESC -> D3DEXECUTEBUFFERDESC -> _D3DExecuteBufferDesc.lpData: void *: Resolved to PVOID/void*. Add a field or parameter override.
+warning: D3DEXECUTEDATA -> D3DEXECUTEDATA -> _D3DEXECUTEDATA.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DEXECUTEDATA -> D3DEXECUTEDATA -> _D3DEXECUTEDATA.dwVertexOffset: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DEXECUTEDATA -> D3DEXECUTEDATA -> _D3DEXECUTEDATA.dwVertexCount: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DEXECUTEDATA -> D3DEXECUTEDATA -> _D3DEXECUTEDATA.dwInstructionOffset: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DEXECUTEDATA -> D3DEXECUTEDATA -> _D3DEXECUTEDATA.dwInstructionLength: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DEXECUTEDATA -> D3DEXECUTEDATA -> _D3DEXECUTEDATA.dwHVertexOffset: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DEXECUTEDATA -> D3DEXECUTEDATA -> _D3DEXECUTEDATA.dsStatus -> D3DSTATUS -> _D3DSTATUS.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DEXECUTEDATA -> D3DEXECUTEDATA -> _D3DEXECUTEDATA.dsStatus -> D3DSTATUS -> _D3DSTATUS.dwStatus: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DFILLMODE -> D3DFILLMODE: D3DFILLMODE: Recursive by-value type encountered.
+warning: D3DFINDDEVICERESULT -> D3DFINDDEVICERESULT -> _D3DFINDDEVICERESULT.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DFINDDEVICERESULT -> D3DFINDDEVICERESULT -> _D3DFINDDEVICERESULT.guid: GUID: No extracted declaration or atomic mapping exists.
+warning: D3DFINDDEVICESEARCH -> D3DFINDDEVICESEARCH -> _D3DFINDDEVICESEARCH.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DFINDDEVICESEARCH -> D3DFINDDEVICESEARCH -> _D3DFINDDEVICESEARCH.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DFINDDEVICESEARCH -> D3DFINDDEVICESEARCH -> _D3DFINDDEVICESEARCH.bHardware: WINBOOL: No extracted declaration or atomic mapping exists.
+warning: D3DFINDDEVICESEARCH -> D3DFINDDEVICESEARCH -> _D3DFINDDEVICESEARCH.guid: GUID: No extracted declaration or atomic mapping exists.
+warning: D3DFINDDEVICESEARCH -> D3DFINDDEVICESEARCH -> _D3DFINDDEVICESEARCH.dwCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DHVERTEX -> D3DHVERTEX -> _D3DHVERTEX.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DINSTRUCTION -> D3DINSTRUCTION -> _D3DINSTRUCTION.bOpcode: BYTE: No extracted declaration or atomic mapping exists.
+warning: D3DINSTRUCTION -> D3DINSTRUCTION -> _D3DINSTRUCTION.bSize: BYTE: No extracted declaration or atomic mapping exists.
+warning: D3DINSTRUCTION -> D3DINSTRUCTION -> _D3DINSTRUCTION.wCount: WORD: No extracted declaration or atomic mapping exists.
+warning: D3DLIGHT -> D3DLIGHT -> _D3DLIGHT.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DLIGHT -> D3DLIGHT -> _D3DLIGHT.dltType -> D3DLIGHTTYPE: D3DLIGHTTYPE: Recursive by-value type encountered.
+warning: D3DLIGHT2 -> D3DLIGHT2 -> _D3DLIGHT2.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DLIGHT2 -> D3DLIGHT2 -> _D3DLIGHT2.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DLIGHTDATA -> D3DLIGHTDATA -> _D3DLIGHTDATA.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DLIGHTDATA -> D3DLIGHTDATA -> _D3DLIGHTDATA.lpIn -> LPD3DLIGHTINGELEMENT: struct _D3DLIGHTINGELEMENT *: Pointer to 'struct _D3DLIGHTINGELEMENT' has no allocation/length/ownership policy.
+warning: D3DLIGHTDATA -> D3DLIGHTDATA -> _D3DLIGHTDATA.dwInSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DLIGHTDATA -> D3DLIGHTDATA -> _D3DLIGHTDATA.lpOut -> LPD3DTLVERTEX: struct _D3DTLVERTEX *: Pointer to 'struct _D3DTLVERTEX' has no allocation/length/ownership policy.
+warning: D3DLIGHTDATA -> D3DLIGHTDATA -> _D3DLIGHTDATA.dwOutSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DLIGHTSTATETYPE -> D3DLIGHTSTATETYPE: D3DLIGHTSTATETYPE: Recursive by-value type encountered.
+warning: D3DLINEPATTERN -> D3DLINEPATTERN -> _D3DLINEPATTERN.wRepeatFactor: WORD: No extracted declaration or atomic mapping exists.
+warning: D3DLINEPATTERN -> D3DLINEPATTERN -> _D3DLINEPATTERN.wLinePattern: WORD: No extracted declaration or atomic mapping exists.
+warning: D3DLVERTEX -> D3DLVERTEX -> _D3DLVERTEX.dwReserved: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DMATERIAL -> D3DMATERIAL -> _D3DMATERIAL.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DMATERIAL -> D3DMATERIAL -> _D3DMATERIAL.dwRampSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHALDEVICEDESC_V1 -> D3DNTHALDEVICEDESC_V1 -> _D3DNTHALDeviceDesc_V1.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHALDEVICEDESC_V1 -> D3DNTHALDEVICEDESC_V1 -> _D3DNTHALDeviceDesc_V1.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHALDEVICEDESC_V1 -> D3DNTHALDEVICEDESC_V1 -> _D3DNTHALDeviceDesc_V1.dwDevCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHALDEVICEDESC_V1 -> D3DNTHALDEVICEDESC_V1 -> _D3DNTHALDeviceDesc_V1.bClipping: BOOL: No extracted declaration or atomic mapping exists.
+warning: D3DNTHALDEVICEDESC_V1 -> D3DNTHALDEVICEDESC_V1 -> _D3DNTHALDeviceDesc_V1.dwDeviceRenderBitDepth: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHALDEVICEDESC_V1 -> D3DNTHALDEVICEDESC_V1 -> _D3DNTHALDeviceDesc_V1.dwDeviceZBufferBitDepth: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHALDEVICEDESC_V1 -> D3DNTHALDEVICEDESC_V1 -> _D3DNTHALDeviceDesc_V1.dwMaxBufferSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHALDEVICEDESC_V1 -> D3DNTHALDEVICEDESC_V1 -> _D3DNTHALDeviceDesc_V1.dwMaxVertexCount: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.ContextCreate -> LPD3DNTHAL_CONTEXTCREATECB: DWORD ( * )(LPD3DNTHAL_CONTEXTCREATEDATA): Function pointer needs a callback policy.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.ContextDestroy -> LPD3DNTHAL_CONTEXTDESTROYCB: DWORD ( * )(LPD3DNTHAL_CONTEXTDESTROYDATA): Function pointer needs a callback policy.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.ContextDestroyAll -> LPD3DNTHAL_CONTEXTDESTROYALLCB: DWORD ( * )(LPD3DNTHAL_CONTEXTDESTROYALLDATA): Function pointer needs a callback policy.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.SceneCapture -> LPD3DNTHAL_SCENECAPTURECB: DWORD ( * )(LPD3DNTHAL_SCENECAPTUREDATA): Function pointer needs a callback policy.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved10: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved11: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved22: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved23: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.TextureCreate -> LPD3DNTHAL_TEXTURECREATECB: DWORD ( * )(LPD3DNTHAL_TEXTURECREATEDATA): Function pointer needs a callback policy.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.TextureDestroy -> LPD3DNTHAL_TEXTUREDESTROYCB: DWORD ( * )(LPD3DNTHAL_TEXTUREDESTROYDATA): Function pointer needs a callback policy.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.TextureSwap -> LPD3DNTHAL_TEXTURESWAPCB: DWORD ( * )(LPD3DNTHAL_TEXTURESWAPDATA): Function pointer needs a callback policy.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.TextureGetSurf -> LPD3DNTHAL_TEXTUREGETSURFCB: DWORD ( * )(LPD3DNTHAL_TEXTUREGETSURFDATA): Function pointer needs a callback policy.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved12: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved13: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved14: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved15: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved16: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved17: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved18: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved19: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved20: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved21: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved24: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved0: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved1: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved2: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved3: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved4: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved5: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved6: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved7: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved8: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS -> D3DNTHAL_CALLBACKS -> _D3DNTHAL_CALLBACKS.dwReserved9: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS2 -> D3DNTHAL_CALLBACKS2 -> _D3DNTHAL_CALLBACKS2.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS2 -> D3DNTHAL_CALLBACKS2 -> _D3DNTHAL_CALLBACKS2.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS2 -> D3DNTHAL_CALLBACKS2 -> _D3DNTHAL_CALLBACKS2.SetRenderTarget -> LPD3DNTHAL_SETRENDERTARGETCB: DWORD ( * )(LPD3DNTHAL_SETRENDERTARGETDATA): Function pointer needs a callback policy.
+warning: D3DNTHAL_CALLBACKS2 -> D3DNTHAL_CALLBACKS2 -> _D3DNTHAL_CALLBACKS2.dwReserved1: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS2 -> D3DNTHAL_CALLBACKS2 -> _D3DNTHAL_CALLBACKS2.dwReserved2: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS2 -> D3DNTHAL_CALLBACKS2 -> _D3DNTHAL_CALLBACKS2.dwReserved3: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS2 -> D3DNTHAL_CALLBACKS2 -> _D3DNTHAL_CALLBACKS2.dwReserved4: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS3 -> D3DNTHAL_CALLBACKS3 -> _D3DNTHAL_CALLBACKS3.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS3 -> D3DNTHAL_CALLBACKS3 -> _D3DNTHAL_CALLBACKS3.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS3 -> D3DNTHAL_CALLBACKS3 -> _D3DNTHAL_CALLBACKS3.Clear2 -> LPD3DNTHAL_CLEAR2CB: DWORD ( * )(LPD3DNTHAL_CLEAR2DATA): Function pointer needs a callback policy.
+warning: D3DNTHAL_CALLBACKS3 -> D3DNTHAL_CALLBACKS3 -> _D3DNTHAL_CALLBACKS3.lpvReserved: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CALLBACKS3 -> D3DNTHAL_CALLBACKS3 -> _D3DNTHAL_CALLBACKS3.ValidateTextureStageState -> LPD3DNTHAL_VALIDATETEXTURESTAGESTATECB: DWORD ( * )(LPD3DNTHAL_VALIDATETEXTURESTAGESTATEDATA): Function pointer needs a callback policy.
+warning: D3DNTHAL_CALLBACKS3 -> D3DNTHAL_CALLBACKS3 -> _D3DNTHAL_CALLBACKS3.DrawPrimitives2 -> LPD3DNTHAL_DRAWPRIMITIVES2CB: DWORD ( * )(LPD3DNTHAL_DRAWPRIMITIVES2DATA): Function pointer needs a callback policy.
+warning: D3DNTHAL_CLEAR2DATA -> D3DNTHAL_CLEAR2DATA -> _D3DNTHAL_CLEAR2DATA.dwhContext: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CLEAR2DATA -> D3DNTHAL_CLEAR2DATA -> _D3DNTHAL_CLEAR2DATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CLEAR2DATA -> D3DNTHAL_CLEAR2DATA -> _D3DNTHAL_CLEAR2DATA.dwFillColor: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CLEAR2DATA -> D3DNTHAL_CLEAR2DATA -> _D3DNTHAL_CLEAR2DATA.dwFillStencil: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CLEAR2DATA -> D3DNTHAL_CLEAR2DATA -> _D3DNTHAL_CLEAR2DATA.lpRects -> LPD3DRECT: struct _D3DRECT *: Pointer to 'struct _D3DRECT' has no allocation/length/ownership policy.
+warning: D3DNTHAL_CLEAR2DATA -> D3DNTHAL_CLEAR2DATA -> _D3DNTHAL_CLEAR2DATA.dwNumRects: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CONTEXTCREATEDATA -> D3DNTHAL_CONTEXTCREATEDATA -> _D3DNTHAL_CONTEXTCREATEDATA.dwPID: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CONTEXTCREATEDATA -> D3DNTHAL_CONTEXTCREATEDATA -> _D3DNTHAL_CONTEXTCREATEDATA.dwhContext: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CONTEXTDESTROYALLDATA -> D3DNTHAL_CONTEXTDESTROYALLDATA -> _D3DNTHAL_CONTEXTDESTROYALLDATA.dwPID: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_CONTEXTDESTROYDATA -> D3DNTHAL_CONTEXTDESTROYDATA -> _D3DNTHAL_CONTEXTDESTROYDATA.dwhContext: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_DRAWPRIMITIVES2DATA -> D3DNTHAL_DRAWPRIMITIVES2DATA -> _D3DNTHAL_DRAWPRIMITIVES2DATA.dwhContext: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_DRAWPRIMITIVES2DATA -> D3DNTHAL_DRAWPRIMITIVES2DATA -> _D3DNTHAL_DRAWPRIMITIVES2DATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_DRAWPRIMITIVES2DATA -> D3DNTHAL_DRAWPRIMITIVES2DATA -> _D3DNTHAL_DRAWPRIMITIVES2DATA.dwVertexType: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_DRAWPRIMITIVES2DATA -> D3DNTHAL_DRAWPRIMITIVES2DATA -> _D3DNTHAL_DRAWPRIMITIVES2DATA.lpDDCommands -> PDD_SURFACE_LOCAL: struct _DD_SURFACE_LOCAL *: Pointer to 'struct _DD_SURFACE_LOCAL' has no allocation/length/ownership policy.
+warning: D3DNTHAL_DRAWPRIMITIVES2DATA -> D3DNTHAL_DRAWPRIMITIVES2DATA -> _D3DNTHAL_DRAWPRIMITIVES2DATA.dwCommandOffset: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_DRAWPRIMITIVES2DATA -> D3DNTHAL_DRAWPRIMITIVES2DATA -> _D3DNTHAL_DRAWPRIMITIVES2DATA.dwCommandLength: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_DRAWPRIMITIVES2DATA -> D3DNTHAL_DRAWPRIMITIVES2DATA -> _D3DNTHAL_DRAWPRIMITIVES2DATA.dwVertexOffset: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_DRAWPRIMITIVES2DATA -> D3DNTHAL_DRAWPRIMITIVES2DATA -> _D3DNTHAL_DRAWPRIMITIVES2DATA.dwVertexLength: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_DRAWPRIMITIVES2DATA -> D3DNTHAL_DRAWPRIMITIVES2DATA -> _D3DNTHAL_DRAWPRIMITIVES2DATA.dwReqVertexBufSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_DRAWPRIMITIVES2DATA -> D3DNTHAL_DRAWPRIMITIVES2DATA -> _D3DNTHAL_DRAWPRIMITIVES2DATA.dwReqCommandBufSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_DRAWPRIMITIVES2DATA -> D3DNTHAL_DRAWPRIMITIVES2DATA -> _D3DNTHAL_DRAWPRIMITIVES2DATA.lpdwRStates: LPDWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_DRAWPRIMITIVES2DATA -> D3DNTHAL_DRAWPRIMITIVES2DATA -> _D3DNTHAL_DRAWPRIMITIVES2DATA.dwErrorOffset: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_GLOBALDRIVERDATA -> D3DNTHAL_GLOBALDRIVERDATA -> _D3DNTHAL_GLOBALDRIVERDATA.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_GLOBALDRIVERDATA -> D3DNTHAL_GLOBALDRIVERDATA -> _D3DNTHAL_GLOBALDRIVERDATA.dwNumVertices: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_GLOBALDRIVERDATA -> D3DNTHAL_GLOBALDRIVERDATA -> _D3DNTHAL_GLOBALDRIVERDATA.dwNumClipVertices: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_GLOBALDRIVERDATA -> D3DNTHAL_GLOBALDRIVERDATA -> _D3DNTHAL_GLOBALDRIVERDATA.dwNumTextureFormats: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_GLOBALDRIVERDATA -> D3DNTHAL_GLOBALDRIVERDATA -> _D3DNTHAL_GLOBALDRIVERDATA.lpTextureFormats -> LPDDSURFACEDESC: struct _DDSURFACEDESC *: Pointer to 'struct _DDSURFACEDESC' has no allocation/length/ownership policy.
+warning: D3DNTHAL_SCENECAPTUREDATA -> D3DNTHAL_SCENECAPTUREDATA -> _D3DNTHAL_SCENECAPTUREDATA.dwhContext: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_SCENECAPTUREDATA -> D3DNTHAL_SCENECAPTUREDATA -> _D3DNTHAL_SCENECAPTUREDATA.dwFlag: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_SETRENDERTARGETDATA -> D3DNTHAL_SETRENDERTARGETDATA -> _D3DNTHAL_SETRENDERTARGETDATA.dwhContext: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_TEXTURECREATEDATA -> D3DNTHAL_TEXTURECREATEDATA -> _D3DNTHAL_TEXTURECREATEDATA.dwhContext: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_TEXTURECREATEDATA -> D3DNTHAL_TEXTURECREATEDATA -> _D3DNTHAL_TEXTURECREATEDATA.dwHandle: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_TEXTUREDESTROYDATA -> D3DNTHAL_TEXTUREDESTROYDATA -> _D3DNTHAL_TEXTUREDESTROYDATA.dwhContext: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_TEXTUREDESTROYDATA -> D3DNTHAL_TEXTUREDESTROYDATA -> _D3DNTHAL_TEXTUREDESTROYDATA.dwHandle: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_TEXTUREGETSURFDATA -> D3DNTHAL_TEXTUREGETSURFDATA -> _D3DNTHAL_TEXTUREGETSURFDATA.dwhContext: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_TEXTUREGETSURFDATA -> D3DNTHAL_TEXTUREGETSURFDATA -> _D3DNTHAL_TEXTUREGETSURFDATA.dwHandle: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_TEXTURESWAPDATA -> D3DNTHAL_TEXTURESWAPDATA -> _D3DNTHAL_TEXTURESWAPDATA.dwhContext: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_TEXTURESWAPDATA -> D3DNTHAL_TEXTURESWAPDATA -> _D3DNTHAL_TEXTURESWAPDATA.dwHandle1: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_TEXTURESWAPDATA -> D3DNTHAL_TEXTURESWAPDATA -> _D3DNTHAL_TEXTURESWAPDATA.dwHandle2: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_VALIDATETEXTURESTAGESTATEDATA -> D3DNTHAL_VALIDATETEXTURESTAGESTATEDATA -> _D3DNTHAL_VALIDATETEXTURESTAGESTATEDATA.dwhContext: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_VALIDATETEXTURESTAGESTATEDATA -> D3DNTHAL_VALIDATETEXTURESTAGESTATEDATA -> _D3DNTHAL_VALIDATETEXTURESTAGESTATEDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_VALIDATETEXTURESTAGESTATEDATA -> D3DNTHAL_VALIDATETEXTURESTAGESTATEDATA -> _D3DNTHAL_VALIDATETEXTURESTAGESTATEDATA.dwReserved: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: D3DNTHAL_VALIDATETEXTURESTAGESTATEDATA -> D3DNTHAL_VALIDATETEXTURESTAGESTATEDATA -> _D3DNTHAL_VALIDATETEXTURESTAGESTATEDATA.dwNumPasses: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DPICKRECORD -> D3DPICKRECORD -> _D3DPICKRECORD.bOpcode: BYTE: No extracted declaration or atomic mapping exists.
+warning: D3DPICKRECORD -> D3DPICKRECORD -> _D3DPICKRECORD.bPad: BYTE: No extracted declaration or atomic mapping exists.
+warning: D3DPICKRECORD -> D3DPICKRECORD -> _D3DPICKRECORD.dwOffset: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DPOINT -> D3DPOINT -> _D3DPOINT.wCount: WORD: No extracted declaration or atomic mapping exists.
+warning: D3DPOINT -> D3DPOINT -> _D3DPOINT.wFirst: WORD: No extracted declaration or atomic mapping exists.
+warning: D3DPRIMITIVETYPE -> D3DPRIMITIVETYPE: D3DPRIMITIVETYPE: Recursive by-value type encountered.
+warning: D3DPROCESSVERTICES -> D3DPROCESSVERTICES -> _D3DPROCESSVERTICES.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DPROCESSVERTICES -> D3DPROCESSVERTICES -> _D3DPROCESSVERTICES.wStart: WORD: No extracted declaration or atomic mapping exists.
+warning: D3DPROCESSVERTICES -> D3DPROCESSVERTICES -> _D3DPROCESSVERTICES.wDest: WORD: No extracted declaration or atomic mapping exists.
+warning: D3DPROCESSVERTICES -> D3DPROCESSVERTICES -> _D3DPROCESSVERTICES.dwCount: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DPROCESSVERTICES -> D3DPROCESSVERTICES -> _D3DPROCESSVERTICES.dwReserved: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DRENDERSTATETYPE -> D3DRENDERSTATETYPE: D3DRENDERSTATETYPE: Recursive by-value type encountered.
+warning: D3DSHADEMODE -> D3DSHADEMODE: D3DSHADEMODE: Recursive by-value type encountered.
+warning: D3DSPAN -> D3DSPAN -> _D3DSPAN.wCount: WORD: No extracted declaration or atomic mapping exists.
+warning: D3DSPAN -> D3DSPAN -> _D3DSPAN.wFirst: WORD: No extracted declaration or atomic mapping exists.
+warning: D3DSTATS -> D3DSTATS: D3DSTATS: Recursive by-value type encountered.
+warning: D3DTEXTUREBLEND -> D3DTEXTUREBLEND: D3DTEXTUREBLEND: Recursive by-value type encountered.
+warning: D3DTEXTUREFILTER -> D3DTEXTUREFILTER: D3DTEXTUREFILTER: Recursive by-value type encountered.
+warning: D3DTRANSFORMDATA -> D3DTRANSFORMDATA -> _D3DTRANSFORMDATA.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DTRANSFORMDATA -> D3DTRANSFORMDATA -> _D3DTRANSFORMDATA.lpIn: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DTRANSFORMDATA -> D3DTRANSFORMDATA -> _D3DTRANSFORMDATA.dwInSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DTRANSFORMDATA -> D3DTRANSFORMDATA -> _D3DTRANSFORMDATA.lpOut: LPVOID: No extracted declaration or atomic mapping exists.
+warning: D3DTRANSFORMDATA -> D3DTRANSFORMDATA -> _D3DTRANSFORMDATA.dwOutSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DTRANSFORMDATA -> D3DTRANSFORMDATA -> _D3DTRANSFORMDATA.lpHOut -> LPD3DHVERTEX: struct _D3DHVERTEX *: Pointer to 'struct _D3DHVERTEX' has no allocation/length/ownership policy.
+warning: D3DTRANSFORMDATA -> D3DTRANSFORMDATA -> _D3DTRANSFORMDATA.dwClip: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DTRANSFORMDATA -> D3DTRANSFORMDATA -> _D3DTRANSFORMDATA.dwClipIntersection: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DTRANSFORMDATA -> D3DTRANSFORMDATA -> _D3DTRANSFORMDATA.dwClipUnion: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DTRIANGLE -> D3DTRIANGLE -> _D3DTRIANGLE.wFlags: WORD: No extracted declaration or atomic mapping exists.
+warning: D3DVERTEXBUFFERDESC -> D3DVERTEXBUFFERDESC -> _D3DVERTEXBUFFERDESC.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DVERTEXBUFFERDESC -> D3DVERTEXBUFFERDESC -> _D3DVERTEXBUFFERDESC.dwCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DVERTEXBUFFERDESC -> D3DVERTEXBUFFERDESC -> _D3DVERTEXBUFFERDESC.dwFVF: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DVERTEXBUFFERDESC -> D3DVERTEXBUFFERDESC -> _D3DVERTEXBUFFERDESC.dwNumVertices: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DVERTEXTYPE -> D3DVERTEXTYPE: D3DVERTEXTYPE: Recursive by-value type encountered.
+warning: D3DVIEWPORT -> D3DVIEWPORT -> _D3DVIEWPORT.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DVIEWPORT -> D3DVIEWPORT -> _D3DVIEWPORT.dwX: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DVIEWPORT -> D3DVIEWPORT -> _D3DVIEWPORT.dwY: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DVIEWPORT -> D3DVIEWPORT -> _D3DVIEWPORT.dwWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DVIEWPORT -> D3DVIEWPORT -> _D3DVIEWPORT.dwHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DVIEWPORT2 -> D3DVIEWPORT2 -> _D3DVIEWPORT2.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DVIEWPORT2 -> D3DVIEWPORT2 -> _D3DVIEWPORT2.dwX: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DVIEWPORT2 -> D3DVIEWPORT2 -> _D3DVIEWPORT2.dwY: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DVIEWPORT2 -> D3DVIEWPORT2 -> _D3DVIEWPORT2.dwWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DVIEWPORT2 -> D3DVIEWPORT2 -> _D3DVIEWPORT2.dwHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DVIEWPORT7 -> D3DVIEWPORT7 -> _D3DVIEWPORT7.dwX: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DVIEWPORT7 -> D3DVIEWPORT7 -> _D3DVIEWPORT7.dwY: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DVIEWPORT7 -> D3DVIEWPORT7 -> _D3DVIEWPORT7.dwWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: D3DVIEWPORT7 -> D3DVIEWPORT7 -> _D3DVIEWPORT7.dwHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDARGB -> DDARGB -> _DDARGB.blue: BYTE: No extracted declaration or atomic mapping exists.
+warning: DDARGB -> DDARGB -> _DDARGB.green: BYTE: No extracted declaration or atomic mapping exists.
+warning: DDARGB -> DDARGB -> _DDARGB.red: BYTE: No extracted declaration or atomic mapping exists.
+warning: DDARGB -> DDARGB -> _DDARGB.alpha: BYTE: No extracted declaration or atomic mapping exists.
+warning: DDBLTBATCH -> DDBLTBATCH -> _DDBLTBATCH.lprDest: LPRECT: No extracted declaration or atomic mapping exists.
+warning: DDBLTBATCH -> DDBLTBATCH -> _DDBLTBATCH.lpDDSSrc -> LPDIRECTDRAWSURFACE: struct IDirectDrawSurface *: Pointer to 'struct IDirectDrawSurface' has no allocation/length/ownership policy.
+warning: DDBLTBATCH -> DDBLTBATCH -> _DDBLTBATCH.lprSrc: LPRECT: No extracted declaration or atomic mapping exists.
+warning: DDBLTBATCH -> DDBLTBATCH -> _DDBLTBATCH.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTBATCH -> DDBLTBATCH -> _DDBLTBATCH.lpDDBltFx -> LPDDBLTFX: struct _DDBLTFX *: Pointer to 'struct _DDBLTFX' has no allocation/length/ownership policy.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.dwDDFX: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.dwROP: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.dwDDROP: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.dwRotationAngle: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.dwZBufferOpCode: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.dwZBufferLow: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.dwZBufferHigh: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.dwZBufferBaseDest: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.dwZDestConstBitDepth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.dwZSrcConstBitDepth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.dwAlphaEdgeBlendBitDepth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.dwAlphaEdgeBlend: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.dwReserved: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.dwAlphaDestConstBitDepth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.dwAlphaSrcConstBitDepth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.ddckDestColorkey -> DDCOLORKEY -> _DDCOLORKEY.dwColorSpaceLowValue: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDBLTFX -> DDBLTFX -> _DDBLTFX.ddckDestColorkey -> DDCOLORKEY -> _DDCOLORKEY.dwColorSpaceHighValue: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwCaps2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwFXAlphaCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwPalCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwSVCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwAlphaBltConstBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwAlphaBltPixelBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwAlphaBltSurfaceBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwAlphaOverlayConstBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwAlphaOverlayPixelBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwAlphaOverlaySurfaceBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwZBufferBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwVidMemTotal: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwVidMemFree: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwMaxVisibleOverlays: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwCurrVisibleOverlays: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwNumFourCCCodes: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwAlignBoundarySrc: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwAlignSizeSrc: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwAlignBoundaryDest: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwAlignSizeDest: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwAlignStrideAlign: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.ddsOldCaps -> DDSCAPS -> _DDSCAPS.dwCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwMinOverlayStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwMaxOverlayStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwMinLiveVideoStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwMaxLiveVideoStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwMinHwCodecStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwMaxHwCodecStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwReserved1: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwReserved2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwReserved3: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwSVBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwSVBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwSVBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwSVBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwVSBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwVSBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwVSBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwVSBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwSSBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwSSBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwSSBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwSSBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwMaxVideoPorts: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwCurrVideoPorts: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwSVBCaps2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwNLVBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwNLVBCaps2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwNLVBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwNLVBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.dwNLVBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.ddsCaps -> DDSCAPS2 -> _DDSCAPS2.dwCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.ddsCaps -> DDSCAPS2 -> _DDSCAPS2.dwCaps2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS -> DDCAPS -> _DDCAPS_DX7.ddsCaps -> DDSCAPS2 -> _DDSCAPS2.dwCaps3: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwCaps2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwFXAlphaCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwPalCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwSVCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwAlphaBltConstBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwAlphaBltPixelBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwAlphaBltSurfaceBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwAlphaOverlayConstBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwAlphaOverlayPixelBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwAlphaOverlaySurfaceBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwZBufferBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwVidMemTotal: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwVidMemFree: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwMaxVisibleOverlays: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwCurrVisibleOverlays: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwNumFourCCCodes: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwAlignBoundarySrc: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwAlignSizeSrc: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwAlignBoundaryDest: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwAlignSizeDest: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwAlignStrideAlign: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwMinOverlayStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwMaxOverlayStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwMinLiveVideoStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwMaxLiveVideoStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwMinHwCodecStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwMaxHwCodecStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwReserved1: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwReserved2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX1 -> DDCAPS_DX1 -> _DDCAPS_DX1.dwReserved3: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwCaps2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwFXAlphaCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwPalCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwSVCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwAlphaBltConstBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwAlphaBltPixelBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwAlphaBltSurfaceBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwAlphaOverlayConstBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwAlphaOverlayPixelBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwAlphaOverlaySurfaceBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwZBufferBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwVidMemTotal: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwVidMemFree: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwMaxVisibleOverlays: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwCurrVisibleOverlays: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwNumFourCCCodes: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwAlignBoundarySrc: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwAlignSizeSrc: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwAlignBoundaryDest: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwAlignSizeDest: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwAlignStrideAlign: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwMinOverlayStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwMaxOverlayStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwMinLiveVideoStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwMaxLiveVideoStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwMinHwCodecStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwMaxHwCodecStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwReserved1: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwReserved2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwReserved3: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwSVBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwSVBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwSVBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwSVBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwVSBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwVSBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwVSBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwVSBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwSSBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwSSBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwSSBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwSSBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwReserved4: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwReserved5: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX3 -> DDCAPS_DX3 -> _DDCAPS_DX3.dwReserved6: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwCaps2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwFXAlphaCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwPalCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwSVCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwAlphaBltConstBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwAlphaBltPixelBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwAlphaBltSurfaceBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwAlphaOverlayConstBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwAlphaOverlayPixelBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwAlphaOverlaySurfaceBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwZBufferBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwVidMemTotal: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwVidMemFree: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwMaxVisibleOverlays: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwCurrVisibleOverlays: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwNumFourCCCodes: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwAlignBoundarySrc: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwAlignSizeSrc: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwAlignBoundaryDest: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwAlignSizeDest: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwAlignStrideAlign: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwMinOverlayStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwMaxOverlayStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwMinLiveVideoStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwMaxLiveVideoStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwMinHwCodecStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwMaxHwCodecStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwReserved1: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwReserved2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwReserved3: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwSVBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwSVBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwSVBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwSVBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwVSBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwVSBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwVSBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwVSBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwSSBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwSSBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwSSBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwSSBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwMaxVideoPorts: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwCurrVideoPorts: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwSVBCaps2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwNLVBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwNLVBCaps2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwNLVBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwNLVBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX5 -> DDCAPS_DX5 -> _DDCAPS_DX5.dwNLVBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwCaps2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwFXAlphaCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwPalCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwSVCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwAlphaBltConstBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwAlphaBltPixelBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwAlphaBltSurfaceBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwAlphaOverlayConstBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwAlphaOverlayPixelBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwAlphaOverlaySurfaceBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwZBufferBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwVidMemTotal: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwVidMemFree: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwMaxVisibleOverlays: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwCurrVisibleOverlays: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwNumFourCCCodes: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwAlignBoundarySrc: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwAlignSizeSrc: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwAlignBoundaryDest: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwAlignSizeDest: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwAlignStrideAlign: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwMinOverlayStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwMaxOverlayStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwMinLiveVideoStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwMaxLiveVideoStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwMinHwCodecStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwMaxHwCodecStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwReserved1: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwReserved2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwReserved3: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwSVBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwSVBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwSVBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwSVBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwVSBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwVSBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwVSBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwVSBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwSSBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwSSBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwSSBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwSSBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwMaxVideoPorts: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwCurrVideoPorts: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwSVBCaps2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwNLVBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwNLVBCaps2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwNLVBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwNLVBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCAPS_DX6 -> DDCAPS_DX6 -> _DDCAPS_DX6.dwNLVBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCOLORCONTROL -> DDCOLORCONTROL -> _DDCOLORCONTROL.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCOLORCONTROL -> DDCOLORCONTROL -> _DDCOLORCONTROL.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCOLORCONTROL -> DDCOLORCONTROL -> _DDCOLORCONTROL.lBrightness: LONG: No extracted declaration or atomic mapping exists.
+warning: DDCOLORCONTROL -> DDCOLORCONTROL -> _DDCOLORCONTROL.lContrast: LONG: No extracted declaration or atomic mapping exists.
+warning: DDCOLORCONTROL -> DDCOLORCONTROL -> _DDCOLORCONTROL.lHue: LONG: No extracted declaration or atomic mapping exists.
+warning: DDCOLORCONTROL -> DDCOLORCONTROL -> _DDCOLORCONTROL.lSaturation: LONG: No extracted declaration or atomic mapping exists.
+warning: DDCOLORCONTROL -> DDCOLORCONTROL -> _DDCOLORCONTROL.lSharpness: LONG: No extracted declaration or atomic mapping exists.
+warning: DDCOLORCONTROL -> DDCOLORCONTROL -> _DDCOLORCONTROL.lGamma: LONG: No extracted declaration or atomic mapping exists.
+warning: DDCOLORCONTROL -> DDCOLORCONTROL -> _DDCOLORCONTROL.lColorEnable: LONG: No extracted declaration or atomic mapping exists.
+warning: DDCOLORCONTROL -> DDCOLORCONTROL -> _DDCOLORCONTROL.dwReserved1: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCOMPBUFFERINFO -> DDCOMPBUFFERINFO -> _DDCOMPBUFFERINFO.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCOMPBUFFERINFO -> DDCOMPBUFFERINFO -> _DDCOMPBUFFERINFO.dwNumCompBuffers: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCOMPBUFFERINFO -> DDCOMPBUFFERINFO -> _DDCOMPBUFFERINFO.dwWidthToCreate: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCOMPBUFFERINFO -> DDCOMPBUFFERINFO -> _DDCOMPBUFFERINFO.dwHeightToCreate: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCOMPBUFFERINFO -> DDCOMPBUFFERINFO -> _DDCOMPBUFFERINFO.dwBytesToAllocate: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCOMPBUFFERINFO -> DDCOMPBUFFERINFO -> _DDCOMPBUFFERINFO.ddPixelFormat -> DDPIXELFORMAT -> _DDPIXELFORMAT.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCOMPBUFFERINFO -> DDCOMPBUFFERINFO -> _DDCOMPBUFFERINFO.ddPixelFormat -> DDPIXELFORMAT -> _DDPIXELFORMAT.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDCOMPBUFFERINFO -> DDCOMPBUFFERINFO -> _DDCOMPBUFFERINFO.ddPixelFormat -> DDPIXELFORMAT -> _DDPIXELFORMAT.dwFourCC: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDDEVICEIDENTIFIER -> DDDEVICEIDENTIFIER -> tagDDDEVICEIDENTIFIER.liDriverVersion: LARGE_INTEGER: No extracted declaration or atomic mapping exists.
+warning: DDDEVICEIDENTIFIER -> DDDEVICEIDENTIFIER -> tagDDDEVICEIDENTIFIER.dwVendorId: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDDEVICEIDENTIFIER -> DDDEVICEIDENTIFIER -> tagDDDEVICEIDENTIFIER.dwDeviceId: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDDEVICEIDENTIFIER -> DDDEVICEIDENTIFIER -> tagDDDEVICEIDENTIFIER.dwSubSysId: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDDEVICEIDENTIFIER -> DDDEVICEIDENTIFIER -> tagDDDEVICEIDENTIFIER.dwRevision: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDDEVICEIDENTIFIER -> DDDEVICEIDENTIFIER -> tagDDDEVICEIDENTIFIER.guidDeviceIdentifier: GUID: No extracted declaration or atomic mapping exists.
+warning: DDDEVICEIDENTIFIER2 -> DDDEVICEIDENTIFIER2 -> tagDDDEVICEIDENTIFIER2.liDriverVersion: LARGE_INTEGER: No extracted declaration or atomic mapping exists.
+warning: DDDEVICEIDENTIFIER2 -> DDDEVICEIDENTIFIER2 -> tagDDDEVICEIDENTIFIER2.dwVendorId: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDDEVICEIDENTIFIER2 -> DDDEVICEIDENTIFIER2 -> tagDDDEVICEIDENTIFIER2.dwDeviceId: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDDEVICEIDENTIFIER2 -> DDDEVICEIDENTIFIER2 -> tagDDDEVICEIDENTIFIER2.dwSubSysId: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDDEVICEIDENTIFIER2 -> DDDEVICEIDENTIFIER2 -> tagDDDEVICEIDENTIFIER2.dwRevision: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDDEVICEIDENTIFIER2 -> DDDEVICEIDENTIFIER2 -> tagDDDEVICEIDENTIFIER2.guidDeviceIdentifier: GUID: No extracted declaration or atomic mapping exists.
+warning: DDDEVICEIDENTIFIER2 -> DDDEVICEIDENTIFIER2 -> tagDDDEVICEIDENTIFIER2.dwWHQLLevel: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDGAMMARAMP -> DDGAMMARAMP -> _DDGAMMARAMP.red -> []: WORD: No extracted declaration or atomic mapping exists.
+warning: DDGAMMARAMP -> DDGAMMARAMP -> _DDGAMMARAMP.green -> []: WORD: No extracted declaration or atomic mapping exists.
+warning: DDGAMMARAMP -> DDGAMMARAMP -> _DDGAMMARAMP.blue -> []: WORD: No extracted declaration or atomic mapping exists.
+warning: DDMOCOMPBUFFERINFO -> DDMOCOMPBUFFERINFO -> _DDMOCOMPBUFFERINFO.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDMOCOMPBUFFERINFO -> DDMOCOMPBUFFERINFO -> _DDMOCOMPBUFFERINFO.dwDataOffset: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDMOCOMPBUFFERINFO -> DDMOCOMPBUFFERINFO -> _DDMOCOMPBUFFERINFO.dwDataSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDMOCOMPBUFFERINFO -> DDMOCOMPBUFFERINFO -> _DDMOCOMPBUFFERINFO.lpPrivate: LPVOID: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwCaps2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwFXAlphaCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwPalCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwSVCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwAlphaBltConstBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwAlphaBltPixelBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwAlphaBltSurfaceBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwAlphaOverlayConstBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwAlphaOverlayPixelBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwAlphaOverlaySurfaceBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwZBufferBitDepths: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwVidMemTotal: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwVidMemFree: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwMaxVisibleOverlays: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwCurrVisibleOverlays: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwNumFourCCCodes: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwAlignBoundarySrc: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwAlignSizeSrc: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwAlignBoundaryDest: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwAlignSizeDest: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwAlignStrideAlign: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwMinOverlayStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwMaxOverlayStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwMinLiveVideoStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwMaxLiveVideoStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwMinHwCodecStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwMaxHwCodecStretch: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwReserved1: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwReserved2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwReserved3: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwSVBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwSVBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwSVBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwSVBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwVSBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwVSBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwVSBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwVSBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwSSBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwSSBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwSSBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwSSBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwMaxVideoPorts: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwCurrVideoPorts: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDNTCORECAPS -> DDNTCORECAPS -> _DDNTCORECAPS.dwSVBCaps2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDOPTSURFACEDESC -> DDOPTSURFACEDESC -> _DDOPTSURFACEDESC.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDOPTSURFACEDESC -> DDOPTSURFACEDESC -> _DDOPTSURFACEDESC.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDOPTSURFACEDESC -> DDOPTSURFACEDESC -> _DDOPTSURFACEDESC.ddOSCaps -> DDOSCAPS -> _DDOSCAPS.dwCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDOPTSURFACEDESC -> DDOPTSURFACEDESC -> _DDOPTSURFACEDESC.guid: GUID: No extracted declaration or atomic mapping exists.
+warning: DDOPTSURFACEDESC -> DDOPTSURFACEDESC -> _DDOPTSURFACEDESC.dwCompressionRatio: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDOVERLAYFX -> DDOVERLAYFX -> _DDOVERLAYFX.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDOVERLAYFX -> DDOVERLAYFX -> _DDOVERLAYFX.dwAlphaEdgeBlendBitDepth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDOVERLAYFX -> DDOVERLAYFX -> _DDOVERLAYFX.dwAlphaEdgeBlend: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDOVERLAYFX -> DDOVERLAYFX -> _DDOVERLAYFX.dwReserved: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDOVERLAYFX -> DDOVERLAYFX -> _DDOVERLAYFX.dwAlphaDestConstBitDepth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDOVERLAYFX -> DDOVERLAYFX -> _DDOVERLAYFX.dwAlphaSrcConstBitDepth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDOVERLAYFX -> DDOVERLAYFX -> _DDOVERLAYFX.dwDDFX: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDOVERLAYFX -> DDOVERLAYFX -> _DDOVERLAYFX.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDRGBA -> DDRGBA -> _DDRGBA.red: BYTE: No extracted declaration or atomic mapping exists.
+warning: DDRGBA -> DDRGBA -> _DDRGBA.green: BYTE: No extracted declaration or atomic mapping exists.
+warning: DDRGBA -> DDRGBA -> _DDRGBA.blue: BYTE: No extracted declaration or atomic mapping exists.
+warning: DDRGBA -> DDRGBA -> _DDRGBA.alpha: BYTE: No extracted declaration or atomic mapping exists.
+warning: DDSCAPSEX -> DDSCAPSEX -> _DDSCAPSEX.dwCaps2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDSCAPSEX -> DDSCAPSEX -> _DDSCAPSEX.dwCaps3: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDSURFACEDESC -> DDSURFACEDESC -> _DDSURFACEDESC.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDSURFACEDESC -> DDSURFACEDESC -> _DDSURFACEDESC.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDSURFACEDESC -> DDSURFACEDESC -> _DDSURFACEDESC.dwHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDSURFACEDESC -> DDSURFACEDESC -> _DDSURFACEDESC.dwWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDSURFACEDESC -> DDSURFACEDESC -> _DDSURFACEDESC.dwBackBufferCount: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDSURFACEDESC -> DDSURFACEDESC -> _DDSURFACEDESC.dwAlphaBitDepth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDSURFACEDESC -> DDSURFACEDESC -> _DDSURFACEDESC.dwReserved: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDSURFACEDESC -> DDSURFACEDESC -> _DDSURFACEDESC.lpSurface: LPVOID: No extracted declaration or atomic mapping exists.
+warning: DDSURFACEDESC2 -> DDSURFACEDESC2 -> _DDSURFACEDESC2.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDSURFACEDESC2 -> DDSURFACEDESC2 -> _DDSURFACEDESC2.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDSURFACEDESC2 -> DDSURFACEDESC2 -> _DDSURFACEDESC2.dwHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDSURFACEDESC2 -> DDSURFACEDESC2 -> _DDSURFACEDESC2.dwWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDSURFACEDESC2 -> DDSURFACEDESC2 -> _DDSURFACEDESC2.dwAlphaBitDepth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDSURFACEDESC2 -> DDSURFACEDESC2 -> _DDSURFACEDESC2.dwReserved: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDSURFACEDESC2 -> DDSURFACEDESC2 -> _DDSURFACEDESC2.lpSurface: LPVOID: No extracted declaration or atomic mapping exists.
+warning: DDSURFACEDESC2 -> DDSURFACEDESC2 -> _DDSURFACEDESC2.dwTextureStage: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTBANDWIDTH -> DDVIDEOPORTBANDWIDTH -> _DDVIDEOPORTBANDWIDTH.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTBANDWIDTH -> DDVIDEOPORTBANDWIDTH -> _DDVIDEOPORTBANDWIDTH.dwOverlay: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTBANDWIDTH -> DDVIDEOPORTBANDWIDTH -> _DDVIDEOPORTBANDWIDTH.dwColorkey: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTBANDWIDTH -> DDVIDEOPORTBANDWIDTH -> _DDVIDEOPORTBANDWIDTH.dwYInterpolate: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTBANDWIDTH -> DDVIDEOPORTBANDWIDTH -> _DDVIDEOPORTBANDWIDTH.dwYInterpAndColorkey: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTBANDWIDTH -> DDVIDEOPORTBANDWIDTH -> _DDVIDEOPORTBANDWIDTH.dwReserved1: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTBANDWIDTH -> DDVIDEOPORTBANDWIDTH -> _DDVIDEOPORTBANDWIDTH.dwReserved2: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.dwMaxWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.dwMaxVBIWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.dwMaxHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.dwVideoPortID: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.dwCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.dwFX: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.dwNumAutoFlipSurfaces: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.dwAlignVideoPortBoundary: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.dwAlignVideoPortPrescaleWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.dwAlignVideoPortCropBoundary: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.dwAlignVideoPortCropWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.dwPreshrinkXStep: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.dwPreshrinkYStep: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.dwNumVBIAutoFlipSurfaces: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.dwNumPreferredAutoflip: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.wNumFilterTapsX: WORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCAPS -> DDVIDEOPORTCAPS -> _DDVIDEOPORTCAPS.wNumFilterTapsY: WORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCONNECT -> DDVIDEOPORTCONNECT -> _DDVIDEOPORTCONNECT.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCONNECT -> DDVIDEOPORTCONNECT -> _DDVIDEOPORTCONNECT.dwPortWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCONNECT -> DDVIDEOPORTCONNECT -> _DDVIDEOPORTCONNECT.guidTypeID: GUID: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCONNECT -> DDVIDEOPORTCONNECT -> _DDVIDEOPORTCONNECT.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCONNECT -> DDVIDEOPORTCONNECT -> _DDVIDEOPORTCONNECT.dwReserved1: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTCONTAINERCALLBACKS -> DDVIDEOPORTCONTAINERCALLBACKS: struct IDDVideoPortContainerVtbl: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTDESC -> DDVIDEOPORTDESC -> _DDVIDEOPORTDESC.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTDESC -> DDVIDEOPORTDESC -> _DDVIDEOPORTDESC.dwFieldWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTDESC -> DDVIDEOPORTDESC -> _DDVIDEOPORTDESC.dwVBIWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTDESC -> DDVIDEOPORTDESC -> _DDVIDEOPORTDESC.dwFieldHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTDESC -> DDVIDEOPORTDESC -> _DDVIDEOPORTDESC.dwMicrosecondsPerField: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTDESC -> DDVIDEOPORTDESC -> _DDVIDEOPORTDESC.dwMaxPixelsPerSecond: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTDESC -> DDVIDEOPORTDESC -> _DDVIDEOPORTDESC.dwVideoPortID: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTDESC -> DDVIDEOPORTDESC -> _DDVIDEOPORTDESC.dwReserved1: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTDESC -> DDVIDEOPORTDESC -> _DDVIDEOPORTDESC.dwReserved2: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTDESC -> DDVIDEOPORTDESC -> _DDVIDEOPORTDESC.dwReserved3: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTINFO -> DDVIDEOPORTINFO -> _DDVIDEOPORTINFO.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTINFO -> DDVIDEOPORTINFO -> _DDVIDEOPORTINFO.dwOriginX: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTINFO -> DDVIDEOPORTINFO -> _DDVIDEOPORTINFO.dwOriginY: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTINFO -> DDVIDEOPORTINFO -> _DDVIDEOPORTINFO.dwVPFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTINFO -> DDVIDEOPORTINFO -> _DDVIDEOPORTINFO.rCrop: RECT: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTINFO -> DDVIDEOPORTINFO -> _DDVIDEOPORTINFO.dwPrescaleWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTINFO -> DDVIDEOPORTINFO -> _DDVIDEOPORTINFO.dwPrescaleHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTINFO -> DDVIDEOPORTINFO -> _DDVIDEOPORTINFO.lpddpfInputFormat -> LPDDPIXELFORMAT: struct _DDPIXELFORMAT *: Pointer to 'struct _DDPIXELFORMAT' has no allocation/length/ownership policy.
+warning: DDVIDEOPORTINFO -> DDVIDEOPORTINFO -> _DDVIDEOPORTINFO.dwVBIHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTINFO -> DDVIDEOPORTINFO -> _DDVIDEOPORTINFO.dwReserved1: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTINFO -> DDVIDEOPORTINFO -> _DDVIDEOPORTINFO.dwReserved2: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTNOTIFY -> DDVIDEOPORTNOTIFY -> _DDVIDEOPORTNOTIFY.ApproximateTimeStamp: LARGE_INTEGER: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTNOTIFY -> DDVIDEOPORTNOTIFY -> _DDVIDEOPORTNOTIFY.lField: LONG: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTNOTIFY -> DDVIDEOPORTNOTIFY -> _DDVIDEOPORTNOTIFY.dwSurfaceIndex: UINT: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTNOTIFY -> DDVIDEOPORTNOTIFY -> _DDVIDEOPORTNOTIFY.lDone: LONG: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTSTATUS -> DDVIDEOPORTSTATUS -> _DDVIDEOPORTSTATUS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTSTATUS -> DDVIDEOPORTSTATUS -> _DDVIDEOPORTSTATUS.bInUse: BOOL: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTSTATUS -> DDVIDEOPORTSTATUS -> _DDVIDEOPORTSTATUS.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTSTATUS -> DDVIDEOPORTSTATUS -> _DDVIDEOPORTSTATUS.dwReserved1: DWORD: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTSTATUS -> DDVIDEOPORTSTATUS -> _DDVIDEOPORTSTATUS.dwReserved2: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DDVIDEOPORTSTATUS -> DDVIDEOPORTSTATUS -> _DDVIDEOPORTSTATUS.dwReserved3: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DD_ADDATTACHEDSURFACEDATA -> DD_ADDATTACHEDSURFACEDATA -> _DD_ADDATTACHEDSURFACEDATA.lpDD -> PDD_DIRECTDRAW_GLOBAL: struct _DD_DIRECTDRAW_GLOBAL *: Pointer to 'struct _DD_DIRECTDRAW_GLOBAL' has no allocation/length/ownership policy.
+warning: DD_ADDATTACHEDSURFACEDATA -> DD_ADDATTACHEDSURFACEDATA -> _DD_ADDATTACHEDSURFACEDATA.AddAttachedSurface: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_ATTACHLIST -> DD_ATTACHLIST -> _DD_ATTACHLIST.lpLink -> PDD_ATTACHLIST: struct _DD_ATTACHLIST *: Pointer to 'struct _DD_ATTACHLIST' has no allocation/length/ownership policy.
+warning: DD_BEGINMOCOMPFRAMEDATA -> DD_BEGINMOCOMPFRAMEDATA -> _DD_BEGINMOCOMPFRAMEDATA.lpDD -> PDD_DIRECTDRAW_LOCAL: struct _DD_DIRECTDRAW_LOCAL *: Pointer to 'struct _DD_DIRECTDRAW_LOCAL' has no allocation/length/ownership policy.
+warning: DD_BEGINMOCOMPFRAMEDATA -> DD_BEGINMOCOMPFRAMEDATA -> _DD_BEGINMOCOMPFRAMEDATA.lpMoComp -> PDD_MOTIONCOMP_LOCAL: struct DD_MOTIONCOMP_LOCAL *: Pointer to 'struct DD_MOTIONCOMP_LOCAL' has no allocation/length/ownership policy.
+warning: DD_BEGINMOCOMPFRAMEDATA -> DD_BEGINMOCOMPFRAMEDATA -> _DD_BEGINMOCOMPFRAMEDATA.dwInputDataSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_BEGINMOCOMPFRAMEDATA -> DD_BEGINMOCOMPFRAMEDATA -> _DD_BEGINMOCOMPFRAMEDATA.lpInputData: LPVOID: No extracted declaration or atomic mapping exists.
+warning: DD_BEGINMOCOMPFRAMEDATA -> DD_BEGINMOCOMPFRAMEDATA -> _DD_BEGINMOCOMPFRAMEDATA.dwOutputDataSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_BEGINMOCOMPFRAMEDATA -> DD_BEGINMOCOMPFRAMEDATA -> _DD_BEGINMOCOMPFRAMEDATA.lpOutputData: LPVOID: No extracted declaration or atomic mapping exists.
+warning: DD_BLTDATA -> DD_BLTDATA -> _DD_BLTDATA.rDest: RECTL: No extracted declaration or atomic mapping exists.
+warning: DD_BLTDATA -> DD_BLTDATA -> _DD_BLTDATA.rSrc: RECTL: No extracted declaration or atomic mapping exists.
+warning: DD_BLTDATA -> DD_BLTDATA -> _DD_BLTDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_BLTDATA -> DD_BLTDATA -> _DD_BLTDATA.dwROPFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_BLTDATA -> DD_BLTDATA -> _DD_BLTDATA.Blt: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_BLTDATA -> DD_BLTDATA -> _DD_BLTDATA.IsClipped: BOOL: No extracted declaration or atomic mapping exists.
+warning: DD_BLTDATA -> DD_BLTDATA -> _DD_BLTDATA.rOrigDest: RECTL: No extracted declaration or atomic mapping exists.
+warning: DD_BLTDATA -> DD_BLTDATA -> _DD_BLTDATA.rOrigSrc: RECTL: No extracted declaration or atomic mapping exists.
+warning: DD_BLTDATA -> DD_BLTDATA -> _DD_BLTDATA.dwRectCnt: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_BLTDATA -> DD_BLTDATA -> _DD_BLTDATA.prDestRects: LPRECT: No extracted declaration or atomic mapping exists.
+warning: DD_BLTDATA -> DD_BLTDATA -> _DD_BLTDATA.dwAFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_CALLBACKS -> DD_CALLBACKS -> DD_CALLBACKS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_CALLBACKS -> DD_CALLBACKS -> DD_CALLBACKS.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_CALLBACKS -> DD_CALLBACKS -> DD_CALLBACKS.DestroyDriver -> PDD_DESTROYDRIVER: DWORD ( * )(PDD_DESTROYDRIVERDATA): Function pointer needs a callback policy.
+warning: DD_CALLBACKS -> DD_CALLBACKS -> DD_CALLBACKS.CreateSurface -> PDD_CREATESURFACE: DWORD ( * )(PDD_CREATESURFACEDATA): Function pointer needs a callback policy.
+warning: DD_CALLBACKS -> DD_CALLBACKS -> DD_CALLBACKS.SetColorKey -> PDD_SETCOLORKEY: DWORD ( * )(PDD_DRVSETCOLORKEYDATA): Function pointer needs a callback policy.
+warning: DD_CALLBACKS -> DD_CALLBACKS -> DD_CALLBACKS.SetMode -> PDD_SETMODE: DWORD ( * )(PDD_SETMODEDATA): Function pointer needs a callback policy.
+warning: DD_CALLBACKS -> DD_CALLBACKS -> DD_CALLBACKS.WaitForVerticalBlank -> PDD_WAITFORVERTICALBLANK: DWORD ( * )(PDD_WAITFORVERTICALBLANKDATA): Function pointer needs a callback policy.
+warning: DD_CALLBACKS -> DD_CALLBACKS -> DD_CALLBACKS.CanCreateSurface -> PDD_CANCREATESURFACE: DWORD ( * )(PDD_CANCREATESURFACEDATA): Function pointer needs a callback policy.
+warning: DD_CALLBACKS -> DD_CALLBACKS -> DD_CALLBACKS.CreatePalette -> PDD_CREATEPALETTE: DWORD ( * )(PDD_CREATEPALETTEDATA): Function pointer needs a callback policy.
+warning: DD_CALLBACKS -> DD_CALLBACKS -> DD_CALLBACKS.GetScanLine -> PDD_GETSCANLINE: DWORD ( * )(PDD_GETSCANLINEDATA): Function pointer needs a callback policy.
+warning: DD_CALLBACKS -> DD_CALLBACKS -> DD_CALLBACKS.MapMemory -> PDD_MAPMEMORY: DWORD ( * )(PDD_MAPMEMORYDATA): Function pointer needs a callback policy.
+warning: DD_CANCREATESURFACEDATA -> DD_CANCREATESURFACEDATA -> _DD_CANCREATESURFACEDATA.lpDDSurfaceDesc: DDSURFACEDESC *: Pointer to 'DDSURFACEDESC' has no allocation/length/ownership policy.
+warning: DD_CANCREATESURFACEDATA -> DD_CANCREATESURFACEDATA -> _DD_CANCREATESURFACEDATA.bIsDifferentPixelFormat: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_CANCREATESURFACEDATA -> DD_CANCREATESURFACEDATA -> _DD_CANCREATESURFACEDATA.CanCreateSurface: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_CANCREATEVPORTDATA -> DD_CANCREATEVPORTDATA -> _DD_CANCREATEVPORTDATA.lpDDVideoPortDesc -> LPDDVIDEOPORTDESC: struct _DDVIDEOPORTDESC *: Pointer to 'struct _DDVIDEOPORTDESC' has no allocation/length/ownership policy.
+warning: DD_CANCREATEVPORTDATA -> DD_CANCREATEVPORTDATA -> _DD_CANCREATEVPORTDATA.CanCreateVideoPort: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_CLIPPER_GLOBAL -> DD_CLIPPER_GLOBAL -> _DD_CLIPPER_GLOBAL.dwReserved1: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DD_CLIPPER_LOCAL -> DD_CLIPPER_LOCAL -> _DD_CLIPPER_LOCAL.dwReserved1: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DD_COLORCONTROLCALLBACKS -> DD_COLORCONTROLCALLBACKS -> _DD_COLORCONTROLCALLBACKS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_COLORCONTROLCALLBACKS -> DD_COLORCONTROLCALLBACKS -> _DD_COLORCONTROLCALLBACKS.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_COLORCONTROLCALLBACKS -> DD_COLORCONTROLCALLBACKS -> _DD_COLORCONTROLCALLBACKS.ColorControl -> PDD_COLORCB_COLORCONTROL: DWORD ( * )(PDD_COLORCONTROLDATA): Function pointer needs a callback policy.
+warning: DD_COLORCONTROLDATA -> DD_COLORCONTROLDATA -> _DD_COLORCONTROLDATA.lpColorData -> LPDDCOLORCONTROL: struct _DDCOLORCONTROL *: Pointer to 'struct _DDCOLORCONTROL' has no allocation/length/ownership policy.
+warning: DD_COLORCONTROLDATA -> DD_COLORCONTROLDATA -> _DD_COLORCONTROLDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_COLORCONTROLDATA -> DD_COLORCONTROLDATA -> _DD_COLORCONTROLDATA.ColorControl: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_CREATEMOCOMPDATA -> DD_CREATEMOCOMPDATA -> _DD_CREATEMOCOMPDATA.lpGuid: GUID *: Pointer to 'GUID' has no allocation/length/ownership policy.
+warning: DD_CREATEMOCOMPDATA -> DD_CREATEMOCOMPDATA -> _DD_CREATEMOCOMPDATA.dwUncompWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_CREATEMOCOMPDATA -> DD_CREATEMOCOMPDATA -> _DD_CREATEMOCOMPDATA.dwUncompHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_CREATEMOCOMPDATA -> DD_CREATEMOCOMPDATA -> _DD_CREATEMOCOMPDATA.lpData: LPVOID: No extracted declaration or atomic mapping exists.
+warning: DD_CREATEMOCOMPDATA -> DD_CREATEMOCOMPDATA -> _DD_CREATEMOCOMPDATA.dwDataSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_CREATEPALETTEDATA -> DD_CREATEPALETTEDATA -> _DD_CREATEPALETTEDATA.lpDDPalette -> PDD_PALETTE_GLOBAL: struct _DD_PALETTE_GLOBAL *: Pointer to 'struct _DD_PALETTE_GLOBAL' has no allocation/length/ownership policy.
+warning: DD_CREATEPALETTEDATA -> DD_CREATEPALETTEDATA -> _DD_CREATEPALETTEDATA.lpColorTable: LPPALETTEENTRY: No extracted declaration or atomic mapping exists.
+warning: DD_CREATEPALETTEDATA -> DD_CREATEPALETTEDATA -> _DD_CREATEPALETTEDATA.CreatePalette: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_CREATEPALETTEDATA -> DD_CREATEPALETTEDATA -> _DD_CREATEPALETTEDATA.is_excl: BOOL: No extracted declaration or atomic mapping exists.
+warning: DD_CREATESURFACEDATA -> DD_CREATESURFACEDATA -> _DD_CREATESURFACEDATA.lpDDSurfaceDesc: DDSURFACEDESC *: Pointer to 'DDSURFACEDESC' has no allocation/length/ownership policy.
+warning: DD_CREATESURFACEDATA -> DD_CREATESURFACEDATA -> _DD_CREATESURFACEDATA.lplpSList: PDD_SURFACE_LOCAL *: Pointer to 'PDD_SURFACE_LOCAL' has no allocation/length/ownership policy.
+warning: DD_CREATESURFACEDATA -> DD_CREATESURFACEDATA -> _DD_CREATESURFACEDATA.dwSCnt: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_CREATESURFACEDATA -> DD_CREATESURFACEDATA -> _DD_CREATESURFACEDATA.CreateSurface: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_CREATESURFACEEXDATA -> DD_CREATESURFACEEXDATA -> _DD_CREATESURFACEEXDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_CREATEVPORTDATA -> DD_CREATEVPORTDATA -> _DD_CREATEVPORTDATA.lpVideoPort -> PDD_VIDEOPORT_LOCAL: struct _DD_VIDEOPORT_LOCAL *: Pointer to 'struct _DD_VIDEOPORT_LOCAL' has no allocation/length/ownership policy.
+warning: DD_CREATEVPORTDATA -> DD_CREATEVPORTDATA -> _DD_CREATEVPORTDATA.CreateVideoPort: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_D3DBUFCALLBACKS -> DD_D3DBUFCALLBACKS -> _DD_D3DBUFCALLBACKS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_D3DBUFCALLBACKS -> DD_D3DBUFCALLBACKS -> _DD_D3DBUFCALLBACKS.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_D3DBUFCALLBACKS -> DD_D3DBUFCALLBACKS -> _DD_D3DBUFCALLBACKS.DestroyD3DBuffer -> PDD_SURFCB_DESTROYSURFACE: DWORD ( * )(PDD_DESTROYSURFACEDATA): Function pointer needs a callback policy.
+warning: DD_D3DBUFCALLBACKS -> DD_D3DBUFCALLBACKS -> _DD_D3DBUFCALLBACKS.LockD3DBuffer -> PDD_SURFCB_LOCK: DWORD ( * )(PDD_LOCKDATA): Function pointer needs a callback policy.
+warning: DD_D3DBUFCALLBACKS -> DD_D3DBUFCALLBACKS -> _DD_D3DBUFCALLBACKS.UnlockD3DBuffer -> PDD_SURFCB_UNLOCK: DWORD ( * )(PDD_UNLOCKDATA): Function pointer needs a callback policy.
+warning: DD_DESTROYDDLOCALDATA -> DD_DESTROYDDLOCALDATA -> _DD_DESTROYDDLOCALDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_DESTROYPALETTEDATA -> DD_DESTROYPALETTEDATA -> _DD_DESTROYPALETTEDATA.DestroyPalette: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_DESTROYSURFACEDATA -> DD_DESTROYSURFACEDATA -> _DD_DESTROYSURFACEDATA.DestroySurface: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_DESTROYVPORTDATA -> DD_DESTROYVPORTDATA -> _DD_DESTROYVPORTDATA.DestroyVideoPort: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_DIRECTDRAW_GLOBAL -> DD_DIRECTDRAW_GLOBAL -> _DD_DIRECTDRAW_GLOBAL.dhpdev: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_DIRECTDRAW_GLOBAL -> DD_DIRECTDRAW_GLOBAL -> _DD_DIRECTDRAW_GLOBAL.dwReserved1: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DD_DIRECTDRAW_GLOBAL -> DD_DIRECTDRAW_GLOBAL -> _DD_DIRECTDRAW_GLOBAL.dwReserved2: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DD_DIRECTDRAW_GLOBAL -> DD_DIRECTDRAW_GLOBAL -> _DD_DIRECTDRAW_GLOBAL.lpDDVideoPortCaps -> LPDDVIDEOPORTCAPS: struct _DDVIDEOPORTCAPS *: Pointer to 'struct _DDVIDEOPORTCAPS' has no allocation/length/ownership policy.
+warning: DD_DRVSETCOLORKEYDATA -> DD_DRVSETCOLORKEYDATA -> _DD_DRVSETCOLORKEYDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_DRVSETCOLORKEYDATA -> DD_DRVSETCOLORKEYDATA -> _DD_DRVSETCOLORKEYDATA.SetColorKey: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_ENDMOCOMPFRAMEDATA -> DD_ENDMOCOMPFRAMEDATA -> _DD_ENDMOCOMPFRAMEDATA.lpInputData: LPVOID: No extracted declaration or atomic mapping exists.
+warning: DD_ENDMOCOMPFRAMEDATA -> DD_ENDMOCOMPFRAMEDATA -> _DD_ENDMOCOMPFRAMEDATA.dwInputDataSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_FLIPDATA -> DD_FLIPDATA -> _DD_FLIPDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_FLIPDATA -> DD_FLIPDATA -> _DD_FLIPDATA.Flip: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_FLIPTOGDISURFACEDATA -> DD_FLIPTOGDISURFACEDATA -> _DD_FLIPTOGDISURFACEDATA.dwToGDI: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_FLIPTOGDISURFACEDATA -> DD_FLIPTOGDISURFACEDATA -> _DD_FLIPTOGDISURFACEDATA.dwReserved: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_FLIPTOGDISURFACEDATA -> DD_FLIPTOGDISURFACEDATA -> _DD_FLIPTOGDISURFACEDATA.FlipToGDISurface: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_FLIPVPORTDATA -> DD_FLIPVPORTDATA -> _DD_FLIPVPORTDATA.FlipVideoPort: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_FREEDRIVERMEMORYDATA -> DD_FREEDRIVERMEMORYDATA -> _DD_FREEDRIVERMEMORYDATA.FreeDriverMemory: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_GETAVAILDRIVERMEMORYDATA -> DD_GETAVAILDRIVERMEMORYDATA -> _DD_GETAVAILDRIVERMEMORYDATA.dwTotal: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETAVAILDRIVERMEMORYDATA -> DD_GETAVAILDRIVERMEMORYDATA -> _DD_GETAVAILDRIVERMEMORYDATA.dwFree: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETAVAILDRIVERMEMORYDATA -> DD_GETAVAILDRIVERMEMORYDATA -> _DD_GETAVAILDRIVERMEMORYDATA.GetAvailDriverMemory: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_GETBLTSTATUSDATA -> DD_GETBLTSTATUSDATA -> _DD_GETBLTSTATUSDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETBLTSTATUSDATA -> DD_GETBLTSTATUSDATA -> _DD_GETBLTSTATUSDATA.GetBltStatus: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_GETDRIVERINFODATA -> DD_GETDRIVERINFODATA -> _DD_GETDRIVERINFODATA.dhpdev: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_GETDRIVERINFODATA -> DD_GETDRIVERINFODATA -> _DD_GETDRIVERINFODATA.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETDRIVERINFODATA -> DD_GETDRIVERINFODATA -> _DD_GETDRIVERINFODATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETDRIVERINFODATA -> DD_GETDRIVERINFODATA -> _DD_GETDRIVERINFODATA.guidInfo: GUID: No extracted declaration or atomic mapping exists.
+warning: DD_GETDRIVERINFODATA -> DD_GETDRIVERINFODATA -> _DD_GETDRIVERINFODATA.dwExpectedSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETDRIVERINFODATA -> DD_GETDRIVERINFODATA -> _DD_GETDRIVERINFODATA.lpvData: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_GETDRIVERINFODATA -> DD_GETDRIVERINFODATA -> _DD_GETDRIVERINFODATA.dwActualSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETDRIVERSTATEDATA -> DD_GETDRIVERSTATEDATA -> _DD_GETDRIVERSTATEDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETDRIVERSTATEDATA -> DD_GETDRIVERSTATEDATA -> _DD_GETDRIVERSTATEDATA.lpdwStates: LPDWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETDRIVERSTATEDATA -> DD_GETDRIVERSTATEDATA -> _DD_GETDRIVERSTATEDATA.dwLength: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETFLIPSTATUSDATA -> DD_GETFLIPSTATUSDATA -> _DD_GETFLIPSTATUSDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETFLIPSTATUSDATA -> DD_GETFLIPSTATUSDATA -> _DD_GETFLIPSTATUSDATA.GetFlipStatus: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_GETINTERNALMOCOMPDATA -> DD_GETINTERNALMOCOMPDATA -> _DD_GETINTERNALMOCOMPDATA.lpGuid: GUID *: Pointer to 'GUID' has no allocation/length/ownership policy.
+warning: DD_GETINTERNALMOCOMPDATA -> DD_GETINTERNALMOCOMPDATA -> _DD_GETINTERNALMOCOMPDATA.dwWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETINTERNALMOCOMPDATA -> DD_GETINTERNALMOCOMPDATA -> _DD_GETINTERNALMOCOMPDATA.dwHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETINTERNALMOCOMPDATA -> DD_GETINTERNALMOCOMPDATA -> _DD_GETINTERNALMOCOMPDATA.dwScratchMemAlloc: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETMOCOMPCOMPBUFFDATA -> DD_GETMOCOMPCOMPBUFFDATA -> _DD_GETMOCOMPCOMPBUFFDATA.lpGuid: GUID *: Pointer to 'GUID' has no allocation/length/ownership policy.
+warning: DD_GETMOCOMPCOMPBUFFDATA -> DD_GETMOCOMPCOMPBUFFDATA -> _DD_GETMOCOMPCOMPBUFFDATA.dwWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETMOCOMPCOMPBUFFDATA -> DD_GETMOCOMPCOMPBUFFDATA -> _DD_GETMOCOMPCOMPBUFFDATA.dwHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETMOCOMPCOMPBUFFDATA -> DD_GETMOCOMPCOMPBUFFDATA -> _DD_GETMOCOMPCOMPBUFFDATA.dwNumTypesCompBuffs: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETMOCOMPCOMPBUFFDATA -> DD_GETMOCOMPCOMPBUFFDATA -> _DD_GETMOCOMPCOMPBUFFDATA.lpCompBuffInfo -> LPDDCOMPBUFFERINFO: struct _DDCOMPBUFFERINFO *: Pointer to 'struct _DDCOMPBUFFERINFO' has no allocation/length/ownership policy.
+warning: DD_GETMOCOMPFORMATSDATA -> DD_GETMOCOMPFORMATSDATA -> _DD_GETMOCOMPFORMATSDATA.lpGuid: GUID *: Pointer to 'GUID' has no allocation/length/ownership policy.
+warning: DD_GETMOCOMPFORMATSDATA -> DD_GETMOCOMPFORMATSDATA -> _DD_GETMOCOMPFORMATSDATA.dwNumFormats: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETMOCOMPGUIDSDATA -> DD_GETMOCOMPGUIDSDATA -> _DD_GETMOCOMPGUIDSDATA.dwNumGuids: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETMOCOMPGUIDSDATA -> DD_GETMOCOMPGUIDSDATA -> _DD_GETMOCOMPGUIDSDATA.lpGuids: GUID *: Pointer to 'GUID' has no allocation/length/ownership policy.
+warning: DD_GETSCANLINEDATA -> DD_GETSCANLINEDATA -> _DD_GETSCANLINEDATA.dwScanLine: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETSCANLINEDATA -> DD_GETSCANLINEDATA -> _DD_GETSCANLINEDATA.GetScanLine: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTBANDWIDTHDATA -> DD_GETVPORTBANDWIDTHDATA -> _DD_GETVPORTBANDWIDTHDATA.dwWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTBANDWIDTHDATA -> DD_GETVPORTBANDWIDTHDATA -> _DD_GETVPORTBANDWIDTHDATA.dwHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTBANDWIDTHDATA -> DD_GETVPORTBANDWIDTHDATA -> _DD_GETVPORTBANDWIDTHDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTBANDWIDTHDATA -> DD_GETVPORTBANDWIDTHDATA -> _DD_GETVPORTBANDWIDTHDATA.lpBandwidth -> LPDDVIDEOPORTBANDWIDTH: struct _DDVIDEOPORTBANDWIDTH *: Pointer to 'struct _DDVIDEOPORTBANDWIDTH' has no allocation/length/ownership policy.
+warning: DD_GETVPORTBANDWIDTHDATA -> DD_GETVPORTBANDWIDTHDATA -> _DD_GETVPORTBANDWIDTHDATA.GetVideoPortBandwidth: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTCONNECTDATA -> DD_GETVPORTCONNECTDATA -> _DD_GETVPORTCONNECTDATA.dwPortId: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTCONNECTDATA -> DD_GETVPORTCONNECTDATA -> _DD_GETVPORTCONNECTDATA.lpConnect -> LPDDVIDEOPORTCONNECT: struct _DDVIDEOPORTCONNECT *: Pointer to 'struct _DDVIDEOPORTCONNECT' has no allocation/length/ownership policy.
+warning: DD_GETVPORTCONNECTDATA -> DD_GETVPORTCONNECTDATA -> _DD_GETVPORTCONNECTDATA.dwNumEntries: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTCONNECTDATA -> DD_GETVPORTCONNECTDATA -> _DD_GETVPORTCONNECTDATA.GetVideoPortConnectInfo: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTFIELDDATA -> DD_GETVPORTFIELDDATA -> _DD_GETVPORTFIELDDATA.bField: BOOL: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTFIELDDATA -> DD_GETVPORTFIELDDATA -> _DD_GETVPORTFIELDDATA.GetVideoPortField: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTFLIPSTATUSDATA -> DD_GETVPORTFLIPSTATUSDATA -> _DD_GETVPORTFLIPSTATUSDATA.GetVideoPortFlipStatus: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTINPUTFORMATDATA -> DD_GETVPORTINPUTFORMATDATA -> _DD_GETVPORTINPUTFORMATDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTINPUTFORMATDATA -> DD_GETVPORTINPUTFORMATDATA -> _DD_GETVPORTINPUTFORMATDATA.dwNumFormats: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTINPUTFORMATDATA -> DD_GETVPORTINPUTFORMATDATA -> _DD_GETVPORTINPUTFORMATDATA.GetVideoPortInputFormats: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTLINEDATA -> DD_GETVPORTLINEDATA -> _DD_GETVPORTLINEDATA.dwLine: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTLINEDATA -> DD_GETVPORTLINEDATA -> _DD_GETVPORTLINEDATA.GetVideoPortLine: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTOUTPUTFORMATDATA -> DD_GETVPORTOUTPUTFORMATDATA -> _DD_GETVPORTOUTPUTFORMATDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTOUTPUTFORMATDATA -> DD_GETVPORTOUTPUTFORMATDATA -> _DD_GETVPORTOUTPUTFORMATDATA.dwNumFormats: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTOUTPUTFORMATDATA -> DD_GETVPORTOUTPUTFORMATDATA -> _DD_GETVPORTOUTPUTFORMATDATA.GetVideoPortInputFormats: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTSIGNALDATA -> DD_GETVPORTSIGNALDATA -> _DD_GETVPORTSIGNALDATA.dwStatus: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_GETVPORTSIGNALDATA -> DD_GETVPORTSIGNALDATA -> _DD_GETVPORTSIGNALDATA.GetVideoSignalStatus: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_HALINFO -> DD_HALINFO -> _DD_HALINFO.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_HALINFO -> DD_HALINFO -> _DD_HALINFO.vmiData -> VIDEOMEMORYINFO -> _VIDEOMEMORYINFO.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_HALINFO -> DD_HALINFO -> _DD_HALINFO.vmiData -> VIDEOMEMORYINFO -> _VIDEOMEMORYINFO.dwDisplayWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_HALINFO -> DD_HALINFO -> _DD_HALINFO.vmiData -> VIDEOMEMORYINFO -> _VIDEOMEMORYINFO.dwDisplayHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_HALINFO -> DD_HALINFO -> _DD_HALINFO.vmiData -> VIDEOMEMORYINFO -> _VIDEOMEMORYINFO.lDisplayPitch: LONG: No extracted declaration or atomic mapping exists.
+warning: DD_HALINFO -> DD_HALINFO -> _DD_HALINFO.vmiData -> VIDEOMEMORYINFO -> _VIDEOMEMORYINFO.dwOffscreenAlign: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_HALINFO -> DD_HALINFO -> _DD_HALINFO.vmiData -> VIDEOMEMORYINFO -> _VIDEOMEMORYINFO.dwOverlayAlign: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_HALINFO -> DD_HALINFO -> _DD_HALINFO.vmiData -> VIDEOMEMORYINFO -> _VIDEOMEMORYINFO.dwTextureAlign: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_HALINFO -> DD_HALINFO -> _DD_HALINFO.vmiData -> VIDEOMEMORYINFO -> _VIDEOMEMORYINFO.dwZBufferAlign: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_HALINFO -> DD_HALINFO -> _DD_HALINFO.vmiData -> VIDEOMEMORYINFO -> _VIDEOMEMORYINFO.dwAlphaAlign: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_HALINFO -> DD_HALINFO -> _DD_HALINFO.vmiData -> VIDEOMEMORYINFO -> _VIDEOMEMORYINFO.pvPrimary: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_HALINFO -> DD_HALINFO -> _DD_HALINFO.GetDriverInfo -> PDD_GETDRIVERINFO: DWORD ( * )(PDD_GETDRIVERINFODATA): Function pointer needs a callback policy.
+warning: DD_HALINFO -> DD_HALINFO -> _DD_HALINFO.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_HALINFO -> DD_HALINFO -> _DD_HALINFO.lpD3DGlobalDriverData: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_HALINFO -> DD_HALINFO -> _DD_HALINFO.lpD3DHALCallbacks: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_HALINFO -> DD_HALINFO -> _DD_HALINFO.lpD3DBufCallbacks -> PDD_D3DBUFCALLBACKS: struct _DD_D3DBUFCALLBACKS *: Pointer to 'struct _DD_D3DBUFCALLBACKS' has no allocation/length/ownership policy.
+warning: DD_HALINFO_V4 -> DD_HALINFO_V4 -> _DD_HALINFO_V4.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_HALINFO_V4 -> DD_HALINFO_V4 -> _DD_HALINFO_V4.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_KERNELCALLBACKS -> DD_KERNELCALLBACKS -> DD_KERNELCALLBACKS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_KERNELCALLBACKS -> DD_KERNELCALLBACKS -> DD_KERNELCALLBACKS.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_KERNELCALLBACKS -> DD_KERNELCALLBACKS -> DD_KERNELCALLBACKS.SyncSurfaceData -> PDD_KERNELCB_SYNCSURFACE: DWORD ( * )(PDD_SYNCSURFACEDATA): Function pointer needs a callback policy.
+warning: DD_KERNELCALLBACKS -> DD_KERNELCALLBACKS -> DD_KERNELCALLBACKS.SyncVideoPortData -> PDD_KERNELCB_SYNCVIDEOPORT: DWORD ( * )(PDD_SYNCVIDEOPORTDATA): Function pointer needs a callback policy.
+warning: DD_LOCKDATA -> DD_LOCKDATA -> _DD_LOCKDATA.bHasRect: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_LOCKDATA -> DD_LOCKDATA -> _DD_LOCKDATA.rArea: RECTL: No extracted declaration or atomic mapping exists.
+warning: DD_LOCKDATA -> DD_LOCKDATA -> _DD_LOCKDATA.lpSurfData: LPVOID: No extracted declaration or atomic mapping exists.
+warning: DD_LOCKDATA -> DD_LOCKDATA -> _DD_LOCKDATA.Lock: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_LOCKDATA -> DD_LOCKDATA -> _DD_LOCKDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_MAPMEMORYDATA -> DD_MAPMEMORYDATA -> _DD_MAPMEMORYDATA.bMap: BOOL: No extracted declaration or atomic mapping exists.
+warning: DD_MISCELLANEOUS2CALLBACKS -> DD_MISCELLANEOUS2CALLBACKS -> _DD_MISCELLANEOUS2CALLBACKS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_MISCELLANEOUS2CALLBACKS -> DD_MISCELLANEOUS2CALLBACKS -> _DD_MISCELLANEOUS2CALLBACKS.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_MISCELLANEOUS2CALLBACKS -> DD_MISCELLANEOUS2CALLBACKS -> _DD_MISCELLANEOUS2CALLBACKS.AlphaBlt -> PDD_ALPHABLT: DWORD ( * )(PDD_BLTDATA): Function pointer needs a callback policy.
+warning: DD_MISCELLANEOUS2CALLBACKS -> DD_MISCELLANEOUS2CALLBACKS -> _DD_MISCELLANEOUS2CALLBACKS.CreateSurfaceEx -> PDD_CREATESURFACEEX: DWORD ( * )(PDD_CREATESURFACEEXDATA): Function pointer needs a callback policy.
+warning: DD_MISCELLANEOUS2CALLBACKS -> DD_MISCELLANEOUS2CALLBACKS -> _DD_MISCELLANEOUS2CALLBACKS.GetDriverState -> PDD_GETDRIVERSTATE: DWORD ( * )(PDD_GETDRIVERSTATEDATA): Function pointer needs a callback policy.
+warning: DD_MISCELLANEOUS2CALLBACKS -> DD_MISCELLANEOUS2CALLBACKS -> _DD_MISCELLANEOUS2CALLBACKS.DestroyDDLocal -> PDD_DESTROYDDLOCAL: DWORD ( * )(PDD_DESTROYDDLOCALDATA): Function pointer needs a callback policy.
+warning: DD_MISCELLANEOUSCALLBACKS -> DD_MISCELLANEOUSCALLBACKS -> _DD_MISCELLANEOUSCALLBACKS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_MISCELLANEOUSCALLBACKS -> DD_MISCELLANEOUSCALLBACKS -> _DD_MISCELLANEOUSCALLBACKS.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_MISCELLANEOUSCALLBACKS -> DD_MISCELLANEOUSCALLBACKS -> _DD_MISCELLANEOUSCALLBACKS.GetAvailDriverMemory -> PDD_GETAVAILDRIVERMEMORY: DWORD ( * )(PDD_GETAVAILDRIVERMEMORYDATA): Function pointer needs a callback policy.
+warning: DD_MORECAPS -> DD_MORECAPS -> _DD_MORECAPS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_MORECAPS -> DD_MORECAPS -> _DD_MORECAPS.dwAlphaCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_MORECAPS -> DD_MORECAPS -> _DD_MORECAPS.dwSVBAlphaCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_MORECAPS -> DD_MORECAPS -> _DD_MORECAPS.dwVSBAlphaCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_MORECAPS -> DD_MORECAPS -> _DD_MORECAPS.dwSSBAlphaCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_MORECAPS -> DD_MORECAPS -> _DD_MORECAPS.dwFilterCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_MORECAPS -> DD_MORECAPS -> _DD_MORECAPS.dwSVBFilterCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_MORECAPS -> DD_MORECAPS -> _DD_MORECAPS.dwVSBFilterCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_MORECAPS -> DD_MORECAPS -> _DD_MORECAPS.dwSSBFilterCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_MORESURFACECAPS -> DD_MORESURFACECAPS -> _DD_MORESURFACECAPS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_MORESURFACECAPS -> DD_MORESURFACECAPS -> _DD_MORESURFACECAPS.ddsExtendedHeapRestrictions -> []: struct tagNTExtendedHeapRestrictions: No extracted declaration or atomic mapping exists.
+warning: DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS.GetMoCompGuids -> PDD_MOCOMPCB_GETGUIDS: DWORD ( * )(PDD_GETMOCOMPGUIDSDATA): Function pointer needs a callback policy.
+warning: DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS.GetMoCompFormats -> PDD_MOCOMPCB_GETFORMATS: DWORD ( * )(PDD_GETMOCOMPFORMATSDATA): Function pointer needs a callback policy.
+warning: DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS.CreateMoComp -> PDD_MOCOMPCB_CREATE: DWORD ( * )(PDD_CREATEMOCOMPDATA): Function pointer needs a callback policy.
+warning: DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS.GetMoCompBuffInfo -> PDD_MOCOMPCB_GETCOMPBUFFINFO: DWORD ( * )(PDD_GETMOCOMPCOMPBUFFDATA): Function pointer needs a callback policy.
+warning: DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS.GetInternalMoCompInfo -> PDD_MOCOMPCB_GETINTERNALINFO: DWORD ( * )(PDD_GETINTERNALMOCOMPDATA): Function pointer needs a callback policy.
+warning: DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS.BeginMoCompFrame -> PDD_MOCOMPCB_BEGINFRAME: DWORD ( * )(PDD_BEGINMOCOMPFRAMEDATA): Function pointer needs a callback policy.
+warning: DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS.EndMoCompFrame -> PDD_MOCOMPCB_ENDFRAME: DWORD ( * )(PDD_ENDMOCOMPFRAMEDATA): Function pointer needs a callback policy.
+warning: DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS.RenderMoComp -> PDD_MOCOMPCB_RENDER: DWORD ( * )(PDD_RENDERMOCOMPDATA): Function pointer needs a callback policy.
+warning: DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS.QueryMoCompStatus -> PDD_MOCOMPCB_QUERYSTATUS: DWORD ( * )(PDD_QUERYMOCOMPSTATUSDATA): Function pointer needs a callback policy.
+warning: DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS -> DD_MOTIONCOMPCALLBACKS.DestroyMoComp -> PDD_MOCOMPCB_DESTROY: DWORD ( * )(PDD_DESTROYMOCOMPDATA): Function pointer needs a callback policy.
+warning: DD_MOTIONCOMP_LOCAL -> DD_MOTIONCOMP_LOCAL: DD_MOTIONCOMP_LOCAL: Recursive by-value type encountered.
+warning: DD_NONLOCALVIDMEMCAPS -> DD_NONLOCALVIDMEMCAPS -> _DD_NONLOCALVIDMEMCAPS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_NONLOCALVIDMEMCAPS -> DD_NONLOCALVIDMEMCAPS -> _DD_NONLOCALVIDMEMCAPS.dwNLVBCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_NONLOCALVIDMEMCAPS -> DD_NONLOCALVIDMEMCAPS -> _DD_NONLOCALVIDMEMCAPS.dwNLVBCaps2: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_NONLOCALVIDMEMCAPS -> DD_NONLOCALVIDMEMCAPS -> _DD_NONLOCALVIDMEMCAPS.dwNLVBCKeyCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_NONLOCALVIDMEMCAPS -> DD_NONLOCALVIDMEMCAPS -> _DD_NONLOCALVIDMEMCAPS.dwNLVBFXCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_NONLOCALVIDMEMCAPS -> DD_NONLOCALVIDMEMCAPS -> _DD_NONLOCALVIDMEMCAPS.dwNLVBRops -> []: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_NTCALLBACKS -> DD_NTCALLBACKS -> _DD_NTCALLBACKS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_NTCALLBACKS -> DD_NTCALLBACKS -> _DD_NTCALLBACKS.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_NTCALLBACKS -> DD_NTCALLBACKS -> _DD_NTCALLBACKS.FreeDriverMemory -> PDD_FREEDRIVERMEMORY: DWORD ( * )(PDD_FREEDRIVERMEMORYDATA): Function pointer needs a callback policy.
+warning: DD_NTCALLBACKS -> DD_NTCALLBACKS -> _DD_NTCALLBACKS.SetExclusiveMode -> PDD_SETEXCLUSIVEMODE: DWORD ( * )(PDD_SETEXCLUSIVEMODEDATA): Function pointer needs a callback policy.
+warning: DD_NTCALLBACKS -> DD_NTCALLBACKS -> _DD_NTCALLBACKS.FlipToGDISurface -> PDD_FLIPTOGDISURFACE: DWORD ( * )(PDD_FLIPTOGDISURFACEDATA): Function pointer needs a callback policy.
+warning: DD_NTPRIVATEDRIVERCAPS -> DD_NTPRIVATEDRIVERCAPS -> DD_NTPRIVATEDRIVERCAPS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_NTPRIVATEDRIVERCAPS -> DD_NTPRIVATEDRIVERCAPS -> DD_NTPRIVATEDRIVERCAPS.dwPrivateCaps: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_PALETTECALLBACKS -> DD_PALETTECALLBACKS -> DD_PALETTECALLBACKS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_PALETTECALLBACKS -> DD_PALETTECALLBACKS -> DD_PALETTECALLBACKS.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_PALETTECALLBACKS -> DD_PALETTECALLBACKS -> DD_PALETTECALLBACKS.DestroyPalette -> PDD_PALCB_DESTROYPALETTE: DWORD ( * )(PDD_DESTROYPALETTEDATA): Function pointer needs a callback policy.
+warning: DD_PALETTECALLBACKS -> DD_PALETTECALLBACKS -> DD_PALETTECALLBACKS.SetEntries -> PDD_PALCB_SETENTRIES: DWORD ( * )(PDD_SETENTRIESDATA): Function pointer needs a callback policy.
+warning: DD_PALETTE_GLOBAL -> DD_PALETTE_GLOBAL -> _DD_PALETTE_GLOBAL.Reserved1: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DD_PALETTE_LOCAL -> DD_PALETTE_LOCAL -> _DD_PALETTE_LOCAL.dwReserved0: ULONG: No extracted declaration or atomic mapping exists.
+warning: DD_PALETTE_LOCAL -> DD_PALETTE_LOCAL -> _DD_PALETTE_LOCAL.dwReserved1: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DD_QUERYMOCOMPSTATUSDATA -> DD_QUERYMOCOMPSTATUSDATA -> _DD_QUERYMOCOMPSTATUSDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_RENDERMOCOMPDATA -> DD_RENDERMOCOMPDATA -> _DD_RENDERMOCOMPDATA.dwNumBuffers: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_RENDERMOCOMPDATA -> DD_RENDERMOCOMPDATA -> _DD_RENDERMOCOMPDATA.lpBufferInfo -> LPDDMOCOMPBUFFERINFO: struct _DDMOCOMPBUFFERINFO *: Pointer to 'struct _DDMOCOMPBUFFERINFO' has no allocation/length/ownership policy.
+warning: DD_RENDERMOCOMPDATA -> DD_RENDERMOCOMPDATA -> _DD_RENDERMOCOMPDATA.dwFunction: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_RENDERMOCOMPDATA -> DD_RENDERMOCOMPDATA -> _DD_RENDERMOCOMPDATA.lpInputData: LPVOID: No extracted declaration or atomic mapping exists.
+warning: DD_RENDERMOCOMPDATA -> DD_RENDERMOCOMPDATA -> _DD_RENDERMOCOMPDATA.dwInputDataSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_RENDERMOCOMPDATA -> DD_RENDERMOCOMPDATA -> _DD_RENDERMOCOMPDATA.lpOutputData: LPVOID: No extracted declaration or atomic mapping exists.
+warning: DD_RENDERMOCOMPDATA -> DD_RENDERMOCOMPDATA -> _DD_RENDERMOCOMPDATA.dwOutputDataSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SETCLIPLISTDATA -> DD_SETCLIPLISTDATA -> _DD_SETCLIPLISTDATA.SetClipList: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_SETCOLORKEYDATA -> DD_SETCOLORKEYDATA -> _DD_SETCOLORKEYDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SETCOLORKEYDATA -> DD_SETCOLORKEYDATA -> _DD_SETCOLORKEYDATA.SetColorKey: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_SETENTRIESDATA -> DD_SETENTRIESDATA -> _DD_SETENTRIESDATA.dwBase: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SETENTRIESDATA -> DD_SETENTRIESDATA -> _DD_SETENTRIESDATA.dwNumEntries: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SETENTRIESDATA -> DD_SETENTRIESDATA -> _DD_SETENTRIESDATA.lpEntries: LPPALETTEENTRY: No extracted declaration or atomic mapping exists.
+warning: DD_SETENTRIESDATA -> DD_SETENTRIESDATA -> _DD_SETENTRIESDATA.SetEntries: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_SETEXCLUSIVEMODEDATA -> DD_SETEXCLUSIVEMODEDATA -> _DD_SETEXCLUSIVEMODEDATA.dwEnterExcl: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SETEXCLUSIVEMODEDATA -> DD_SETEXCLUSIVEMODEDATA -> _DD_SETEXCLUSIVEMODEDATA.dwReserved: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SETEXCLUSIVEMODEDATA -> DD_SETEXCLUSIVEMODEDATA -> _DD_SETEXCLUSIVEMODEDATA.SetExclusiveMode: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_SETOVERLAYPOSITIONDATA -> DD_SETOVERLAYPOSITIONDATA -> _DD_SETOVERLAYPOSITIONDATA.lXPos: LONG: No extracted declaration or atomic mapping exists.
+warning: DD_SETOVERLAYPOSITIONDATA -> DD_SETOVERLAYPOSITIONDATA -> _DD_SETOVERLAYPOSITIONDATA.lYPos: LONG: No extracted declaration or atomic mapping exists.
+warning: DD_SETOVERLAYPOSITIONDATA -> DD_SETOVERLAYPOSITIONDATA -> _DD_SETOVERLAYPOSITIONDATA.SetOverlayPosition: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_SETPALETTEDATA -> DD_SETPALETTEDATA -> _DD_SETPALETTEDATA.SetPalette: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_SETPALETTEDATA -> DD_SETPALETTEDATA -> _DD_SETPALETTEDATA.Attach: BOOL: No extracted declaration or atomic mapping exists.
+warning: DD_STEREOMODE -> DD_STEREOMODE -> _DD_STEREOMODE.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_STEREOMODE -> DD_STEREOMODE -> _DD_STEREOMODE.dwHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_STEREOMODE -> DD_STEREOMODE -> _DD_STEREOMODE.dwWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_STEREOMODE -> DD_STEREOMODE -> _DD_STEREOMODE.dwBpp: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_STEREOMODE -> DD_STEREOMODE -> _DD_STEREOMODE.dwRefreshRate: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_STEREOMODE -> DD_STEREOMODE -> _DD_STEREOMODE.bSupported: BOOL: No extracted declaration or atomic mapping exists.
+warning: DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS.Flip -> PDD_SURFCB_FLIP: DWORD ( * )(PDD_FLIPDATA): Function pointer needs a callback policy.
+warning: DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS.SetClipList -> PDD_SURFCB_SETCLIPLIST: DWORD ( * )(PDD_SETCLIPLISTDATA): Function pointer needs a callback policy.
+warning: DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS.Blt -> PDD_SURFCB_BLT: DWORD ( * )(PDD_BLTDATA): Function pointer needs a callback policy.
+warning: DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS.SetColorKey -> PDD_SURFCB_SETCOLORKEY: DWORD ( * )(PDD_SETCOLORKEYDATA): Function pointer needs a callback policy.
+warning: DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS.AddAttachedSurface -> PDD_SURFCB_ADDATTACHEDSURFACE: DWORD ( * )(PDD_ADDATTACHEDSURFACEDATA): Function pointer needs a callback policy.
+warning: DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS.GetBltStatus -> PDD_SURFCB_GETBLTSTATUS: DWORD ( * )(PDD_GETBLTSTATUSDATA): Function pointer needs a callback policy.
+warning: DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS.GetFlipStatus -> PDD_SURFCB_GETFLIPSTATUS: DWORD ( * )(PDD_GETFLIPSTATUSDATA): Function pointer needs a callback policy.
+warning: DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS.UpdateOverlay -> PDD_SURFCB_UPDATEOVERLAY: DWORD ( * )(PDD_UPDATEOVERLAYDATA): Function pointer needs a callback policy.
+warning: DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS.SetOverlayPosition -> PDD_SURFCB_SETOVERLAYPOSITION: DWORD ( * )(PDD_SETOVERLAYPOSITIONDATA): Function pointer needs a callback policy.
+warning: DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS.reserved4: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS -> DD_SURFACECALLBACKS.SetPalette -> PDD_SURFCB_SETPALETTE: DWORD ( * )(PDD_SETPALETTEDATA): Function pointer needs a callback policy.
+warning: DD_SURFACE_GLOBAL -> DD_SURFACE_GLOBAL -> _DD_SURFACE_GLOBAL.yHint: LONG: No extracted declaration or atomic mapping exists.
+warning: DD_SURFACE_GLOBAL -> DD_SURFACE_GLOBAL -> _DD_SURFACE_GLOBAL.xHint: LONG: No extracted declaration or atomic mapping exists.
+warning: DD_SURFACE_GLOBAL -> DD_SURFACE_GLOBAL -> _DD_SURFACE_GLOBAL.wHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SURFACE_GLOBAL -> DD_SURFACE_GLOBAL -> _DD_SURFACE_GLOBAL.wWidth: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SURFACE_GLOBAL -> DD_SURFACE_GLOBAL -> _DD_SURFACE_GLOBAL.dwReserved1: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DD_SURFACE_LOCAL -> DD_SURFACE_LOCAL -> _DD_SURFACE_LOCAL.lpGbl -> PDD_SURFACE_GLOBAL: struct _DD_SURFACE_GLOBAL *: Pointer to 'struct _DD_SURFACE_GLOBAL' has no allocation/length/ownership policy.
+warning: DD_SURFACE_LOCAL -> DD_SURFACE_LOCAL -> _DD_SURFACE_LOCAL.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SURFACE_LOCAL -> DD_SURFACE_LOCAL -> _DD_SURFACE_LOCAL.dwReserved1: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DD_SURFACE_LOCAL -> DD_SURFACE_LOCAL -> _DD_SURFACE_LOCAL.lpSurfMore -> PDD_SURFACE_MORE: struct _DD_SURFACE_MORE *: Pointer to 'struct _DD_SURFACE_MORE' has no allocation/length/ownership policy.
+warning: DD_SURFACE_LOCAL -> DD_SURFACE_LOCAL -> _DD_SURFACE_LOCAL.rcOverlaySrc: RECT: No extracted declaration or atomic mapping exists.
+warning: DD_SURFACE_MORE -> DD_SURFACE_MORE -> _DD_SURFACE_MORE.dwMipMapCount: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SURFACE_MORE -> DD_SURFACE_MORE -> _DD_SURFACE_MORE.dwOverlayFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SURFACE_MORE -> DD_SURFACE_MORE -> _DD_SURFACE_MORE.dwSurfaceHandle: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SYNCSURFACEDATA -> DD_SYNCSURFACEDATA -> _DD_SYNCSURFACEDATA.dwSurfaceOffset: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SYNCSURFACEDATA -> DD_SYNCSURFACEDATA -> _DD_SYNCSURFACEDATA.fpLockPtr: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DD_SYNCSURFACEDATA -> DD_SYNCSURFACEDATA -> _DD_SYNCSURFACEDATA.lPitch: LONG: No extracted declaration or atomic mapping exists.
+warning: DD_SYNCSURFACEDATA -> DD_SYNCSURFACEDATA -> _DD_SYNCSURFACEDATA.dwOverlayOffset: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SYNCSURFACEDATA -> DD_SYNCSURFACEDATA -> _DD_SYNCSURFACEDATA.dwDriverReserved1: ULONG: No extracted declaration or atomic mapping exists.
+warning: DD_SYNCSURFACEDATA -> DD_SYNCSURFACEDATA -> _DD_SYNCSURFACEDATA.dwDriverReserved2: ULONG: No extracted declaration or atomic mapping exists.
+warning: DD_SYNCSURFACEDATA -> DD_SYNCSURFACEDATA -> _DD_SYNCSURFACEDATA.dwDriverReserved3: ULONG: No extracted declaration or atomic mapping exists.
+warning: DD_SYNCSURFACEDATA -> DD_SYNCSURFACEDATA -> _DD_SYNCSURFACEDATA.dwDriverReserved4: ULONG: No extracted declaration or atomic mapping exists.
+warning: DD_SYNCVIDEOPORTDATA -> DD_SYNCVIDEOPORTDATA -> _DD_SYNCVIDEOPORTDATA.dwOriginOffset: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SYNCVIDEOPORTDATA -> DD_SYNCVIDEOPORTDATA -> _DD_SYNCVIDEOPORTDATA.dwHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SYNCVIDEOPORTDATA -> DD_SYNCVIDEOPORTDATA -> _DD_SYNCVIDEOPORTDATA.dwVBIHeight: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_SYNCVIDEOPORTDATA -> DD_SYNCVIDEOPORTDATA -> _DD_SYNCVIDEOPORTDATA.dwDriverReserved1: ULONG: No extracted declaration or atomic mapping exists.
+warning: DD_SYNCVIDEOPORTDATA -> DD_SYNCVIDEOPORTDATA -> _DD_SYNCVIDEOPORTDATA.dwDriverReserved2: ULONG: No extracted declaration or atomic mapping exists.
+warning: DD_SYNCVIDEOPORTDATA -> DD_SYNCVIDEOPORTDATA -> _DD_SYNCVIDEOPORTDATA.dwDriverReserved3: ULONG: No extracted declaration or atomic mapping exists.
+warning: DD_UNLOCKDATA -> DD_UNLOCKDATA -> _DD_UNLOCKDATA.Unlock: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_UPDATENONLOCALHEAPDATA -> DD_UPDATENONLOCALHEAPDATA -> _DD_UPDATENONLOCALHEAPDATA.dwHeap: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_UPDATENONLOCALHEAPDATA -> DD_UPDATENONLOCALHEAPDATA -> _DD_UPDATENONLOCALHEAPDATA.ulPolicyMaxBytes: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DD_UPDATENONLOCALHEAPDATA -> DD_UPDATENONLOCALHEAPDATA -> _DD_UPDATENONLOCALHEAPDATA.UpdateNonLocalHeap: void *: Resolved to PVOID/void*. Add a field or parameter override.
+warning: DD_UPDATEOVERLAYDATA -> DD_UPDATEOVERLAYDATA -> _DD_UPDATEOVERLAYDATA.rDest: RECTL: No extracted declaration or atomic mapping exists.
+warning: DD_UPDATEOVERLAYDATA -> DD_UPDATEOVERLAYDATA -> _DD_UPDATEOVERLAYDATA.rSrc: RECTL: No extracted declaration or atomic mapping exists.
+warning: DD_UPDATEOVERLAYDATA -> DD_UPDATEOVERLAYDATA -> _DD_UPDATEOVERLAYDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_UPDATEOVERLAYDATA -> DD_UPDATEOVERLAYDATA -> _DD_UPDATEOVERLAYDATA.UpdateOverlay: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_UPDATEVPORTDATA -> DD_UPDATEVPORTDATA -> _DD_UPDATEVPORTDATA.lplpDDSurface: PDD_SURFACE_INT *: Pointer to 'PDD_SURFACE_INT' has no allocation/length/ownership policy.
+warning: DD_UPDATEVPORTDATA -> DD_UPDATEVPORTDATA -> _DD_UPDATEVPORTDATA.lplpDDVBISurface: PDD_SURFACE_INT *: Pointer to 'PDD_SURFACE_INT' has no allocation/length/ownership policy.
+warning: DD_UPDATEVPORTDATA -> DD_UPDATEVPORTDATA -> _DD_UPDATEVPORTDATA.lpVideoInfo -> LPDDVIDEOPORTINFO: struct _DDVIDEOPORTINFO *: Pointer to 'struct _DDVIDEOPORTINFO' has no allocation/length/ownership policy.
+warning: DD_UPDATEVPORTDATA -> DD_UPDATEVPORTDATA -> _DD_UPDATEVPORTDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_UPDATEVPORTDATA -> DD_UPDATEVPORTDATA -> _DD_UPDATEVPORTDATA.dwNumAutoflip: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_UPDATEVPORTDATA -> DD_UPDATEVPORTDATA -> _DD_UPDATEVPORTDATA.dwNumVBIAutoflip: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_UPDATEVPORTDATA -> DD_UPDATEVPORTDATA -> _DD_UPDATEVPORTDATA.UpdateVideoPort: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.dwSize: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.CanCreateVideoPort -> PDD_VPORTCB_CANCREATEVIDEOPORT: DWORD ( * )(PDD_CANCREATEVPORTDATA): Function pointer needs a callback policy.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.CreateVideoPort -> PDD_VPORTCB_CREATEVIDEOPORT: DWORD ( * )(PDD_CREATEVPORTDATA): Function pointer needs a callback policy.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.FlipVideoPort -> PDD_VPORTCB_FLIP: DWORD ( * )(PDD_FLIPVPORTDATA): Function pointer needs a callback policy.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.GetVideoPortBandwidth -> PDD_VPORTCB_GETBANDWIDTH: DWORD ( * )(PDD_GETVPORTBANDWIDTHDATA): Function pointer needs a callback policy.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.GetVideoPortInputFormats -> PDD_VPORTCB_GETINPUTFORMATS: DWORD ( * )(PDD_GETVPORTINPUTFORMATDATA): Function pointer needs a callback policy.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.GetVideoPortOutputFormats -> PDD_VPORTCB_GETOUTPUTFORMATS: DWORD ( * )(PDD_GETVPORTOUTPUTFORMATDATA): Function pointer needs a callback policy.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.lpReserved1: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.GetVideoPortField -> PDD_VPORTCB_GETFIELD: DWORD ( * )(PDD_GETVPORTFIELDDATA): Function pointer needs a callback policy.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.GetVideoPortLine -> PDD_VPORTCB_GETLINE: DWORD ( * )(PDD_GETVPORTLINEDATA): Function pointer needs a callback policy.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.GetVideoPortConnectInfo -> PDD_VPORTCB_GETVPORTCONNECT: DWORD ( * )(PDD_GETVPORTCONNECTDATA): Function pointer needs a callback policy.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.DestroyVideoPort -> PDD_VPORTCB_DESTROYVPORT: DWORD ( * )(PDD_DESTROYVPORTDATA): Function pointer needs a callback policy.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.GetVideoPortFlipStatus -> PDD_VPORTCB_GETFLIPSTATUS: DWORD ( * )(PDD_GETVPORTFLIPSTATUSDATA): Function pointer needs a callback policy.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.UpdateVideoPort -> PDD_VPORTCB_UPDATE: DWORD ( * )(PDD_UPDATEVPORTDATA): Function pointer needs a callback policy.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.WaitForVideoPortSync -> PDD_VPORTCB_WAITFORSYNC: DWORD ( * )(PDD_WAITFORVPORTSYNCDATA): Function pointer needs a callback policy.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.GetVideoSignalStatus -> PDD_VPORTCB_GETSIGNALSTATUS: DWORD ( * )(PDD_GETVPORTSIGNALDATA): Function pointer needs a callback policy.
+warning: DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS -> DD_VIDEOPORTCALLBACKS.ColorControl -> PDD_VPORTCB_COLORCONTROL: DWORD ( * )(PDD_VPORTCOLORDATA): Function pointer needs a callback policy.
+warning: DD_VIDEOPORT_LOCAL -> DD_VIDEOPORT_LOCAL -> _DD_VIDEOPORT_LOCAL.lpSurface -> PDD_SURFACE_INT: struct _DD_SURFACE_INT *: Pointer to 'struct _DD_SURFACE_INT' has no allocation/length/ownership policy.
+warning: DD_VIDEOPORT_LOCAL -> DD_VIDEOPORT_LOCAL -> _DD_VIDEOPORT_LOCAL.dwNumAutoflip: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_VIDEOPORT_LOCAL -> DD_VIDEOPORT_LOCAL -> _DD_VIDEOPORT_LOCAL.dwNumVBIAutoflip: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_VIDEOPORT_LOCAL -> DD_VIDEOPORT_LOCAL -> _DD_VIDEOPORT_LOCAL.dwReserved1: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DD_VIDEOPORT_LOCAL -> DD_VIDEOPORT_LOCAL -> _DD_VIDEOPORT_LOCAL.dwReserved2: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DD_VIDEOPORT_LOCAL -> DD_VIDEOPORT_LOCAL -> _DD_VIDEOPORT_LOCAL.dwReserved3: ULONG_PTR: No extracted declaration or atomic mapping exists.
+warning: DD_VPORTCOLORDATA -> DD_VPORTCOLORDATA -> _DD_VPORTCOLORDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_VPORTCOLORDATA -> DD_VPORTCOLORDATA -> _DD_VPORTCOLORDATA.ColorControl: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_WAITFORVERTICALBLANKDATA -> DD_WAITFORVERTICALBLANKDATA -> _DD_WAITFORVERTICALBLANKDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_WAITFORVERTICALBLANKDATA -> DD_WAITFORVERTICALBLANKDATA -> _DD_WAITFORVERTICALBLANKDATA.bIsInVB: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_WAITFORVERTICALBLANKDATA -> DD_WAITFORVERTICALBLANKDATA -> _DD_WAITFORVERTICALBLANKDATA.hEvent: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_WAITFORVERTICALBLANKDATA -> DD_WAITFORVERTICALBLANKDATA -> _DD_WAITFORVERTICALBLANKDATA.WaitForVerticalBlank: PVOID: No extracted declaration or atomic mapping exists.
+warning: DD_WAITFORVPORTSYNCDATA -> DD_WAITFORVPORTSYNCDATA -> _DD_WAITFORVPORTSYNCDATA.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_WAITFORVPORTSYNCDATA -> DD_WAITFORVPORTSYNCDATA -> _DD_WAITFORVPORTSYNCDATA.dwLine: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_WAITFORVPORTSYNCDATA -> DD_WAITFORVPORTSYNCDATA -> _DD_WAITFORVPORTSYNCDATA.dwTimeOut: DWORD: No extracted declaration or atomic mapping exists.
+warning: DD_WAITFORVPORTSYNCDATA -> DD_WAITFORVPORTSYNCDATA -> _DD_WAITFORVPORTSYNCDATA.UpdateVideoPort: PVOID: No extracted declaration or atomic mapping exists.
+warning: DIRECTDRAWVIDEOPORTCALLBACKS -> DIRECTDRAWVIDEOPORTCALLBACKS: struct IDirectDrawVideoPortVtbl: No extracted declaration or atomic mapping exists.
+warning: DIRECTDRAWVIDEOPORTNOTIFYCALLBACKS -> DIRECTDRAWVIDEOPORTNOTIFYCALLBACKS: struct IDirectDrawVideoPortNotifyVtbl: No extracted declaration or atomic mapping exists.
+warning: LPCLIPPERCALLBACK -> LPCLIPPERCALLBACK: DWORD ( * )(LPDIRECTDRAWCLIPPER, HWND, DWORD, LPVOID): Function pointer needs a callback policy.
+warning: LPD3DBRANCH -> LPD3DBRANCH: struct _D3DBRANCH *: Pointer to 'struct _D3DBRANCH' has no allocation/length/ownership policy.
+warning: LPD3DCLIPSTATUS -> LPD3DCLIPSTATUS: struct _D3DCLIPSTATUS *: Pointer to 'struct _D3DCLIPSTATUS' has no allocation/length/ownership policy.
+warning: LPD3DCOLOR -> LPD3DCOLOR: DWORD *: Pointer to 'DWORD' has no allocation/length/ownership policy.
+warning: LPD3DCOLORVALUE -> LPD3DCOLORVALUE: struct _D3DCOLORVALUE *: Pointer to 'struct _D3DCOLORVALUE' has no allocation/length/ownership policy.
+warning: LPD3DDEVICEDESC -> LPD3DDEVICEDESC: struct _D3DDeviceDesc *: Pointer to 'struct _D3DDeviceDesc' has no allocation/length/ownership policy.
+warning: LPD3DDEVICEDESC7 -> LPD3DDEVICEDESC7: struct _D3DDeviceDesc7 *: Pointer to 'struct _D3DDeviceDesc7' has no allocation/length/ownership policy.
+warning: LPD3DDEVINFO_TEXTUREMANAGER -> LPD3DDEVINFO_TEXTUREMANAGER: struct _D3DDEVINFO_TEXTUREMANAGER *: Pointer to 'struct _D3DDEVINFO_TEXTUREMANAGER' has no allocation/length/ownership policy.
+warning: LPD3DDEVINFO_TEXTURING -> LPD3DDEVINFO_TEXTURING: struct _D3DDEVINFO_TEXTURING *: Pointer to 'struct _D3DDEVINFO_TEXTURING' has no allocation/length/ownership policy.
+warning: LPD3DDRAWPRIMITIVESTRIDEDDATA -> LPD3DDRAWPRIMITIVESTRIDEDDATA: struct _D3DDRAWPRIMITIVESTRIDEDDATA *: Pointer to 'struct _D3DDRAWPRIMITIVESTRIDEDDATA' has no allocation/length/ownership policy.
+warning: LPD3DENUMDEVICESCALLBACK -> LPD3DENUMDEVICESCALLBACK: HRESULT ( * )(GUID * , char * , char * , D3DDEVICEDESC * , D3DDEVICEDESC * , void * ): Function pointer needs a callback policy.
+warning: LPD3DENUMDEVICESCALLBACK7 -> LPD3DENUMDEVICESCALLBACK7: HRESULT ( * )(char * , char * , D3DDEVICEDESC7 * , void * ): Function pointer needs a callback policy.
+warning: LPD3DENUMPIXELFORMATSCALLBACK -> LPD3DENUMPIXELFORMATSCALLBACK: HRESULT ( * )(LPDDPIXELFORMAT, LPVOID): Function pointer needs a callback policy.
+warning: LPD3DENUMTEXTUREFORMATSCALLBACK -> LPD3DENUMTEXTUREFORMATSCALLBACK: HRESULT ( * )(LPDDSURFACEDESC, LPVOID): Function pointer needs a callback policy.
+warning: LPD3DEXECUTEBUFFERDESC -> LPD3DEXECUTEBUFFERDESC: struct _D3DExecuteBufferDesc *: Pointer to 'struct _D3DExecuteBufferDesc' has no allocation/length/ownership policy.
+warning: LPD3DEXECUTEDATA -> LPD3DEXECUTEDATA: struct _D3DEXECUTEDATA *: Pointer to 'struct _D3DEXECUTEDATA' has no allocation/length/ownership policy.
+warning: LPD3DFINDDEVICERESULT -> LPD3DFINDDEVICERESULT: struct _D3DFINDDEVICERESULT *: Pointer to 'struct _D3DFINDDEVICERESULT' has no allocation/length/ownership policy.
+warning: LPD3DFINDDEVICESEARCH -> LPD3DFINDDEVICESEARCH: struct _D3DFINDDEVICESEARCH *: Pointer to 'struct _D3DFINDDEVICESEARCH' has no allocation/length/ownership policy.
+warning: LPD3DINSTRUCTION -> LPD3DINSTRUCTION: struct _D3DINSTRUCTION *: Pointer to 'struct _D3DINSTRUCTION' has no allocation/length/ownership policy.
+warning: LPD3DLIGHT -> LPD3DLIGHT: struct _D3DLIGHT *: Pointer to 'struct _D3DLIGHT' has no allocation/length/ownership policy.
+warning: LPD3DLIGHT2 -> LPD3DLIGHT2: struct _D3DLIGHT2 *: Pointer to 'struct _D3DLIGHT2' has no allocation/length/ownership policy.
+warning: LPD3DLIGHT7 -> LPD3DLIGHT7: struct _D3DLIGHT7 *: Pointer to 'struct _D3DLIGHT7' has no allocation/length/ownership policy.
+warning: LPD3DLIGHTDATA -> LPD3DLIGHTDATA: struct _D3DLIGHTDATA *: Pointer to 'struct _D3DLIGHTDATA' has no allocation/length/ownership policy.
+warning: LPD3DLIGHTINGCAPS -> LPD3DLIGHTINGCAPS: struct _D3DLIGHTINGCAPS *: Pointer to 'struct _D3DLIGHTINGCAPS' has no allocation/length/ownership policy.
+warning: LPD3DLINE -> LPD3DLINE: struct _D3DLINE *: Pointer to 'struct _D3DLINE' has no allocation/length/ownership policy.
+warning: LPD3DLVERTEX -> LPD3DLVERTEX: struct _D3DLVERTEX *: Pointer to 'struct _D3DLVERTEX' has no allocation/length/ownership policy.
+warning: LPD3DMATERIAL -> LPD3DMATERIAL: struct _D3DMATERIAL *: Pointer to 'struct _D3DMATERIAL' has no allocation/length/ownership policy.
+warning: LPD3DMATERIAL7 -> LPD3DMATERIAL7: struct _D3DMATERIAL7 *: Pointer to 'struct _D3DMATERIAL7' has no allocation/length/ownership policy.
+warning: LPD3DMATERIALHANDLE -> LPD3DMATERIALHANDLE: DWORD *: Pointer to 'DWORD' has no allocation/length/ownership policy.
+warning: LPD3DMATRIX -> LPD3DMATRIX: struct _D3DMATRIX *: Pointer to 'struct _D3DMATRIX' has no allocation/length/ownership policy.
+warning: LPD3DMATRIXHANDLE -> LPD3DMATRIXHANDLE: DWORD *: Pointer to 'DWORD' has no allocation/length/ownership policy.
+warning: LPD3DMATRIXLOAD -> LPD3DMATRIXLOAD: struct _D3DMATRIXLOAD *: Pointer to 'struct _D3DMATRIXLOAD' has no allocation/length/ownership policy.
+warning: LPD3DMATRIXMULTIPLY -> LPD3DMATRIXMULTIPLY: struct _D3DMATRIXMULTIPLY *: Pointer to 'struct _D3DMATRIXMULTIPLY' has no allocation/length/ownership policy.
+warning: LPD3DNTHALDEVICEDESC_V1 -> LPD3DNTHALDEVICEDESC_V1: struct _D3DNTHALDeviceDesc_V1 *: Pointer to 'struct _D3DNTHALDeviceDesc_V1' has no allocation/length/ownership policy.
+warning: LPD3DNTHAL_CALLBACKS -> LPD3DNTHAL_CALLBACKS: struct _D3DNTHAL_CALLBACKS *: Pointer to 'struct _D3DNTHAL_CALLBACKS' has no allocation/length/ownership policy.
+warning: LPD3DNTHAL_CALLBACKS2 -> LPD3DNTHAL_CALLBACKS2: struct _D3DNTHAL_CALLBACKS2 *: Pointer to 'struct _D3DNTHAL_CALLBACKS2' has no allocation/length/ownership policy.
+warning: LPD3DNTHAL_CALLBACKS3 -> LPD3DNTHAL_CALLBACKS3: struct _D3DNTHAL_CALLBACKS3 *: Pointer to 'struct _D3DNTHAL_CALLBACKS3' has no allocation/length/ownership policy.
+warning: LPD3DNTHAL_CLEAR2DATA -> LPD3DNTHAL_CLEAR2DATA: struct _D3DNTHAL_CLEAR2DATA *: Pointer to 'struct _D3DNTHAL_CLEAR2DATA' has no allocation/length/ownership policy.
+warning: LPD3DNTHAL_CONTEXTCREATEDATA -> LPD3DNTHAL_CONTEXTCREATEDATA: struct _D3DNTHAL_CONTEXTCREATEDATA *: Pointer to 'struct _D3DNTHAL_CONTEXTCREATEDATA' has no allocation/length/ownership policy.
+warning: LPD3DNTHAL_CONTEXTDESTROYALLDATA -> LPD3DNTHAL_CONTEXTDESTROYALLDATA: struct _D3DNTHAL_CONTEXTDESTROYALLDATA *: Pointer to 'struct _D3DNTHAL_CONTEXTDESTROYALLDATA' has no allocation/length/ownership policy.
+warning: LPD3DNTHAL_CONTEXTDESTROYDATA -> LPD3DNTHAL_CONTEXTDESTROYDATA: struct _D3DNTHAL_CONTEXTDESTROYDATA *: Pointer to 'struct _D3DNTHAL_CONTEXTDESTROYDATA' has no allocation/length/ownership policy.
+warning: LPD3DNTHAL_DRAWPRIMITIVES2DATA -> LPD3DNTHAL_DRAWPRIMITIVES2DATA: struct _D3DNTHAL_DRAWPRIMITIVES2DATA *: Pointer to 'struct _D3DNTHAL_DRAWPRIMITIVES2DATA' has no allocation/length/ownership policy.
+warning: LPD3DNTHAL_GLOBALDRIVERDATA -> LPD3DNTHAL_GLOBALDRIVERDATA: struct _D3DNTHAL_GLOBALDRIVERDATA *: Pointer to 'struct _D3DNTHAL_GLOBALDRIVERDATA' has no allocation/length/ownership policy.
+warning: LPD3DNTHAL_SCENECAPTUREDATA -> LPD3DNTHAL_SCENECAPTUREDATA: struct _D3DNTHAL_SCENECAPTUREDATA *: Pointer to 'struct _D3DNTHAL_SCENECAPTUREDATA' has no allocation/length/ownership policy.
+warning: LPD3DNTHAL_SETRENDERTARGETDATA -> LPD3DNTHAL_SETRENDERTARGETDATA: struct _D3DNTHAL_SETRENDERTARGETDATA *: Pointer to 'struct _D3DNTHAL_SETRENDERTARGETDATA' has no allocation/length/ownership policy.
+warning: LPD3DNTHAL_TEXTURECREATEDATA -> LPD3DNTHAL_TEXTURECREATEDATA: struct _D3DNTHAL_TEXTURECREATEDATA *: Pointer to 'struct _D3DNTHAL_TEXTURECREATEDATA' has no allocation/length/ownership policy.
+warning: LPD3DNTHAL_TEXTUREDESTROYDATA -> LPD3DNTHAL_TEXTUREDESTROYDATA: struct _D3DNTHAL_TEXTUREDESTROYDATA *: Pointer to 'struct _D3DNTHAL_TEXTUREDESTROYDATA' has no allocation/length/ownership policy.
+warning: LPD3DNTHAL_TEXTUREGETSURFDATA -> LPD3DNTHAL_TEXTUREGETSURFDATA: struct _D3DNTHAL_TEXTUREGETSURFDATA *: Pointer to 'struct _D3DNTHAL_TEXTUREGETSURFDATA' has no allocation/length/ownership policy.
+warning: LPD3DNTHAL_TEXTURESWAPDATA -> LPD3DNTHAL_TEXTURESWAPDATA: struct _D3DNTHAL_TEXTURESWAPDATA *: Pointer to 'struct _D3DNTHAL_TEXTURESWAPDATA' has no allocation/length/ownership policy.
+warning: LPD3DNTHAL_VALIDATETEXTURESTAGESTATEDATA -> LPD3DNTHAL_VALIDATETEXTURESTAGESTATEDATA: struct _D3DNTHAL_VALIDATETEXTURESTAGESTATEDATA *: Pointer to 'struct _D3DNTHAL_VALIDATETEXTURESTAGESTATEDATA' has no allocation/length/ownership policy.
+warning: LPD3DPICKRECORD -> LPD3DPICKRECORD: struct _D3DPICKRECORD *: Pointer to 'struct _D3DPICKRECORD' has no allocation/length/ownership policy.
+warning: LPD3DPOINT -> LPD3DPOINT: struct _D3DPOINT *: Pointer to 'struct _D3DPOINT' has no allocation/length/ownership policy.
+warning: LPD3DPRIMCAPS -> LPD3DPRIMCAPS: struct _D3dPrimCaps *: Pointer to 'struct _D3dPrimCaps' has no allocation/length/ownership policy.
+warning: LPD3DPROCESSVERTICES -> LPD3DPROCESSVERTICES: struct _D3DPROCESSVERTICES *: Pointer to 'struct _D3DPROCESSVERTICES' has no allocation/length/ownership policy.
+warning: LPD3DSPAN -> LPD3DSPAN: struct _D3DSPAN *: Pointer to 'struct _D3DSPAN' has no allocation/length/ownership policy.
+warning: LPD3DSTATE -> LPD3DSTATE: struct _D3DSTATE *: Pointer to 'struct _D3DSTATE' has no allocation/length/ownership policy.
+warning: LPD3DSTATS -> LPD3DSTATS: struct D3DSTATS *: Pointer to 'struct D3DSTATS' has no allocation/length/ownership policy.
+warning: LPD3DSTATUS -> LPD3DSTATUS: struct _D3DSTATUS *: Pointer to 'struct _D3DSTATUS' has no allocation/length/ownership policy.
+warning: LPD3DTEXTUREHANDLE -> LPD3DTEXTUREHANDLE: DWORD *: Pointer to 'DWORD' has no allocation/length/ownership policy.
+warning: LPD3DTEXTURELOAD -> LPD3DTEXTURELOAD: struct _D3DTEXTURELOAD *: Pointer to 'struct _D3DTEXTURELOAD' has no allocation/length/ownership policy.
+warning: LPD3DTRANSFORMCAPS -> LPD3DTRANSFORMCAPS: struct _D3DTRANSFORMCAPS *: Pointer to 'struct _D3DTRANSFORMCAPS' has no allocation/length/ownership policy.
+warning: LPD3DTRANSFORMDATA -> LPD3DTRANSFORMDATA: struct _D3DTRANSFORMDATA *: Pointer to 'struct _D3DTRANSFORMDATA' has no allocation/length/ownership policy.
+warning: LPD3DTRIANGLE -> LPD3DTRIANGLE: struct _D3DTRIANGLE *: Pointer to 'struct _D3DTRIANGLE' has no allocation/length/ownership policy.
+warning: LPD3DVALIDATECALLBACK -> LPD3DVALIDATECALLBACK: HRESULT ( * )(LPVOID, DWORD): Function pointer needs a callback policy.
+warning: LPD3DVALUE -> LPD3DVALUE: float *: Pointer to 'float' has no allocation/length/ownership policy.
+warning: LPD3DVECTOR -> LPD3DVECTOR: struct _D3DVECTOR *: Pointer to 'struct _D3DVECTOR' has no allocation/length/ownership policy.
+warning: LPD3DVERTEX -> LPD3DVERTEX: struct _D3DVERTEX *: Pointer to 'struct _D3DVERTEX' has no allocation/length/ownership policy.
+warning: LPD3DVERTEXBUFFERDESC -> LPD3DVERTEXBUFFERDESC: struct _D3DVERTEXBUFFERDESC *: Pointer to 'struct _D3DVERTEXBUFFERDESC' has no allocation/length/ownership policy.
+warning: LPD3DVIEWPORT -> LPD3DVIEWPORT: struct _D3DVIEWPORT *: Pointer to 'struct _D3DVIEWPORT' has no allocation/length/ownership policy.
+warning: LPD3DVIEWPORT2 -> LPD3DVIEWPORT2: struct _D3DVIEWPORT2 *: Pointer to 'struct _D3DVIEWPORT2' has no allocation/length/ownership policy.
+warning: LPD3DVIEWPORT7 -> LPD3DVIEWPORT7: struct _D3DVIEWPORT7 *: Pointer to 'struct _D3DVIEWPORT7' has no allocation/length/ownership policy.
+warning: LPDDARGB -> LPDDARGB: struct _DDARGB *: Pointer to 'struct _DDARGB' has no allocation/length/ownership policy.
+warning: LPDDBLTBATCH -> LPDDBLTBATCH: struct _DDBLTBATCH *: Pointer to 'struct _DDBLTBATCH' has no allocation/length/ownership policy.
+warning: LPDDCAPS -> LPDDCAPS: DDCAPS *: Pointer to 'DDCAPS' has no allocation/length/ownership policy.
+warning: LPDDCAPS_DX1 -> LPDDCAPS_DX1: struct _DDCAPS_DX1 *: Pointer to 'struct _DDCAPS_DX1' has no allocation/length/ownership policy.
+warning: LPDDCAPS_DX3 -> LPDDCAPS_DX3: struct _DDCAPS_DX3 *: Pointer to 'struct _DDCAPS_DX3' has no allocation/length/ownership policy.
+warning: LPDDCAPS_DX5 -> LPDDCAPS_DX5: struct _DDCAPS_DX5 *: Pointer to 'struct _DDCAPS_DX5' has no allocation/length/ownership policy.
+warning: LPDDCAPS_DX6 -> LPDDCAPS_DX6: struct _DDCAPS_DX6 *: Pointer to 'struct _DDCAPS_DX6' has no allocation/length/ownership policy.
+warning: LPDDCAPS_DX7 -> LPDDCAPS_DX7: struct _DDCAPS_DX7 *: Pointer to 'struct _DDCAPS_DX7' has no allocation/length/ownership policy.
+warning: LPDDCOLORKEY -> LPDDCOLORKEY: struct _DDCOLORKEY *: Pointer to 'struct _DDCOLORKEY' has no allocation/length/ownership policy.
+warning: LPDDDEVICEIDENTIFIER -> LPDDDEVICEIDENTIFIER: struct tagDDDEVICEIDENTIFIER *: Pointer to 'struct tagDDDEVICEIDENTIFIER' has no allocation/length/ownership policy.
+warning: LPDDDEVICEIDENTIFIER2 -> LPDDDEVICEIDENTIFIER2: struct tagDDDEVICEIDENTIFIER2 *: Pointer to 'struct tagDDDEVICEIDENTIFIER2' has no allocation/length/ownership policy.
+warning: LPDDENUMMODESCALLBACK -> LPDDENUMMODESCALLBACK: HRESULT ( * )(LPDDSURFACEDESC, LPVOID): Function pointer needs a callback policy.
+warning: LPDDENUMMODESCALLBACK2 -> LPDDENUMMODESCALLBACK2: HRESULT ( * )(LPDDSURFACEDESC2, LPVOID): Function pointer needs a callback policy.
+warning: LPDDENUMSURFACESCALLBACK -> LPDDENUMSURFACESCALLBACK: HRESULT ( * )(LPDIRECTDRAWSURFACE, LPDDSURFACEDESC, LPVOID): Function pointer needs a callback policy.
+warning: LPDDENUMSURFACESCALLBACK2 -> LPDDENUMSURFACESCALLBACK2: HRESULT ( * )(LPDIRECTDRAWSURFACE4, LPDDSURFACEDESC2, LPVOID): Function pointer needs a callback policy.
+warning: LPDDENUMSURFACESCALLBACK7 -> LPDDENUMSURFACESCALLBACK7: HRESULT ( * )(LPDIRECTDRAWSURFACE7, LPDDSURFACEDESC2, LPVOID): Function pointer needs a callback policy.
+warning: LPDDENUMVIDEOCALLBACK -> LPDDENUMVIDEOCALLBACK: HRESULT ( * )(LPDDVIDEOPORTCAPS, LPVOID): Function pointer needs a callback policy.
+warning: LPDDGAMMARAMP -> LPDDGAMMARAMP: struct _DDGAMMARAMP *: Pointer to 'struct _DDGAMMARAMP' has no allocation/length/ownership policy.
+warning: LPDDOSCAPS -> LPDDOSCAPS: struct _DDOSCAPS *: Pointer to 'struct _DDOSCAPS' has no allocation/length/ownership policy.
+warning: LPDDOVERLAYFX -> LPDDOVERLAYFX: struct _DDOVERLAYFX *: Pointer to 'struct _DDOVERLAYFX' has no allocation/length/ownership policy.
+warning: LPDDRGBA -> LPDDRGBA: struct _DDRGBA *: Pointer to 'struct _DDRGBA' has no allocation/length/ownership policy.
+warning: LPDDSCAPS -> LPDDSCAPS: struct _DDSCAPS *: Pointer to 'struct _DDSCAPS' has no allocation/length/ownership policy.
+warning: LPDDSCAPS2 -> LPDDSCAPS2: struct _DDSCAPS2 *: Pointer to 'struct _DDSCAPS2' has no allocation/length/ownership policy.
+warning: LPDDSCAPSEX -> LPDDSCAPSEX: struct _DDSCAPSEX *: Pointer to 'struct _DDSCAPSEX' has no allocation/length/ownership policy.
+warning: LPDDSURFACEDESC2 -> LPDDSURFACEDESC2: struct _DDSURFACEDESC2 *: Pointer to 'struct _DDSURFACEDESC2' has no allocation/length/ownership policy.
+warning: LPDDVIDEOPORTCONTAINER -> LPDDVIDEOPORTCONTAINER: struct IDDVideoPortContainer *: Pointer to 'struct IDDVideoPortContainer' has no allocation/length/ownership policy.
+warning: LPDDVIDEOPORTNOTIFY -> LPDDVIDEOPORTNOTIFY: struct _DDVIDEOPORTNOTIFY *: Pointer to 'struct _DDVIDEOPORTNOTIFY' has no allocation/length/ownership policy.
+warning: LPDDVIDEOPORTSTATUS -> LPDDVIDEOPORTSTATUS: struct _DDVIDEOPORTSTATUS *: Pointer to 'struct _DDVIDEOPORTSTATUS' has no allocation/length/ownership policy.
+warning: LPDIRECTDRAW -> LPDIRECTDRAW: struct IDirectDraw *: Pointer to 'struct IDirectDraw' has no allocation/length/ownership policy.
+warning: LPDIRECTDRAW2 -> LPDIRECTDRAW2: struct IDirectDraw2 *: Pointer to 'struct IDirectDraw2' has no allocation/length/ownership policy.
+warning: LPDIRECTDRAW4 -> LPDIRECTDRAW4: struct IDirectDraw4 *: Pointer to 'struct IDirectDraw4' has no allocation/length/ownership policy.
+warning: LPDIRECTDRAW7 -> LPDIRECTDRAW7: struct IDirectDraw7 *: Pointer to 'struct IDirectDraw7' has no allocation/length/ownership policy.
+warning: LPDIRECTDRAWCLIPPER -> LPDIRECTDRAWCLIPPER: struct IDirectDrawClipper *: Pointer to 'struct IDirectDrawClipper' has no allocation/length/ownership policy.
+warning: LPDIRECTDRAWCOLORCONTROL -> LPDIRECTDRAWCOLORCONTROL: struct IDirectDrawColorControl *: Pointer to 'struct IDirectDrawColorControl' has no allocation/length/ownership policy.
+warning: LPDIRECTDRAWGAMMACONTROL -> LPDIRECTDRAWGAMMACONTROL: struct IDirectDrawGammaControl *: Pointer to 'struct IDirectDrawGammaControl' has no allocation/length/ownership policy.
+warning: LPDIRECTDRAWPALETTE -> LPDIRECTDRAWPALETTE: struct IDirectDrawPalette *: Pointer to 'struct IDirectDrawPalette' has no allocation/length/ownership policy.
+warning: LPDIRECTDRAWSURFACE2 -> LPDIRECTDRAWSURFACE2: struct IDirectDrawSurface2 *: Pointer to 'struct IDirectDrawSurface2' has no allocation/length/ownership policy.
+warning: LPDIRECTDRAWSURFACE3 -> LPDIRECTDRAWSURFACE3: struct IDirectDrawSurface3 *: Pointer to 'struct IDirectDrawSurface3' has no allocation/length/ownership policy.
+warning: LPDIRECTDRAWSURFACE4 -> LPDIRECTDRAWSURFACE4: struct IDirectDrawSurface4 *: Pointer to 'struct IDirectDrawSurface4' has no allocation/length/ownership policy.
+warning: LPDIRECTDRAWSURFACE7 -> LPDIRECTDRAWSURFACE7: struct IDirectDrawSurface7 *: Pointer to 'struct IDirectDrawSurface7' has no allocation/length/ownership policy.
+warning: LPDIRECTDRAWVIDEOPORT -> LPDIRECTDRAWVIDEOPORT: struct IDirectDrawVideoPort *: Pointer to 'struct IDirectDrawVideoPort' has no allocation/length/ownership policy.
+warning: LPDIRECTDRAWVIDEOPORTNOTIFY -> LPDIRECTDRAWVIDEOPORTNOTIFY: struct IDirectDrawVideoPortNotify *: Pointer to 'struct IDirectDrawVideoPortNotify' has no allocation/length/ownership policy.
+warning: LPVIDEOMEMORYINFO -> LPVIDEOMEMORYINFO: struct _VIDEOMEMORYINFO *: Pointer to 'struct _VIDEOMEMORYINFO' has no allocation/length/ownership policy.
+warning: PDDNTCORECAPS -> PDDNTCORECAPS: struct _DDNTCORECAPS *: Pointer to 'struct _DDNTCORECAPS' has no allocation/length/ownership policy.
+warning: PDD_ADDATTACHEDSURFACEDATA -> PDD_ADDATTACHEDSURFACEDATA: struct _DD_ADDATTACHEDSURFACEDATA *: Pointer to 'struct _DD_ADDATTACHEDSURFACEDATA' has no allocation/length/ownership policy.
+warning: PDD_BEGINMOCOMPFRAMEDATA -> PDD_BEGINMOCOMPFRAMEDATA: struct _DD_BEGINMOCOMPFRAMEDATA *: Pointer to 'struct _DD_BEGINMOCOMPFRAMEDATA' has no allocation/length/ownership policy.
+warning: PDD_BLTDATA -> PDD_BLTDATA: struct _DD_BLTDATA *: Pointer to 'struct _DD_BLTDATA' has no allocation/length/ownership policy.
+warning: PDD_CALLBACKS -> PDD_CALLBACKS: struct DD_CALLBACKS *: Pointer to 'struct DD_CALLBACKS' has no allocation/length/ownership policy.
+warning: PDD_CANCREATESURFACEDATA -> PDD_CANCREATESURFACEDATA: struct _DD_CANCREATESURFACEDATA *: Pointer to 'struct _DD_CANCREATESURFACEDATA' has no allocation/length/ownership policy.
+warning: PDD_CANCREATEVPORTDATA -> PDD_CANCREATEVPORTDATA: struct _DD_CANCREATEVPORTDATA *: Pointer to 'struct _DD_CANCREATEVPORTDATA' has no allocation/length/ownership policy.
+warning: PDD_COLORCONTROLCALLBACKS -> PDD_COLORCONTROLCALLBACKS: struct _DD_COLORCONTROLCALLBACKS *: Pointer to 'struct _DD_COLORCONTROLCALLBACKS' has no allocation/length/ownership policy.
+warning: PDD_COLORCONTROLDATA -> PDD_COLORCONTROLDATA: struct _DD_COLORCONTROLDATA *: Pointer to 'struct _DD_COLORCONTROLDATA' has no allocation/length/ownership policy.
+warning: PDD_CREATEMOCOMPDATA -> PDD_CREATEMOCOMPDATA: struct _DD_CREATEMOCOMPDATA *: Pointer to 'struct _DD_CREATEMOCOMPDATA' has no allocation/length/ownership policy.
+warning: PDD_CREATEPALETTEDATA -> PDD_CREATEPALETTEDATA: struct _DD_CREATEPALETTEDATA *: Pointer to 'struct _DD_CREATEPALETTEDATA' has no allocation/length/ownership policy.
+warning: PDD_CREATESURFACEDATA -> PDD_CREATESURFACEDATA: struct _DD_CREATESURFACEDATA *: Pointer to 'struct _DD_CREATESURFACEDATA' has no allocation/length/ownership policy.
+warning: PDD_CREATESURFACEEXDATA -> PDD_CREATESURFACEEXDATA: struct _DD_CREATESURFACEEXDATA *: Pointer to 'struct _DD_CREATESURFACEEXDATA' has no allocation/length/ownership policy.
+warning: PDD_CREATEVPORTDATA -> PDD_CREATEVPORTDATA: struct _DD_CREATEVPORTDATA *: Pointer to 'struct _DD_CREATEVPORTDATA' has no allocation/length/ownership policy.
+warning: PDD_DESTROYDDLOCALDATA -> PDD_DESTROYDDLOCALDATA: struct _DD_DESTROYDDLOCALDATA *: Pointer to 'struct _DD_DESTROYDDLOCALDATA' has no allocation/length/ownership policy.
+warning: PDD_DESTROYDRIVERDATA -> PDD_DESTROYDRIVERDATA: struct _DD_DESTROYDRIVERDATA *: Pointer to 'struct _DD_DESTROYDRIVERDATA' has no allocation/length/ownership policy.
+warning: PDD_DESTROYMOCOMPDATA -> PDD_DESTROYMOCOMPDATA: struct _DD_DESTROYMOCOMPDATA *: Pointer to 'struct _DD_DESTROYMOCOMPDATA' has no allocation/length/ownership policy.
+warning: PDD_DESTROYPALETTEDATA -> PDD_DESTROYPALETTEDATA: struct _DD_DESTROYPALETTEDATA *: Pointer to 'struct _DD_DESTROYPALETTEDATA' has no allocation/length/ownership policy.
+warning: PDD_DESTROYSURFACEDATA -> PDD_DESTROYSURFACEDATA: struct _DD_DESTROYSURFACEDATA *: Pointer to 'struct _DD_DESTROYSURFACEDATA' has no allocation/length/ownership policy.
+warning: PDD_DESTROYVPORTDATA -> PDD_DESTROYVPORTDATA: struct _DD_DESTROYVPORTDATA *: Pointer to 'struct _DD_DESTROYVPORTDATA' has no allocation/length/ownership policy.
+warning: PDD_DRVSETCOLORKEYDATA -> PDD_DRVSETCOLORKEYDATA: struct _DD_DRVSETCOLORKEYDATA *: Pointer to 'struct _DD_DRVSETCOLORKEYDATA' has no allocation/length/ownership policy.
+warning: PDD_ENDMOCOMPFRAMEDATA -> PDD_ENDMOCOMPFRAMEDATA: struct _DD_ENDMOCOMPFRAMEDATA *: Pointer to 'struct _DD_ENDMOCOMPFRAMEDATA' has no allocation/length/ownership policy.
+warning: PDD_FLIPDATA -> PDD_FLIPDATA: struct _DD_FLIPDATA *: Pointer to 'struct _DD_FLIPDATA' has no allocation/length/ownership policy.
+warning: PDD_FLIPTOGDISURFACEDATA -> PDD_FLIPTOGDISURFACEDATA: struct _DD_FLIPTOGDISURFACEDATA *: Pointer to 'struct _DD_FLIPTOGDISURFACEDATA' has no allocation/length/ownership policy.
+warning: PDD_FLIPVPORTDATA -> PDD_FLIPVPORTDATA: struct _DD_FLIPVPORTDATA *: Pointer to 'struct _DD_FLIPVPORTDATA' has no allocation/length/ownership policy.
+warning: PDD_FREEDRIVERMEMORYDATA -> PDD_FREEDRIVERMEMORYDATA: struct _DD_FREEDRIVERMEMORYDATA *: Pointer to 'struct _DD_FREEDRIVERMEMORYDATA' has no allocation/length/ownership policy.
+warning: PDD_GETAVAILDRIVERMEMORYDATA -> PDD_GETAVAILDRIVERMEMORYDATA: struct _DD_GETAVAILDRIVERMEMORYDATA *: Pointer to 'struct _DD_GETAVAILDRIVERMEMORYDATA' has no allocation/length/ownership policy.
+warning: PDD_GETBLTSTATUSDATA -> PDD_GETBLTSTATUSDATA: struct _DD_GETBLTSTATUSDATA *: Pointer to 'struct _DD_GETBLTSTATUSDATA' has no allocation/length/ownership policy.
+warning: PDD_GETDRIVERINFODATA -> PDD_GETDRIVERINFODATA: struct _DD_GETDRIVERINFODATA *: Pointer to 'struct _DD_GETDRIVERINFODATA' has no allocation/length/ownership policy.
+warning: PDD_GETDRIVERSTATEDATA -> PDD_GETDRIVERSTATEDATA: struct _DD_GETDRIVERSTATEDATA *: Pointer to 'struct _DD_GETDRIVERSTATEDATA' has no allocation/length/ownership policy.
+warning: PDD_GETFLIPSTATUSDATA -> PDD_GETFLIPSTATUSDATA: struct _DD_GETFLIPSTATUSDATA *: Pointer to 'struct _DD_GETFLIPSTATUSDATA' has no allocation/length/ownership policy.
+warning: PDD_GETHEAPALIGNMENTDATA -> PDD_GETHEAPALIGNMENTDATA: struct _DD_GETHEAPALIGNMENTDATA *: Pointer to 'struct _DD_GETHEAPALIGNMENTDATA' has no allocation/length/ownership policy.
+warning: PDD_GETINTERNALMOCOMPDATA -> PDD_GETINTERNALMOCOMPDATA: struct _DD_GETINTERNALMOCOMPDATA *: Pointer to 'struct _DD_GETINTERNALMOCOMPDATA' has no allocation/length/ownership policy.
+warning: PDD_GETMOCOMPCOMPBUFFDATA -> PDD_GETMOCOMPCOMPBUFFDATA: struct _DD_GETMOCOMPCOMPBUFFDATA *: Pointer to 'struct _DD_GETMOCOMPCOMPBUFFDATA' has no allocation/length/ownership policy.
+warning: PDD_GETMOCOMPFORMATSDATA -> PDD_GETMOCOMPFORMATSDATA: struct _DD_GETMOCOMPFORMATSDATA *: Pointer to 'struct _DD_GETMOCOMPFORMATSDATA' has no allocation/length/ownership policy.
+warning: PDD_GETMOCOMPGUIDSDATA -> PDD_GETMOCOMPGUIDSDATA: struct _DD_GETMOCOMPGUIDSDATA *: Pointer to 'struct _DD_GETMOCOMPGUIDSDATA' has no allocation/length/ownership policy.
+warning: PDD_GETSCANLINEDATA -> PDD_GETSCANLINEDATA: struct _DD_GETSCANLINEDATA *: Pointer to 'struct _DD_GETSCANLINEDATA' has no allocation/length/ownership policy.
+warning: PDD_GETVPORTBANDWIDTHDATA -> PDD_GETVPORTBANDWIDTHDATA: struct _DD_GETVPORTBANDWIDTHDATA *: Pointer to 'struct _DD_GETVPORTBANDWIDTHDATA' has no allocation/length/ownership policy.
+warning: PDD_GETVPORTCONNECTDATA -> PDD_GETVPORTCONNECTDATA: struct _DD_GETVPORTCONNECTDATA *: Pointer to 'struct _DD_GETVPORTCONNECTDATA' has no allocation/length/ownership policy.
+warning: PDD_GETVPORTFIELDDATA -> PDD_GETVPORTFIELDDATA: struct _DD_GETVPORTFIELDDATA *: Pointer to 'struct _DD_GETVPORTFIELDDATA' has no allocation/length/ownership policy.
+warning: PDD_GETVPORTFLIPSTATUSDATA -> PDD_GETVPORTFLIPSTATUSDATA: struct _DD_GETVPORTFLIPSTATUSDATA *: Pointer to 'struct _DD_GETVPORTFLIPSTATUSDATA' has no allocation/length/ownership policy.
+warning: PDD_GETVPORTINPUTFORMATDATA -> PDD_GETVPORTINPUTFORMATDATA: struct _DD_GETVPORTINPUTFORMATDATA *: Pointer to 'struct _DD_GETVPORTINPUTFORMATDATA' has no allocation/length/ownership policy.
+warning: PDD_GETVPORTLINEDATA -> PDD_GETVPORTLINEDATA: struct _DD_GETVPORTLINEDATA *: Pointer to 'struct _DD_GETVPORTLINEDATA' has no allocation/length/ownership policy.
+warning: PDD_GETVPORTOUTPUTFORMATDATA -> PDD_GETVPORTOUTPUTFORMATDATA: struct _DD_GETVPORTOUTPUTFORMATDATA *: Pointer to 'struct _DD_GETVPORTOUTPUTFORMATDATA' has no allocation/length/ownership policy.
+warning: PDD_GETVPORTSIGNALDATA -> PDD_GETVPORTSIGNALDATA: struct _DD_GETVPORTSIGNALDATA *: Pointer to 'struct _DD_GETVPORTSIGNALDATA' has no allocation/length/ownership policy.
+warning: PDD_HALINFO -> PDD_HALINFO: struct _DD_HALINFO *: Pointer to 'struct _DD_HALINFO' has no allocation/length/ownership policy.
+warning: PDD_HALINFO_V4 -> PDD_HALINFO_V4: struct _DD_HALINFO_V4 *: Pointer to 'struct _DD_HALINFO_V4' has no allocation/length/ownership policy.
+warning: PDD_KERNELCALLBACKS -> PDD_KERNELCALLBACKS: struct DD_KERNELCALLBACKS *: Pointer to 'struct DD_KERNELCALLBACKS' has no allocation/length/ownership policy.
+warning: PDD_LOCKDATA -> PDD_LOCKDATA: struct _DD_LOCKDATA *: Pointer to 'struct _DD_LOCKDATA' has no allocation/length/ownership policy.
+warning: PDD_MAPMEMORYDATA -> PDD_MAPMEMORYDATA: struct _DD_MAPMEMORYDATA *: Pointer to 'struct _DD_MAPMEMORYDATA' has no allocation/length/ownership policy.
+warning: PDD_MISCELLANEOUS2CALLBACKS -> PDD_MISCELLANEOUS2CALLBACKS: struct _DD_MISCELLANEOUS2CALLBACKS *: Pointer to 'struct _DD_MISCELLANEOUS2CALLBACKS' has no allocation/length/ownership policy.
+warning: PDD_MISCELLANEOUSCALLBACKS -> PDD_MISCELLANEOUSCALLBACKS: struct _DD_MISCELLANEOUSCALLBACKS *: Pointer to 'struct _DD_MISCELLANEOUSCALLBACKS' has no allocation/length/ownership policy.
+warning: PDD_MORECAPS -> PDD_MORECAPS: struct _DD_MORECAPS *: Pointer to 'struct _DD_MORECAPS' has no allocation/length/ownership policy.
+warning: PDD_MORESURFACECAPS -> PDD_MORESURFACECAPS: struct _DD_MORESURFACECAPS *: Pointer to 'struct _DD_MORESURFACECAPS' has no allocation/length/ownership policy.
+warning: PDD_MOTIONCOMPCALLBACKS -> PDD_MOTIONCOMPCALLBACKS: struct DD_MOTIONCOMPCALLBACKS *: Pointer to 'struct DD_MOTIONCOMPCALLBACKS' has no allocation/length/ownership policy.
+warning: PDD_NONLOCALVIDMEMCAPS -> PDD_NONLOCALVIDMEMCAPS: struct _DD_NONLOCALVIDMEMCAPS *: Pointer to 'struct _DD_NONLOCALVIDMEMCAPS' has no allocation/length/ownership policy.
+warning: PDD_NTCALLBACKS -> PDD_NTCALLBACKS: struct _DD_NTCALLBACKS *: Pointer to 'struct _DD_NTCALLBACKS' has no allocation/length/ownership policy.
+warning: PDD_PALETTECALLBACKS -> PDD_PALETTECALLBACKS: struct DD_PALETTECALLBACKS *: Pointer to 'struct DD_PALETTECALLBACKS' has no allocation/length/ownership policy.
+warning: PDD_QUERYMOCOMPSTATUSDATA -> PDD_QUERYMOCOMPSTATUSDATA: struct _DD_QUERYMOCOMPSTATUSDATA *: Pointer to 'struct _DD_QUERYMOCOMPSTATUSDATA' has no allocation/length/ownership policy.
+warning: PDD_RENDERMOCOMPDATA -> PDD_RENDERMOCOMPDATA: struct _DD_RENDERMOCOMPDATA *: Pointer to 'struct _DD_RENDERMOCOMPDATA' has no allocation/length/ownership policy.
+warning: PDD_SETCLIPLISTDATA -> PDD_SETCLIPLISTDATA: struct _DD_SETCLIPLISTDATA *: Pointer to 'struct _DD_SETCLIPLISTDATA' has no allocation/length/ownership policy.
+warning: PDD_SETCOLORKEYDATA -> PDD_SETCOLORKEYDATA: struct _DD_SETCOLORKEYDATA *: Pointer to 'struct _DD_SETCOLORKEYDATA' has no allocation/length/ownership policy.
+warning: PDD_SETENTRIESDATA -> PDD_SETENTRIESDATA: struct _DD_SETENTRIESDATA *: Pointer to 'struct _DD_SETENTRIESDATA' has no allocation/length/ownership policy.
+warning: PDD_SETEXCLUSIVEMODEDATA -> PDD_SETEXCLUSIVEMODEDATA: struct _DD_SETEXCLUSIVEMODEDATA *: Pointer to 'struct _DD_SETEXCLUSIVEMODEDATA' has no allocation/length/ownership policy.
+warning: PDD_SETMODEDATA -> PDD_SETMODEDATA: struct _DD_SETMODEDATA *: Pointer to 'struct _DD_SETMODEDATA' has no allocation/length/ownership policy.
+warning: PDD_SETOVERLAYPOSITIONDATA -> PDD_SETOVERLAYPOSITIONDATA: struct _DD_SETOVERLAYPOSITIONDATA *: Pointer to 'struct _DD_SETOVERLAYPOSITIONDATA' has no allocation/length/ownership policy.
+warning: PDD_SETPALETTEDATA -> PDD_SETPALETTEDATA: struct _DD_SETPALETTEDATA *: Pointer to 'struct _DD_SETPALETTEDATA' has no allocation/length/ownership policy.
+warning: PDD_STEREOMODE -> PDD_STEREOMODE: struct _DD_STEREOMODE *: Pointer to 'struct _DD_STEREOMODE' has no allocation/length/ownership policy.
+warning: PDD_SURFACECALLBACKS -> PDD_SURFACECALLBACKS: struct DD_SURFACECALLBACKS *: Pointer to 'struct DD_SURFACECALLBACKS' has no allocation/length/ownership policy.
+warning: PDD_SYNCSURFACEDATA -> PDD_SYNCSURFACEDATA: struct _DD_SYNCSURFACEDATA *: Pointer to 'struct _DD_SYNCSURFACEDATA' has no allocation/length/ownership policy.
+warning: PDD_SYNCVIDEOPORTDATA -> PDD_SYNCVIDEOPORTDATA: struct _DD_SYNCVIDEOPORTDATA *: Pointer to 'struct _DD_SYNCVIDEOPORTDATA' has no allocation/length/ownership policy.
+warning: PDD_UNLOCKDATA -> PDD_UNLOCKDATA: struct _DD_UNLOCKDATA *: Pointer to 'struct _DD_UNLOCKDATA' has no allocation/length/ownership policy.
+warning: PDD_UPDATENONLOCALHEAPDATA -> PDD_UPDATENONLOCALHEAPDATA: struct _DD_UPDATENONLOCALHEAPDATA *: Pointer to 'struct _DD_UPDATENONLOCALHEAPDATA' has no allocation/length/ownership policy.
+warning: PDD_UPDATEOVERLAYDATA -> PDD_UPDATEOVERLAYDATA: struct _DD_UPDATEOVERLAYDATA *: Pointer to 'struct _DD_UPDATEOVERLAYDATA' has no allocation/length/ownership policy.
+warning: PDD_UPDATEVPORTDATA -> PDD_UPDATEVPORTDATA: struct _DD_UPDATEVPORTDATA *: Pointer to 'struct _DD_UPDATEVPORTDATA' has no allocation/length/ownership policy.
+warning: PDD_VIDEOPORTCALLBACKS -> PDD_VIDEOPORTCALLBACKS: struct DD_VIDEOPORTCALLBACKS *: Pointer to 'struct DD_VIDEOPORTCALLBACKS' has no allocation/length/ownership policy.
+warning: PDD_VPORTCOLORDATA -> PDD_VPORTCOLORDATA: struct _DD_VPORTCOLORDATA *: Pointer to 'struct _DD_VPORTCOLORDATA' has no allocation/length/ownership policy.
+warning: PDD_WAITFORVERTICALBLANKDATA -> PDD_WAITFORVERTICALBLANKDATA: struct _DD_WAITFORVERTICALBLANKDATA *: Pointer to 'struct _DD_WAITFORVERTICALBLANKDATA' has no allocation/length/ownership policy.
+warning: PDD_WAITFORVPORTSYNCDATA -> PDD_WAITFORVPORTSYNCDATA: struct _DD_WAITFORVPORTSYNCDATA *: Pointer to 'struct _DD_WAITFORVPORTSYNCDATA' has no allocation/length/ownership policy.
+warning: PVIDEOMEMORY -> PVIDEOMEMORY: struct _VIDEOMEMORY *: Pointer to 'struct _VIDEOMEMORY' has no allocation/length/ownership policy.
+warning: VIDEOMEMORY -> VIDEOMEMORY -> _VIDEOMEMORY.dwFlags: DWORD: No extracted declaration or atomic mapping exists.
