@@ -1,0 +1,1 @@
+"C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\windbg.exe" "C:\Users\elsku\windows_syscall_fuzzer\fuzzer_newest\build\ntgdi_fuzzer.exe"
