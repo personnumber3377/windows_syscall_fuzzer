@@ -17,8 +17,7 @@
 #include <winddi.h>
 #include <prntfont.h>
 // #include <ntgdi.h>
-// #include "ntgdi.h"
-#include <dxgiformat.h>
+// #include <dxgiformat.h>
 
 #include <algorithm>
 #include <array>
@@ -64,9 +63,9 @@ public:
         const size_t requested = static_cast<size_t>(ReadU32());
         // return std::min({requested, cap, remaining()});
         size_t result = requested;
-        result = (std::min)(result, cap);
-        result = (std::min)(result, remaining());
-        return result;
+         result = (std::min)(result, cap);
+         result = (std::min)(result, remaining());
+         return result;
     }
 
     bool ReadBytes(void* destination, size_t size) {
@@ -80,23 +79,96 @@ public:
         return true;
     }
 
+    // Copy as much serialized initialization data as remains and zero-pad the
+    // rest. This is useful for derived-size input/in-out arrays: their capacity
+    // comes from another syscall argument rather than from a length prefix.
+    size_t ReadBytesPadded(void* destination, size_t capacity) {
+        if (!destination || capacity == 0) return 0;
+        const size_t copied = (std::min)(capacity, remaining());
+        if (copied) std::memcpy(destination, cur_, copied);
+        if (copied < capacity)
+            std::memset(static_cast<uint8_t*>(destination) + copied, 0, capacity - copied);
+        cur_ += copied;
+        return copied;
+    }
+
 private:
     const uint8_t* cur_;
     const uint8_t* end_;
     bool ok_ = true;
 };
 
+static constexpr size_t kGeneratedScratchSize = 4u * 1024u * 1024u;
+static constexpr size_t kUnknownWritableCapacity = 4096u;
+
+alignas(64) static thread_local std::array<uint8_t, kGeneratedScratchSize>
+    g_generated_scratch{};
+static thread_local size_t g_generated_scratch_offset = 0;
+
+static void ResetGeneratedScratch() {
+    g_generated_scratch_offset = 0;
+}
+
+static size_t ClampGeneratedSize(size_t size) {
+    return (std::min)(size, kMaxGeneratedBuffer);
+}
+
+static size_t CheckedGeneratedProduct(size_t count, size_t element_size) {
+    if (element_size != 0 && count > kMaxGeneratedBuffer / element_size)
+        return kMaxGeneratedBuffer;
+    return ClampGeneratedSize(count * element_size);
+}
+
+static void* AllocateGeneratedScratch(size_t size, size_t alignment = alignof(std::max_align_t)) {
+    size = ClampGeneratedSize(size);
+    if (size == 0) size = 1;
+    if (alignment == 0 || (alignment & (alignment - 1)) != 0)
+        alignment = alignof(std::max_align_t);
+
+    const size_t aligned =
+        (g_generated_scratch_offset + alignment - 1) & ~(alignment - 1);
+    if (aligned > g_generated_scratch.size() ||
+        size > g_generated_scratch.size() - aligned)
+        return nullptr;
+
+    void* result = g_generated_scratch.data() + aligned;
+    g_generated_scratch_offset = aligned + size;
+    std::memset(result, 0, size);
+    return result;
+}
+
 struct OwnedBytes {
-    std::vector<uint8_t> bytes;
-    void* data() { return bytes.empty() ? nullptr : bytes.data(); }
-    const void* data() const { return bytes.empty() ? nullptr : bytes.data(); }
+    uint8_t* pointer = nullptr;
+    size_t size = 0;
+    void* data() { return pointer; }
+    const void* data() const { return pointer; }
 };
 
-static OwnedBytes DecodeOwnedBytes(Decoder& d, size_t maximum = kMaxGeneratedBuffer) {
+static OwnedBytes AllocateOwnedBytes(size_t capacity) {
     OwnedBytes result;
+    result.size = ClampGeneratedSize(capacity);
+    result.pointer = static_cast<uint8_t*>(AllocateGeneratedScratch(result.size));
+    if (!result.pointer) result.size = 0;
+    return result;
+}
+
+// Length-prefixed storage used when the table does not expose a relationship
+// to another argument. The memory still comes from the fixed scratch arena.
+static OwnedBytes DecodeOwnedBytes(Decoder& d, size_t maximum = kMaxGeneratedBuffer) {
     const size_t length = d.ReadBoundedLength(maximum);
-    result.bytes.resize(length);
-    d.ReadBytes(result.bytes.data(), result.bytes.size());
+    OwnedBytes result = AllocateOwnedBytes(length);
+    if (result.data() && result.size)
+        d.ReadBytes(result.data(), result.size);
+    return result;
+}
+
+static OwnedBytes DecodeDerivedBytes(
+    Decoder& d,
+    size_t capacity,
+    bool initialize_from_input) {
+    OwnedBytes result = AllocateOwnedBytes(capacity);
+    if (result.data() && result.size && initialize_from_input)
+        d.ReadBytesPadded(result.data(), result.size);
     return result;
 }
 /*
@@ -108,503 +180,6 @@ static FARPROC ResolveNtGdiExport(const char* name) {
     return proc;
 }
 */
-
-struct GeneratedNtGdiExport
-{
-    const char* name;
-    FARPROC address;
-};
-
-static GeneratedNtGdiExport g_generated_ntgdi_exports[] =
-{
-    {"NtGdiInit", nullptr},
-    {"NtGdiSetDIBitsToDeviceInternal", nullptr},
-    {"NtGdiGetFontResourceInfoInternalW", nullptr},
-    {"NtGdiGetGlyphIndicesW", nullptr},
-    {"NtGdiGetGlyphIndicesWInternal", nullptr},
-    {"NtGdiCreatePaletteInternal", nullptr},
-    {"NtGdiArcInternal", nullptr},
-    {"NtGdiGetOutlineTextMetricsInternalW", nullptr},
-    {"NtGdiGetAndSetDCDword", nullptr},
-    {"NtGdiGetDCObject", nullptr},
-    {"NtGdiGetDCforBitmap", nullptr},
-    {"NtGdiGetMonitorID", nullptr},
-    {"NtGdiGetLinkedUFIs", nullptr},
-    {"NtGdiSetLinkedUFIs", nullptr},
-    {"NtGdiGetUFI", nullptr},
-    {"NtGdiForceUFIMapping", nullptr},
-    {"NtGdiGetUFIPathname", nullptr},
-    {"NtGdiAddRemoteFontToDC", nullptr},
-    {"NtGdiAddFontMemResourceEx", nullptr},
-    {"NtGdiRemoveFontMemResourceEx", nullptr},
-    {"NtGdiUnmapMemFont", nullptr},
-    {"NtGdiRemoveMergeFont", nullptr},
-    {"NtGdiAnyLinkedFonts", nullptr},
-    {"NtGdiGetEmbUFI", nullptr},
-    {"NtGdiGetEmbedFonts", nullptr},
-    {"NtGdiChangeGhostFont", nullptr},
-    {"NtGdiAddEmbFontToDC", nullptr},
-    {"NtGdiFontIsLinked", nullptr},
-    {"NtGdiPolyPolyDraw", nullptr},
-    {"NtGdiDoPalette", nullptr},
-    {"NtGdiComputeXformCoefficients", nullptr},
-    {"NtGdiGetWidthTable", nullptr},
-    {"NtGdiDescribePixelFormat", nullptr},
-    {"NtGdiSetPixelFormat", nullptr},
-    {"NtGdiSwapBuffers", nullptr},
-    {"NtGdiDxgGenericThunk", nullptr},
-    {"NtGdiDdAddAttachedSurface", nullptr},
-    {"NtGdiDdAttachSurface", nullptr},
-    {"NtGdiDdBlt", nullptr},
-    {"NtGdiDdCanCreateSurface", nullptr},
-    {"NtGdiDdColorControl", nullptr},
-    {"NtGdiDdCreateDirectDrawObject", nullptr},
-    {"NtGdiDdCreateSurface", nullptr},
-    {"NtGdiDdChangeSurfacePointer", nullptr},
-    {"NtGdiDdCreateSurfaceObject", nullptr},
-    {"NtGdiDdDeleteSurfaceObject", nullptr},
-    {"NtGdiDdDeleteDirectDrawObject", nullptr},
-    {"NtGdiDdDestroySurface", nullptr},
-    {"NtGdiDdFlip", nullptr},
-    {"NtGdiDdGetAvailDriverMemory", nullptr},
-    {"NtGdiDdGetBltStatus", nullptr},
-    {"NtGdiDdGetDC", nullptr},
-    {"NtGdiDdGetDriverInfo", nullptr},
-    {"NtGdiDdGetFlipStatus", nullptr},
-    {"NtGdiDdGetScanLine", nullptr},
-    {"NtGdiDdSetExclusiveMode", nullptr},
-    {"NtGdiDdFlipToGDISurface", nullptr},
-    {"NtGdiDdLock", nullptr},
-    {"NtGdiDdQueryDirectDrawObject", nullptr},
-    {"NtGdiDdReenableDirectDrawObject", nullptr},
-    {"NtGdiDdReleaseDC", nullptr},
-    {"NtGdiDdResetVisrgn", nullptr},
-    {"NtGdiDdSetColorKey", nullptr},
-    {"NtGdiDdSetOverlayPosition", nullptr},
-    {"NtGdiDdUnattachSurface", nullptr},
-    {"NtGdiDdUnlock", nullptr},
-    {"NtGdiDdUpdateOverlay", nullptr},
-    {"NtGdiDdWaitForVerticalBlank", nullptr},
-    {"NtGdiDdGetDxHandle", nullptr},
-    {"NtGdiDdSetGammaRamp", nullptr},
-    {"NtGdiDdLockD3D", nullptr},
-    {"NtGdiDdUnlockD3D", nullptr},
-    {"NtGdiDdCreateD3DBuffer", nullptr},
-    {"NtGdiDdCanCreateD3DBuffer", nullptr},
-    {"NtGdiDdDestroyD3DBuffer", nullptr},
-    {"NtGdiD3dContextCreate", nullptr},
-    {"NtGdiD3dContextDestroy", nullptr},
-    {"NtGdiD3dContextDestroyAll", nullptr},
-    {"NtGdiD3dValidateTextureStageState", nullptr},
-    {"NtGdiD3dDrawPrimitives2", nullptr},
-    {"NtGdiDdGetDriverState", nullptr},
-    {"NtGdiDdCreateSurfaceEx", nullptr},
-    {"NtGdiDvpCanCreateVideoPort", nullptr},
-    {"NtGdiDvpColorControl", nullptr},
-    {"NtGdiDvpCreateVideoPort", nullptr},
-    {"NtGdiDvpDestroyVideoPort", nullptr},
-    {"NtGdiDvpFlipVideoPort", nullptr},
-    {"NtGdiDvpGetVideoPortBandwidth", nullptr},
-    {"NtGdiDvpGetVideoPortField", nullptr},
-    {"NtGdiDvpGetVideoPortFlipStatus", nullptr},
-    {"NtGdiDvpGetVideoPortInputFormats", nullptr},
-    {"NtGdiDvpGetVideoPortLine", nullptr},
-    {"NtGdiDvpGetVideoPortOutputFormats", nullptr},
-    {"NtGdiDvpGetVideoPortConnectInfo", nullptr},
-    {"NtGdiDvpGetVideoSignalStatus", nullptr},
-    {"NtGdiDvpUpdateVideoPort", nullptr},
-    {"NtGdiDvpWaitForVideoPortSync", nullptr},
-    {"NtGdiDvpAcquireNotification", nullptr},
-    {"NtGdiDvpReleaseNotification", nullptr},
-    {"NtGdiDdGetMoCompGuids", nullptr},
-    {"NtGdiDdGetMoCompFormats", nullptr},
-    {"NtGdiDdGetMoCompBuffInfo", nullptr},
-    {"NtGdiDdGetInternalMoCompInfo", nullptr},
-    {"NtGdiDdCreateMoComp", nullptr},
-    {"NtGdiDdDestroyMoComp", nullptr},
-    {"NtGdiDdBeginMoCompFrame", nullptr},
-    {"NtGdiDdEndMoCompFrame", nullptr},
-    {"NtGdiDdRenderMoComp", nullptr},
-    {"NtGdiDdQueryMoCompStatus", nullptr},
-    {"NtGdiDdAlphaBlt", nullptr},
-    {"NtGdiAlphaBlend", nullptr},
-    {"NtGdiGradientFill", nullptr},
-    {"NtGdiSetIcmMode", nullptr},
-    {"NtGdiCreateColorSpace", nullptr},
-    {"NtGdiDeleteColorSpace", nullptr},
-    {"NtGdiSetColorSpace", nullptr},
-    {"NtGdiCreateColorTransform", nullptr},
-    {"NtGdiDeleteColorTransform", nullptr},
-    {"NtGdiCheckBitmapBits", nullptr},
-    {"NtGdiColorCorrectPalette", nullptr},
-    {"NtGdiGetColorSpaceforBitmap", nullptr},
-    {"NtGdiGetDeviceGammaRamp", nullptr},
-    {"NtGdiSetDeviceGammaRamp", nullptr},
-    {"NtGdiIcmBrushInfo", nullptr},
-    {"NtGdiFlush", nullptr},
-    {"NtGdiCreateMetafileDC", nullptr},
-    {"NtGdiMakeInfoDC", nullptr},
-    {"NtGdiCreateClientObj", nullptr},
-    {"NtGdiDeleteClientObj", nullptr},
-    {"NtGdiGetBitmapBits", nullptr},
-    {"NtGdiDeleteObjectApp", nullptr},
-    {"NtGdiGetPath", nullptr},
-    {"NtGdiCreateCompatibleDC", nullptr},
-    {"NtGdiCreateDIBitmapInternal", nullptr},
-    {"NtGdiCreateDIBSection", nullptr},
-    {"NtGdiCreateSolidBrush", nullptr},
-    {"NtGdiCreateDIBBrush", nullptr},
-    {"NtGdiCreatePatternBrushInternal", nullptr},
-    {"NtGdiCreateHatchBrushInternal", nullptr},
-    {"NtGdiExtCreatePen", nullptr},
-    {"NtGdiCreateEllipticRgn", nullptr},
-    {"NtGdiCreateRoundRectRgn", nullptr},
-    {"NtGdiCreateServerMetaFile", nullptr},
-    {"NtGdiExtCreateRegion", nullptr},
-    {"NtGdiMakeFontDir", nullptr},
-    {"NtGdiPolyDraw", nullptr},
-    {"NtGdiPolyTextOutW", nullptr},
-    {"NtGdiGetServerMetaFileBits", nullptr},
-    {"NtGdiEqualRgn", nullptr},
-    {"NtGdiGetBitmapDimension", nullptr},
-    {"NtGdiGetNearestPaletteIndex", nullptr},
-    {"NtGdiPtVisible", nullptr},
-    {"NtGdiRectVisible", nullptr},
-    {"NtGdiRemoveFontResourceW", nullptr},
-    {"NtGdiResizePalette", nullptr},
-    {"NtGdiSetBitmapDimension", nullptr},
-    {"NtGdiOffsetClipRgn", nullptr},
-    {"NtGdiSetMetaRgn", nullptr},
-    {"NtGdiSetTextJustification", nullptr},
-    {"NtGdiGetAppClipBox", nullptr},
-    {"NtGdiGetTextExtentExW", nullptr},
-    {"NtGdiGetCharABCWidthsW", nullptr},
-    {"NtGdiGetCharacterPlacementW", nullptr},
-    {"NtGdiAngleArc", nullptr},
-    {"NtGdiBeginPath", nullptr},
-    {"NtGdiSelectClipPath", nullptr},
-    {"NtGdiCloseFigure", nullptr},
-    {"NtGdiEndPath", nullptr},
-    {"NtGdiAbortPath", nullptr},
-    {"NtGdiFillPath", nullptr},
-    {"NtGdiStrokeAndFillPath", nullptr},
-    {"NtGdiStrokePath", nullptr},
-    {"NtGdiWidenPath", nullptr},
-    {"NtGdiFlattenPath", nullptr},
-    {"NtGdiPathToRegion", nullptr},
-    {"NtGdiSetMiterLimit", nullptr},
-    {"NtGdiSetFontXform", nullptr},
-    {"NtGdiGetMiterLimit", nullptr},
-    {"NtGdiEllipse", nullptr},
-    {"NtGdiRectangle", nullptr},
-    {"NtGdiRoundRect", nullptr},
-    {"NtGdiPlgBlt", nullptr},
-    {"NtGdiMaskBlt", nullptr},
-    {"NtGdiExtFloodFill", nullptr},
-    {"NtGdiFillRgn", nullptr},
-    {"NtGdiFrameRgn", nullptr},
-    {"NtGdiSetPixel", nullptr},
-    {"NtGdiGetPixel", nullptr},
-    {"NtGdiStartPage", nullptr},
-    {"NtGdiEndPage", nullptr},
-    {"NtGdiStartDoc", nullptr},
-    {"NtGdiEndDoc", nullptr},
-    {"NtGdiAbortDoc", nullptr},
-    {"NtGdiUpdateColors", nullptr},
-    {"NtGdiGetCharWidthW", nullptr},
-    {"NtGdiGetCharWidthInfo", nullptr},
-    {"NtGdiDrawEscape", nullptr},
-    {"NtGdiExtEscape", nullptr},
-    {"NtGdiGetFontData", nullptr},
-    {"NtGdiGetFontFileData", nullptr},
-    {"NtGdiGetFontFileInfo", nullptr},
-    {"NtGdiGetGlyphOutline", nullptr},
-    {"NtGdiGetETM", nullptr},
-    {"NtGdiGetRasterizerCaps", nullptr},
-    {"NtGdiGetKerningPairs", nullptr},
-    {"NtGdiMonoBitmap", nullptr},
-    {"NtGdiGetObjectBitmapHandle", nullptr},
-    {"NtGdiEnumObjects", nullptr},
-    {"NtGdiResetDC", nullptr},
-    {"NtGdiSetBoundsRect", nullptr},
-    {"NtGdiGetColorAdjustment", nullptr},
-    {"NtGdiSetColorAdjustment", nullptr},
-    {"NtGdiCancelDC", nullptr},
-    {"NtGdiGetDCDword", nullptr},
-    {"NtGdiGetDCPoint", nullptr},
-    {"NtGdiScaleViewportExtEx", nullptr},
-    {"NtGdiScaleWindowExtEx", nullptr},
-    {"NtGdiSetVirtualResolution", nullptr},
-    {"NtGdiSetSizeDevice", nullptr},
-    {"NtGdiGetTransform", nullptr},
-    {"NtGdiModifyWorldTransform", nullptr},
-    {"NtGdiCombineTransform", nullptr},
-    {"NtGdiTransformPoints", nullptr},
-    {"NtGdiConvertMetafileRect", nullptr},
-    {"NtGdiGetTextCharsetInfo", nullptr},
-    {"NtGdiDoBanding", nullptr},
-    {"NtGdiGetPerBandInfo", nullptr},
-    {"NtGdiGetStats", nullptr},
-    {"NtGdiSetMagicColors", nullptr},
-    {"NtGdiSelectBrush", nullptr},
-    {"NtGdiSelectPen", nullptr},
-    {"NtGdiSelectBitmap", nullptr},
-    {"NtGdiSelectFont", nullptr},
-    {"NtGdiExtSelectClipRgn", nullptr},
-    {"NtGdiCreatePen", nullptr},
-    {"NtGdiBitBlt", nullptr},
-    {"NtGdiTileBitBlt", nullptr},
-    {"NtGdiTransparentBlt", nullptr},
-    {"NtGdiGetTextExtent", nullptr},
-    {"NtGdiGetTextMetricsW", nullptr},
-    {"NtGdiGetTextFaceW", nullptr},
-    {"NtGdiGetRandomRgn", nullptr},
-    {"NtGdiExtTextOutW", nullptr},
-    {"NtGdiIntersectClipRect", nullptr},
-    {"NtGdiCreateRectRgn", nullptr},
-    {"NtGdiPatBlt", nullptr},
-    {"NtGdiPolyPatBlt", nullptr},
-    {"NtGdiUnrealizeObject", nullptr},
-    {"NtGdiGetStockObject", nullptr},
-    {"NtGdiCreateCompatibleBitmap", nullptr},
-    {"NtGdiCreateBitmapFromDxSurface", nullptr},
-    {"NtGdiBeginGdiRendering", nullptr},
-    {"NtGdiEndGdiRendering", nullptr},
-    {"NtGdiLineTo", nullptr},
-    {"NtGdiMoveTo", nullptr},
-    {"NtGdiExtGetObjectW", nullptr},
-    {"NtGdiGetDeviceCaps", nullptr},
-    {"NtGdiGetDeviceCapsAll", nullptr},
-    {"NtGdiStretchBlt", nullptr},
-    {"NtGdiSetBrushOrg", nullptr},
-    {"NtGdiCreateBitmap", nullptr},
-    {"NtGdiCreateHalftonePalette", nullptr},
-    {"NtGdiRestoreDC", nullptr},
-    {"NtGdiExcludeClipRect", nullptr},
-    {"NtGdiSaveDC", nullptr},
-    {"NtGdiCombineRgn", nullptr},
-    {"NtGdiSetRectRgn", nullptr},
-    {"NtGdiSetBitmapBits", nullptr},
-    {"NtGdiGetDIBitsInternal", nullptr},
-    {"NtGdiOffsetRgn", nullptr},
-    {"NtGdiGetRgnBox", nullptr},
-    {"NtGdiRectInRegion", nullptr},
-    {"NtGdiGetBoundsRect", nullptr},
-    {"NtGdiPtInRegion", nullptr},
-    {"NtGdiGetNearestColor", nullptr},
-    {"NtGdiGetSystemPaletteUse", nullptr},
-    {"NtGdiSetSystemPaletteUse", nullptr},
-    {"NtGdiGetRegionData", nullptr},
-    {"NtGdiInvertRgn", nullptr},
-    {"NtGdiSetFontEnumeration", nullptr},
-    {"NtGdiEnumFonts", nullptr},
-    {"NtGdiQueryFonts", nullptr},
-    {"NtGdiGetCharSet", nullptr},
-    {"NtGdiEnableEudc", nullptr},
-    {"NtGdiEudcLoadUnloadLink", nullptr},
-    {"NtGdiGetStringBitmapW", nullptr},
-    {"NtGdiGetEudcTimeStampEx", nullptr},
-    {"NtGdiQueryFontAssocInfo", nullptr},
-    {"NtGdiGetFontUnicodeRanges", nullptr},
-    {"NtGdiGetRealizationInfo", nullptr},
-    {"NtGdiAddRemoteMMInstanceToDC", nullptr},
-    {"NtGdiUnloadPrinterDriver", nullptr},
-    {"NtGdiEngAssociateSurface", nullptr},
-    {"NtGdiEngEraseSurface", nullptr},
-    {"NtGdiEngCreateBitmap", nullptr},
-    {"NtGdiEngDeleteSurface", nullptr},
-    {"NtGdiEngLockSurface", nullptr},
-    {"NtGdiEngUnlockSurface", nullptr},
-    {"NtGdiEngMarkBandingSurface", nullptr},
-    {"NtGdiEngCreateDeviceSurface", nullptr},
-    {"NtGdiEngCreateDeviceBitmap", nullptr},
-    {"NtGdiEngCopyBits", nullptr},
-    {"NtGdiEngStretchBlt", nullptr},
-    {"NtGdiEngBitBlt", nullptr},
-    {"NtGdiEngPlgBlt", nullptr},
-    {"NtGdiEngCreatePalette", nullptr},
-    {"NtGdiEngDeletePalette", nullptr},
-    {"NtGdiEngStrokePath", nullptr},
-    {"NtGdiEngFillPath", nullptr},
-    {"NtGdiEngStrokeAndFillPath", nullptr},
-    {"NtGdiEngPaint", nullptr},
-    {"NtGdiEngLineTo", nullptr},
-    {"NtGdiEngAlphaBlend", nullptr},
-    {"NtGdiEngGradientFill", nullptr},
-    {"NtGdiEngTransparentBlt", nullptr},
-    {"NtGdiEngTextOut", nullptr},
-    {"NtGdiEngStretchBltROP", nullptr},
-    {"NtGdiXLATEOBJ_cGetPalette", nullptr},
-    {"NtGdiCLIPOBJ_cEnumStart", nullptr},
-    {"NtGdiCLIPOBJ_bEnum", nullptr},
-    {"NtGdiCLIPOBJ_ppoGetPath", nullptr},
-    {"NtGdiEngCreateClip", nullptr},
-    {"NtGdiEngDeleteClip", nullptr},
-    {"NtGdiBRUSHOBJ_pvAllocRbrush", nullptr},
-    {"NtGdiBRUSHOBJ_pvGetRbrush", nullptr},
-    {"NtGdiBRUSHOBJ_ulGetBrushColor", nullptr},
-    {"NtGdiBRUSHOBJ_hGetColorTransform", nullptr},
-    {"NtGdiXFORMOBJ_bApplyXform", nullptr},
-    {"NtGdiXFORMOBJ_iGetXform", nullptr},
-    {"NtGdiFONTOBJ_vGetInfo", nullptr},
-    {"NtGdiFONTOBJ_cGetGlyphs", nullptr},
-    {"NtGdiFONTOBJ_pxoGetXform", nullptr},
-    {"NtGdiFONTOBJ_pifi", nullptr},
-    {"NtGdiFONTOBJ_pfdg", nullptr},
-    {"NtGdiFONTOBJ_cGetAllGlyphHandles", nullptr},
-    {"NtGdiFONTOBJ_pvTrueTypeFontFile", nullptr},
-    {"NtGdiFONTOBJ_pQueryGlyphAttrs", nullptr},
-    {"NtGdiSTROBJ_bEnum", nullptr},
-    {"NtGdiSTROBJ_bEnumPositionsOnly", nullptr},
-    {"NtGdiSTROBJ_vEnumStart", nullptr},
-    {"NtGdiSTROBJ_dwGetCodePage", nullptr},
-    {"NtGdiSTROBJ_bGetAdvanceWidths", nullptr},
-    {"NtGdiEngComputeGlyphSet", nullptr},
-    {"NtGdiXLATEOBJ_iXlate", nullptr},
-    {"NtGdiXLATEOBJ_hGetColorTransform", nullptr},
-    {"NtGdiPATHOBJ_vGetBounds", nullptr},
-    {"NtGdiPATHOBJ_bEnum", nullptr},
-    {"NtGdiPATHOBJ_vEnumStart", nullptr},
-    {"NtGdiEngDeletePath", nullptr},
-    {"NtGdiPATHOBJ_vEnumStartClipLines", nullptr},
-    {"NtGdiPATHOBJ_bEnumClipLines", nullptr},
-    {"NtGdiEngCheckAbort", nullptr},
-    {"NtGdiGetDhpdev", nullptr},
-    {"NtGdiHT_Get8BPPFormatPalette", nullptr},
-    {"NtGdiHT_Get8BPPMaskPalette", nullptr},
-    {"NtGdiUpdateTransform", nullptr},
-    {"NtGdiSetLayout", nullptr},
-    {"NtGdiMirrorWindowOrg", nullptr},
-    {"NtGdiGetDeviceWidth", nullptr},
-    {"NtGdiSetPUMPDOBJ", nullptr},
-    {"NtGdiBRUSHOBJ_DeleteRbrush", nullptr},
-    {"NtGdiUMPDEngFreeUserMem", nullptr},
-    {"NtGdiSetBitmapAttributes", nullptr},
-    {"NtGdiClearBitmapAttributes", nullptr},
-    {"NtGdiSetBrushAttributes", nullptr},
-    {"NtGdiClearBrushAttributes", nullptr},
-    {"NtGdiDrawStream", nullptr},
-    {"NtGdiMakeObjectXferable", nullptr},
-    {"NtGdiMakeObjectUnXferable", nullptr},
-    {"NtGdiSfmGetNotificationTokens", nullptr},
-    {"NtGdiSfmRegisterLogicalSurfaceForSignaling", nullptr},
-    {"NtGdiDwmGetHighColorMode", nullptr},
-    {"NtGdiDwmSetHighColorMode", nullptr},
-    {"NtGdiDwmCaptureScreen", nullptr},
-    {"NtGdiDdCreateFullscreenSprite", nullptr},
-    {"NtGdiDdNotifyFullscreenSpriteUpdate", nullptr},
-    {"NtGdiDdDestroyFullscreenSprite", nullptr},
-    {"NtGdiDdQueryVisRgnUniqueness", nullptr},
-    {"NtGdiAddFontResourceW", nullptr},
-    {"NtGdiConsoleTextOut", nullptr},
-    {"NtGdiEnumFontChunk", nullptr},
-    {"NtGdiEnumFontClose", nullptr},
-    {"NtGdiEnumFontOpen", nullptr},
-    {"NtGdiFullscreenControl", nullptr},
-    {"NtGdiGetSpoolMessage", nullptr},
-    {"NtGdiInitSpool", nullptr},
-    {"NtGdiSetupPublicCFONT", nullptr},
-    {"NtGdiStretchDIBitsInternal", nullptr},
-    {"NtGdiConfigureOPMProtectedOutput", nullptr},
-    {"NtGdiCreateOPMProtectedOutputs", nullptr},
-    {"NtGdiDDCCIGetCapabilitiesString", nullptr},
-    {"NtGdiDDCCIGetCapabilitiesStringLength", nullptr},
-    {"NtGdiDDCCIGetTimingReport", nullptr},
-    {"NtGdiDDCCIGetVCPFeature", nullptr},
-    {"NtGdiDDCCISaveCurrentSettings", nullptr},
-    {"NtGdiDDCCISetVCPFeature", nullptr},
-    {"NtGdiDdDDICheckExclusiveOwnership", nullptr},
-    {"NtGdiDdDDICheckMonitorPowerState", nullptr},
-    {"NtGdiDdDDICheckOcclusion", nullptr},
-    {"NtGdiDdDDICloseAdapter", nullptr},
-    {"NtGdiDdDDICreateAllocation", nullptr},
-    {"NtGdiDdDDICreateContext", nullptr},
-    {"NtGdiDdDDICreateDCFromMemory", nullptr},
-    {"NtGdiDdDDICreateDevice", nullptr},
-    {"NtGdiDdDDICreateOverlay", nullptr},
-    {"NtGdiDdDDICreateSynchronizationObject", nullptr},
-    {"NtGdiDdDDIDestroyAllocation", nullptr},
-    {"NtGdiDdDDIDestroyContext", nullptr},
-    {"NtGdiDdDDIDestroyDCFromMemory", nullptr},
-    {"NtGdiDdDDIDestroyDevice", nullptr},
-    {"NtGdiDdDDIDestroyOverlay", nullptr},
-    {"NtGdiDdDDIDestroySynchronizationObject", nullptr},
-    {"NtGdiDdDDIEscape", nullptr},
-    {"NtGdiDdDDIFlipOverlay", nullptr},
-    {"NtGdiDdDDIGetContextSchedulingPriority", nullptr},
-    {"NtGdiDdDDIGetDeviceState", nullptr},
-    {"NtGdiDdDDIGetDisplayModeList", nullptr},
-    {"NtGdiDdDDIGetMultisampleMethodList", nullptr},
-    {"NtGdiDdDDIGetPresentHistory", nullptr},
-    {"NtGdiDdDDIGetProcessSchedulingPriorityClass", nullptr},
-    {"NtGdiDdDDIGetRuntimeData", nullptr},
-    {"NtGdiDdDDIGetScanLine", nullptr},
-    {"NtGdiDdDDIGetSharedPrimaryHandle", nullptr},
-    {"NtGdiDdDDIInvalidateActiveVidPn", nullptr},
-    {"NtGdiDdDDILock", nullptr},
-    {"NtGdiDdDDIOpenAdapterFromDeviceName", nullptr},
-    {"NtGdiDdDDIOpenAdapterFromHdc", nullptr},
-    {"NtGdiDdDDIOpenResource", nullptr},
-    {"NtGdiDdDDIPollDisplayChildren", nullptr},
-    {"NtGdiDdDDIPresent", nullptr},
-    {"NtGdiDdDDIQueryAdapterInfo", nullptr},
-    {"NtGdiDdDDIQueryAllocationResidency", nullptr},
-    {"NtGdiDdDDIQueryResourceInfo", nullptr},
-    {"NtGdiDdDDIQueryStatistics", nullptr},
-    {"NtGdiDdDDIReleaseProcessVidPnSourceOwners", nullptr},
-    {"NtGdiDdDDIRender", nullptr},
-    {"NtGdiDdDDISetAllocationPriority", nullptr},
-    {"NtGdiDdDDISetContextSchedulingPriority", nullptr},
-    {"NtGdiDdDDISetDisplayMode", nullptr},
-    {"NtGdiDdDDISetDisplayPrivateDriverFormat", nullptr},
-    {"NtGdiDdDDISetGammaRamp", nullptr},
-    {"NtGdiDdDDISetProcessSchedulingPriorityClass", nullptr},
-    {"NtGdiDdDDISetQueuedLimit", nullptr},
-    {"NtGdiDdDDISetVidPnSourceOwner", nullptr},
-    {"NtGdiDdDDISharedPrimaryLockNotification", nullptr},
-    {"NtGdiDdDDISharedPrimaryUnLockNotification", nullptr},
-    {"NtGdiDdDDISignalSynchronizationObject", nullptr},
-    {"NtGdiDdDDIUnlock", nullptr},
-    {"NtGdiDdDDIUpdateOverlay", nullptr},
-    {"NtGdiDdDDIWaitForIdle", nullptr},
-    {"NtGdiDdDDIWaitForSynchronizationObject", nullptr},
-    {"NtGdiDdDDIWaitForVerticalBlankEvent", nullptr},
-    {"NtGdiDestroyOPMProtectedOutput", nullptr},
-    {"NtGdiDestroyPhysicalMonitor", nullptr},
-    {"NtGdiDwmGetDirtyRgn", nullptr},
-    {"NtGdiDwmGetSurfaceData", nullptr},
-    {"NtGdiGetCOPPCompatibleOPMInformation", nullptr},
-    {"NtGdiGetCertificate", nullptr},
-    {"NtGdiGetCertificateSize", nullptr},
-    {"NtGdiGetNumberOfPhysicalMonitors", nullptr},
-    {"NtGdiGetOPMInformation", nullptr},
-    {"NtGdiGetOPMRandomNumber", nullptr},
-    {"NtGdiGetPhysicalMonitorDescription", nullptr},
-    {"NtGdiGetPhysicalMonitors", nullptr},
-    {"NtGdiGetSuggestedOPMProtectedOutputArraySize", nullptr},
-    {"NtGdiSetOPMSigningKeyAndSequenceNumbers", nullptr},
-};
-
-static constexpr size_t g_generated_ntgdi_export_count =
-    sizeof(g_generated_ntgdi_exports) /
-    sizeof(g_generated_ntgdi_exports[0]);
-
-static FARPROC ResolveNtGdiExport(const char* name)
-{
-    if (!name)
-        return nullptr;
-
-    for (size_t i = 0; i < g_generated_ntgdi_export_count; ++i)
-    {
-        const GeneratedNtGdiExport& entry =
-            g_generated_ntgdi_exports[i];
-
-        if (std::strcmp(entry.name, name) == 0)
-            return entry.address;
-    }
-
-    return nullptr;
-}
 
 // Serialized handles are 16-bit indices into these pools.
 static std::vector<DHPDEV> g_handles_DHPDEV;
@@ -1583,7 +1158,6 @@ static void Decode__DD_GETDRIVERINFODATA(Decoder& d, _DD_GETDRIVERINFODATA& out)
 }
 
 static void Decode__LARGE_INTEGER(Decoder& d, _LARGE_INTEGER& out) {
-    (void)d;
     std::memset(&out, 0, sizeof(out));
     // Union policy: decode the first declared member only.
     std::memset(&out.u, 0, sizeof(out.u)); // unknown type: struct (unnamed struct at /usr/x86_64-w64-mingw32/include/winnt.h:520:5)
@@ -2530,6 +2104,519 @@ static constexpr SyscallMetadata kSyscalls[] = {
     {465u, "NtGdiSetOPMSigningKeyAndSequenceNumbers", 0u},
 };
 
+
+ 
+ struct GeneratedNtGdiExport
+ {
+     const char* name;
+     FARPROC address;
+ };
+ 
+ static GeneratedNtGdiExport g_generated_ntgdi_exports[] =
+ {
+     {"NtGdiInit", nullptr},
+     {"NtGdiSetDIBitsToDeviceInternal", nullptr},
+     {"NtGdiGetFontResourceInfoInternalW", nullptr},
+     {"NtGdiGetGlyphIndicesW", nullptr},
+     {"NtGdiGetGlyphIndicesWInternal", nullptr},
+     {"NtGdiCreatePaletteInternal", nullptr},
+     {"NtGdiArcInternal", nullptr},
+     {"NtGdiGetOutlineTextMetricsInternalW", nullptr},
+     {"NtGdiGetAndSetDCDword", nullptr},
+     {"NtGdiGetDCObject", nullptr},
+     {"NtGdiGetDCforBitmap", nullptr},
+     {"NtGdiGetMonitorID", nullptr},
+     {"NtGdiGetLinkedUFIs", nullptr},
+     {"NtGdiSetLinkedUFIs", nullptr},
+     {"NtGdiGetUFI", nullptr},
+     {"NtGdiForceUFIMapping", nullptr},
+     {"NtGdiGetUFIPathname", nullptr},
+     {"NtGdiAddRemoteFontToDC", nullptr},
+     {"NtGdiAddFontMemResourceEx", nullptr},
+     {"NtGdiRemoveFontMemResourceEx", nullptr},
+     {"NtGdiUnmapMemFont", nullptr},
+     {"NtGdiRemoveMergeFont", nullptr},
+     {"NtGdiAnyLinkedFonts", nullptr},
+     {"NtGdiGetEmbUFI", nullptr},
+     {"NtGdiGetEmbedFonts", nullptr},
+     {"NtGdiChangeGhostFont", nullptr},
+     {"NtGdiAddEmbFontToDC", nullptr},
+     {"NtGdiFontIsLinked", nullptr},
+     {"NtGdiPolyPolyDraw", nullptr},
+     {"NtGdiDoPalette", nullptr},
+     {"NtGdiComputeXformCoefficients", nullptr},
+     {"NtGdiGetWidthTable", nullptr},
+     {"NtGdiDescribePixelFormat", nullptr},
+     {"NtGdiSetPixelFormat", nullptr},
+     {"NtGdiSwapBuffers", nullptr},
+     {"NtGdiDxgGenericThunk", nullptr},
+     {"NtGdiDdAddAttachedSurface", nullptr},
+     {"NtGdiDdAttachSurface", nullptr},
+     {"NtGdiDdBlt", nullptr},
+     {"NtGdiDdCanCreateSurface", nullptr},
+     {"NtGdiDdColorControl", nullptr},
+     {"NtGdiDdCreateDirectDrawObject", nullptr},
+     {"NtGdiDdCreateSurface", nullptr},
+     {"NtGdiDdChangeSurfacePointer", nullptr},
+     {"NtGdiDdCreateSurfaceObject", nullptr},
+     {"NtGdiDdDeleteSurfaceObject", nullptr},
+     {"NtGdiDdDeleteDirectDrawObject", nullptr},
+     {"NtGdiDdDestroySurface", nullptr},
+     {"NtGdiDdFlip", nullptr},
+     {"NtGdiDdGetAvailDriverMemory", nullptr},
+     {"NtGdiDdGetBltStatus", nullptr},
+     {"NtGdiDdGetDC", nullptr},
+     {"NtGdiDdGetDriverInfo", nullptr},
+     {"NtGdiDdGetFlipStatus", nullptr},
+     {"NtGdiDdGetScanLine", nullptr},
+     {"NtGdiDdSetExclusiveMode", nullptr},
+     {"NtGdiDdFlipToGDISurface", nullptr},
+     {"NtGdiDdLock", nullptr},
+     {"NtGdiDdQueryDirectDrawObject", nullptr},
+     {"NtGdiDdReenableDirectDrawObject", nullptr},
+     {"NtGdiDdReleaseDC", nullptr},
+     {"NtGdiDdResetVisrgn", nullptr},
+     {"NtGdiDdSetColorKey", nullptr},
+     {"NtGdiDdSetOverlayPosition", nullptr},
+     {"NtGdiDdUnattachSurface", nullptr},
+     {"NtGdiDdUnlock", nullptr},
+     {"NtGdiDdUpdateOverlay", nullptr},
+     {"NtGdiDdWaitForVerticalBlank", nullptr},
+     {"NtGdiDdGetDxHandle", nullptr},
+     {"NtGdiDdSetGammaRamp", nullptr},
+     {"NtGdiDdLockD3D", nullptr},
+     {"NtGdiDdUnlockD3D", nullptr},
+     {"NtGdiDdCreateD3DBuffer", nullptr},
+     {"NtGdiDdCanCreateD3DBuffer", nullptr},
+     {"NtGdiDdDestroyD3DBuffer", nullptr},
+     {"NtGdiD3dContextCreate", nullptr},
+     {"NtGdiD3dContextDestroy", nullptr},
+     {"NtGdiD3dContextDestroyAll", nullptr},
+     {"NtGdiD3dValidateTextureStageState", nullptr},
+     {"NtGdiD3dDrawPrimitives2", nullptr},
+     {"NtGdiDdGetDriverState", nullptr},
+     {"NtGdiDdCreateSurfaceEx", nullptr},
+     {"NtGdiDvpCanCreateVideoPort", nullptr},
+     {"NtGdiDvpColorControl", nullptr},
+     {"NtGdiDvpCreateVideoPort", nullptr},
+     {"NtGdiDvpDestroyVideoPort", nullptr},
+     {"NtGdiDvpFlipVideoPort", nullptr},
+     {"NtGdiDvpGetVideoPortBandwidth", nullptr},
+     {"NtGdiDvpGetVideoPortField", nullptr},
+     {"NtGdiDvpGetVideoPortFlipStatus", nullptr},
+     {"NtGdiDvpGetVideoPortInputFormats", nullptr},
+     {"NtGdiDvpGetVideoPortLine", nullptr},
+     {"NtGdiDvpGetVideoPortOutputFormats", nullptr},
+     {"NtGdiDvpGetVideoPortConnectInfo", nullptr},
+     {"NtGdiDvpGetVideoSignalStatus", nullptr},
+     {"NtGdiDvpUpdateVideoPort", nullptr},
+     {"NtGdiDvpWaitForVideoPortSync", nullptr},
+     {"NtGdiDvpAcquireNotification", nullptr},
+     {"NtGdiDvpReleaseNotification", nullptr},
+     {"NtGdiDdGetMoCompGuids", nullptr},
+     {"NtGdiDdGetMoCompFormats", nullptr},
+     {"NtGdiDdGetMoCompBuffInfo", nullptr},
+     {"NtGdiDdGetInternalMoCompInfo", nullptr},
+     {"NtGdiDdCreateMoComp", nullptr},
+     {"NtGdiDdDestroyMoComp", nullptr},
+     {"NtGdiDdBeginMoCompFrame", nullptr},
+     {"NtGdiDdEndMoCompFrame", nullptr},
+     {"NtGdiDdRenderMoComp", nullptr},
+     {"NtGdiDdQueryMoCompStatus", nullptr},
+     {"NtGdiDdAlphaBlt", nullptr},
+     {"NtGdiAlphaBlend", nullptr},
+     {"NtGdiGradientFill", nullptr},
+     {"NtGdiSetIcmMode", nullptr},
+     {"NtGdiCreateColorSpace", nullptr},
+     {"NtGdiDeleteColorSpace", nullptr},
+     {"NtGdiSetColorSpace", nullptr},
+     {"NtGdiCreateColorTransform", nullptr},
+     {"NtGdiDeleteColorTransform", nullptr},
+     {"NtGdiCheckBitmapBits", nullptr},
+     {"NtGdiColorCorrectPalette", nullptr},
+     {"NtGdiGetColorSpaceforBitmap", nullptr},
+     {"NtGdiGetDeviceGammaRamp", nullptr},
+     {"NtGdiSetDeviceGammaRamp", nullptr},
+     {"NtGdiIcmBrushInfo", nullptr},
+     {"NtGdiFlush", nullptr},
+     {"NtGdiCreateMetafileDC", nullptr},
+     {"NtGdiMakeInfoDC", nullptr},
+     {"NtGdiCreateClientObj", nullptr},
+     {"NtGdiDeleteClientObj", nullptr},
+     {"NtGdiGetBitmapBits", nullptr},
+     {"NtGdiDeleteObjectApp", nullptr},
+     {"NtGdiGetPath", nullptr},
+     {"NtGdiCreateCompatibleDC", nullptr},
+     {"NtGdiCreateDIBitmapInternal", nullptr},
+     {"NtGdiCreateDIBSection", nullptr},
+     {"NtGdiCreateSolidBrush", nullptr},
+     {"NtGdiCreateDIBBrush", nullptr},
+     {"NtGdiCreatePatternBrushInternal", nullptr},
+     {"NtGdiCreateHatchBrushInternal", nullptr},
+     {"NtGdiExtCreatePen", nullptr},
+     {"NtGdiCreateEllipticRgn", nullptr},
+     {"NtGdiCreateRoundRectRgn", nullptr},
+     {"NtGdiCreateServerMetaFile", nullptr},
+     {"NtGdiExtCreateRegion", nullptr},
+     {"NtGdiMakeFontDir", nullptr},
+     {"NtGdiPolyDraw", nullptr},
+     {"NtGdiPolyTextOutW", nullptr},
+     {"NtGdiGetServerMetaFileBits", nullptr},
+     {"NtGdiEqualRgn", nullptr},
+     {"NtGdiGetBitmapDimension", nullptr},
+     {"NtGdiGetNearestPaletteIndex", nullptr},
+     {"NtGdiPtVisible", nullptr},
+     {"NtGdiRectVisible", nullptr},
+     {"NtGdiRemoveFontResourceW", nullptr},
+     {"NtGdiResizePalette", nullptr},
+     {"NtGdiSetBitmapDimension", nullptr},
+     {"NtGdiOffsetClipRgn", nullptr},
+     {"NtGdiSetMetaRgn", nullptr},
+     {"NtGdiSetTextJustification", nullptr},
+     {"NtGdiGetAppClipBox", nullptr},
+     {"NtGdiGetTextExtentExW", nullptr},
+     {"NtGdiGetCharABCWidthsW", nullptr},
+     {"NtGdiGetCharacterPlacementW", nullptr},
+     {"NtGdiAngleArc", nullptr},
+     {"NtGdiBeginPath", nullptr},
+     {"NtGdiSelectClipPath", nullptr},
+     {"NtGdiCloseFigure", nullptr},
+     {"NtGdiEndPath", nullptr},
+     {"NtGdiAbortPath", nullptr},
+     {"NtGdiFillPath", nullptr},
+     {"NtGdiStrokeAndFillPath", nullptr},
+     {"NtGdiStrokePath", nullptr},
+     {"NtGdiWidenPath", nullptr},
+     {"NtGdiFlattenPath", nullptr},
+     {"NtGdiPathToRegion", nullptr},
+     {"NtGdiSetMiterLimit", nullptr},
+     {"NtGdiSetFontXform", nullptr},
+     {"NtGdiGetMiterLimit", nullptr},
+     {"NtGdiEllipse", nullptr},
+     {"NtGdiRectangle", nullptr},
+     {"NtGdiRoundRect", nullptr},
+     {"NtGdiPlgBlt", nullptr},
+     {"NtGdiMaskBlt", nullptr},
+     {"NtGdiExtFloodFill", nullptr},
+     {"NtGdiFillRgn", nullptr},
+     {"NtGdiFrameRgn", nullptr},
+     {"NtGdiSetPixel", nullptr},
+     {"NtGdiGetPixel", nullptr},
+     {"NtGdiStartPage", nullptr},
+     {"NtGdiEndPage", nullptr},
+     {"NtGdiStartDoc", nullptr},
+     {"NtGdiEndDoc", nullptr},
+     {"NtGdiAbortDoc", nullptr},
+     {"NtGdiUpdateColors", nullptr},
+     {"NtGdiGetCharWidthW", nullptr},
+     {"NtGdiGetCharWidthInfo", nullptr},
+     {"NtGdiDrawEscape", nullptr},
+     {"NtGdiExtEscape", nullptr},
+     {"NtGdiGetFontData", nullptr},
+     {"NtGdiGetFontFileData", nullptr},
+     {"NtGdiGetFontFileInfo", nullptr},
+     {"NtGdiGetGlyphOutline", nullptr},
+     {"NtGdiGetETM", nullptr},
+     {"NtGdiGetRasterizerCaps", nullptr},
+     {"NtGdiGetKerningPairs", nullptr},
+     {"NtGdiMonoBitmap", nullptr},
+     {"NtGdiGetObjectBitmapHandle", nullptr},
+     {"NtGdiEnumObjects", nullptr},
+     {"NtGdiResetDC", nullptr},
+     {"NtGdiSetBoundsRect", nullptr},
+     {"NtGdiGetColorAdjustment", nullptr},
+     {"NtGdiSetColorAdjustment", nullptr},
+     {"NtGdiCancelDC", nullptr},
+     {"NtGdiGetDCDword", nullptr},
+     {"NtGdiGetDCPoint", nullptr},
+     {"NtGdiScaleViewportExtEx", nullptr},
+     {"NtGdiScaleWindowExtEx", nullptr},
+     {"NtGdiSetVirtualResolution", nullptr},
+     {"NtGdiSetSizeDevice", nullptr},
+     {"NtGdiGetTransform", nullptr},
+     {"NtGdiModifyWorldTransform", nullptr},
+     {"NtGdiCombineTransform", nullptr},
+     {"NtGdiTransformPoints", nullptr},
+     {"NtGdiConvertMetafileRect", nullptr},
+     {"NtGdiGetTextCharsetInfo", nullptr},
+     {"NtGdiDoBanding", nullptr},
+     {"NtGdiGetPerBandInfo", nullptr},
+     {"NtGdiGetStats", nullptr},
+     {"NtGdiSetMagicColors", nullptr},
+     {"NtGdiSelectBrush", nullptr},
+     {"NtGdiSelectPen", nullptr},
+     {"NtGdiSelectBitmap", nullptr},
+     {"NtGdiSelectFont", nullptr},
+     {"NtGdiExtSelectClipRgn", nullptr},
+     {"NtGdiCreatePen", nullptr},
+     {"NtGdiBitBlt", nullptr},
+     {"NtGdiTileBitBlt", nullptr},
+     {"NtGdiTransparentBlt", nullptr},
+     {"NtGdiGetTextExtent", nullptr},
+     {"NtGdiGetTextMetricsW", nullptr},
+     {"NtGdiGetTextFaceW", nullptr},
+     {"NtGdiGetRandomRgn", nullptr},
+     {"NtGdiExtTextOutW", nullptr},
+     {"NtGdiIntersectClipRect", nullptr},
+     {"NtGdiCreateRectRgn", nullptr},
+     {"NtGdiPatBlt", nullptr},
+     {"NtGdiPolyPatBlt", nullptr},
+     {"NtGdiUnrealizeObject", nullptr},
+     {"NtGdiGetStockObject", nullptr},
+     {"NtGdiCreateCompatibleBitmap", nullptr},
+     {"NtGdiCreateBitmapFromDxSurface", nullptr},
+     {"NtGdiBeginGdiRendering", nullptr},
+     {"NtGdiEndGdiRendering", nullptr},
+     {"NtGdiLineTo", nullptr},
+     {"NtGdiMoveTo", nullptr},
+     {"NtGdiExtGetObjectW", nullptr},
+     {"NtGdiGetDeviceCaps", nullptr},
+     {"NtGdiGetDeviceCapsAll", nullptr},
+     {"NtGdiStretchBlt", nullptr},
+     {"NtGdiSetBrushOrg", nullptr},
+     {"NtGdiCreateBitmap", nullptr},
+     {"NtGdiCreateHalftonePalette", nullptr},
+     {"NtGdiRestoreDC", nullptr},
+     {"NtGdiExcludeClipRect", nullptr},
+     {"NtGdiSaveDC", nullptr},
+     {"NtGdiCombineRgn", nullptr},
+     {"NtGdiSetRectRgn", nullptr},
+     {"NtGdiSetBitmapBits", nullptr},
+     {"NtGdiGetDIBitsInternal", nullptr},
+     {"NtGdiOffsetRgn", nullptr},
+     {"NtGdiGetRgnBox", nullptr},
+     {"NtGdiRectInRegion", nullptr},
+     {"NtGdiGetBoundsRect", nullptr},
+     {"NtGdiPtInRegion", nullptr},
+     {"NtGdiGetNearestColor", nullptr},
+     {"NtGdiGetSystemPaletteUse", nullptr},
+     {"NtGdiSetSystemPaletteUse", nullptr},
+     {"NtGdiGetRegionData", nullptr},
+     {"NtGdiInvertRgn", nullptr},
+     {"NtGdiSetFontEnumeration", nullptr},
+     {"NtGdiEnumFonts", nullptr},
+     {"NtGdiQueryFonts", nullptr},
+     {"NtGdiGetCharSet", nullptr},
+     {"NtGdiEnableEudc", nullptr},
+     {"NtGdiEudcLoadUnloadLink", nullptr},
+     {"NtGdiGetStringBitmapW", nullptr},
+     {"NtGdiGetEudcTimeStampEx", nullptr},
+     {"NtGdiQueryFontAssocInfo", nullptr},
+     {"NtGdiGetFontUnicodeRanges", nullptr},
+     {"NtGdiGetRealizationInfo", nullptr},
+     {"NtGdiAddRemoteMMInstanceToDC", nullptr},
+     {"NtGdiUnloadPrinterDriver", nullptr},
+     {"NtGdiEngAssociateSurface", nullptr},
+     {"NtGdiEngEraseSurface", nullptr},
+     {"NtGdiEngCreateBitmap", nullptr},
+     {"NtGdiEngDeleteSurface", nullptr},
+     {"NtGdiEngLockSurface", nullptr},
+     {"NtGdiEngUnlockSurface", nullptr},
+     {"NtGdiEngMarkBandingSurface", nullptr},
+     {"NtGdiEngCreateDeviceSurface", nullptr},
+     {"NtGdiEngCreateDeviceBitmap", nullptr},
+     {"NtGdiEngCopyBits", nullptr},
+     {"NtGdiEngStretchBlt", nullptr},
+     {"NtGdiEngBitBlt", nullptr},
+     {"NtGdiEngPlgBlt", nullptr},
+     {"NtGdiEngCreatePalette", nullptr},
+     {"NtGdiEngDeletePalette", nullptr},
+     {"NtGdiEngStrokePath", nullptr},
+     {"NtGdiEngFillPath", nullptr},
+     {"NtGdiEngStrokeAndFillPath", nullptr},
+     {"NtGdiEngPaint", nullptr},
+     {"NtGdiEngLineTo", nullptr},
+     {"NtGdiEngAlphaBlend", nullptr},
+     {"NtGdiEngGradientFill", nullptr},
+     {"NtGdiEngTransparentBlt", nullptr},
+     {"NtGdiEngTextOut", nullptr},
+     {"NtGdiEngStretchBltROP", nullptr},
+     {"NtGdiXLATEOBJ_cGetPalette", nullptr},
+     {"NtGdiCLIPOBJ_cEnumStart", nullptr},
+     {"NtGdiCLIPOBJ_bEnum", nullptr},
+     {"NtGdiCLIPOBJ_ppoGetPath", nullptr},
+     {"NtGdiEngCreateClip", nullptr},
+     {"NtGdiEngDeleteClip", nullptr},
+     {"NtGdiBRUSHOBJ_pvAllocRbrush", nullptr},
+     {"NtGdiBRUSHOBJ_pvGetRbrush", nullptr},
+     {"NtGdiBRUSHOBJ_ulGetBrushColor", nullptr},
+     {"NtGdiBRUSHOBJ_hGetColorTransform", nullptr},
+     {"NtGdiXFORMOBJ_bApplyXform", nullptr},
+     {"NtGdiXFORMOBJ_iGetXform", nullptr},
+     {"NtGdiFONTOBJ_vGetInfo", nullptr},
+     {"NtGdiFONTOBJ_cGetGlyphs", nullptr},
+     {"NtGdiFONTOBJ_pxoGetXform", nullptr},
+     {"NtGdiFONTOBJ_pifi", nullptr},
+     {"NtGdiFONTOBJ_pfdg", nullptr},
+     {"NtGdiFONTOBJ_cGetAllGlyphHandles", nullptr},
+     {"NtGdiFONTOBJ_pvTrueTypeFontFile", nullptr},
+     {"NtGdiFONTOBJ_pQueryGlyphAttrs", nullptr},
+     {"NtGdiSTROBJ_bEnum", nullptr},
+     {"NtGdiSTROBJ_bEnumPositionsOnly", nullptr},
+     {"NtGdiSTROBJ_vEnumStart", nullptr},
+     {"NtGdiSTROBJ_dwGetCodePage", nullptr},
+     {"NtGdiSTROBJ_bGetAdvanceWidths", nullptr},
+     {"NtGdiEngComputeGlyphSet", nullptr},
+     {"NtGdiXLATEOBJ_iXlate", nullptr},
+     {"NtGdiXLATEOBJ_hGetColorTransform", nullptr},
+     {"NtGdiPATHOBJ_vGetBounds", nullptr},
+     {"NtGdiPATHOBJ_bEnum", nullptr},
+     {"NtGdiPATHOBJ_vEnumStart", nullptr},
+     {"NtGdiEngDeletePath", nullptr},
+     {"NtGdiPATHOBJ_vEnumStartClipLines", nullptr},
+     {"NtGdiPATHOBJ_bEnumClipLines", nullptr},
+     {"NtGdiEngCheckAbort", nullptr},
+     {"NtGdiGetDhpdev", nullptr},
+     {"NtGdiHT_Get8BPPFormatPalette", nullptr},
+     {"NtGdiHT_Get8BPPMaskPalette", nullptr},
+     {"NtGdiUpdateTransform", nullptr},
+     {"NtGdiSetLayout", nullptr},
+     {"NtGdiMirrorWindowOrg", nullptr},
+     {"NtGdiGetDeviceWidth", nullptr},
+     {"NtGdiSetPUMPDOBJ", nullptr},
+     {"NtGdiBRUSHOBJ_DeleteRbrush", nullptr},
+     {"NtGdiUMPDEngFreeUserMem", nullptr},
+     {"NtGdiSetBitmapAttributes", nullptr},
+     {"NtGdiClearBitmapAttributes", nullptr},
+     {"NtGdiSetBrushAttributes", nullptr},
+     {"NtGdiClearBrushAttributes", nullptr},
+     {"NtGdiDrawStream", nullptr},
+     {"NtGdiMakeObjectXferable", nullptr},
+     {"NtGdiMakeObjectUnXferable", nullptr},
+     {"NtGdiSfmGetNotificationTokens", nullptr},
+     {"NtGdiSfmRegisterLogicalSurfaceForSignaling", nullptr},
+     {"NtGdiDwmGetHighColorMode", nullptr},
+     {"NtGdiDwmSetHighColorMode", nullptr},
+     {"NtGdiDwmCaptureScreen", nullptr},
+     {"NtGdiDdCreateFullscreenSprite", nullptr},
+     {"NtGdiDdNotifyFullscreenSpriteUpdate", nullptr},
+     {"NtGdiDdDestroyFullscreenSprite", nullptr},
+     {"NtGdiDdQueryVisRgnUniqueness", nullptr},
+     {"NtGdiAddFontResourceW", nullptr},
+     {"NtGdiConsoleTextOut", nullptr},
+     {"NtGdiEnumFontChunk", nullptr},
+     {"NtGdiEnumFontClose", nullptr},
+     {"NtGdiEnumFontOpen", nullptr},
+     {"NtGdiFullscreenControl", nullptr},
+     {"NtGdiGetSpoolMessage", nullptr},
+     {"NtGdiInitSpool", nullptr},
+     {"NtGdiSetupPublicCFONT", nullptr},
+     {"NtGdiStretchDIBitsInternal", nullptr},
+     {"NtGdiConfigureOPMProtectedOutput", nullptr},
+     {"NtGdiCreateOPMProtectedOutputs", nullptr},
+     {"NtGdiDDCCIGetCapabilitiesString", nullptr},
+     {"NtGdiDDCCIGetCapabilitiesStringLength", nullptr},
+     {"NtGdiDDCCIGetTimingReport", nullptr},
+     {"NtGdiDDCCIGetVCPFeature", nullptr},
+     {"NtGdiDDCCISaveCurrentSettings", nullptr},
+     {"NtGdiDDCCISetVCPFeature", nullptr},
+     {"NtGdiDdDDICheckExclusiveOwnership", nullptr},
+     {"NtGdiDdDDICheckMonitorPowerState", nullptr},
+     {"NtGdiDdDDICheckOcclusion", nullptr},
+     {"NtGdiDdDDICloseAdapter", nullptr},
+     {"NtGdiDdDDICreateAllocation", nullptr},
+     {"NtGdiDdDDICreateContext", nullptr},
+     {"NtGdiDdDDICreateDCFromMemory", nullptr},
+     {"NtGdiDdDDICreateDevice", nullptr},
+     {"NtGdiDdDDICreateOverlay", nullptr},
+     {"NtGdiDdDDICreateSynchronizationObject", nullptr},
+     {"NtGdiDdDDIDestroyAllocation", nullptr},
+     {"NtGdiDdDDIDestroyContext", nullptr},
+     {"NtGdiDdDDIDestroyDCFromMemory", nullptr},
+     {"NtGdiDdDDIDestroyDevice", nullptr},
+     {"NtGdiDdDDIDestroyOverlay", nullptr},
+     {"NtGdiDdDDIDestroySynchronizationObject", nullptr},
+     {"NtGdiDdDDIEscape", nullptr},
+     {"NtGdiDdDDIFlipOverlay", nullptr},
+     {"NtGdiDdDDIGetContextSchedulingPriority", nullptr},
+     {"NtGdiDdDDIGetDeviceState", nullptr},
+     {"NtGdiDdDDIGetDisplayModeList", nullptr},
+     {"NtGdiDdDDIGetMultisampleMethodList", nullptr},
+     {"NtGdiDdDDIGetPresentHistory", nullptr},
+     {"NtGdiDdDDIGetProcessSchedulingPriorityClass", nullptr},
+     {"NtGdiDdDDIGetRuntimeData", nullptr},
+     {"NtGdiDdDDIGetScanLine", nullptr},
+     {"NtGdiDdDDIGetSharedPrimaryHandle", nullptr},
+     {"NtGdiDdDDIInvalidateActiveVidPn", nullptr},
+     {"NtGdiDdDDILock", nullptr},
+     {"NtGdiDdDDIOpenAdapterFromDeviceName", nullptr},
+     {"NtGdiDdDDIOpenAdapterFromHdc", nullptr},
+     {"NtGdiDdDDIOpenResource", nullptr},
+     {"NtGdiDdDDIPollDisplayChildren", nullptr},
+     {"NtGdiDdDDIPresent", nullptr},
+     {"NtGdiDdDDIQueryAdapterInfo", nullptr},
+     {"NtGdiDdDDIQueryAllocationResidency", nullptr},
+     {"NtGdiDdDDIQueryResourceInfo", nullptr},
+     {"NtGdiDdDDIQueryStatistics", nullptr},
+     {"NtGdiDdDDIReleaseProcessVidPnSourceOwners", nullptr},
+     {"NtGdiDdDDIRender", nullptr},
+     {"NtGdiDdDDISetAllocationPriority", nullptr},
+     {"NtGdiDdDDISetContextSchedulingPriority", nullptr},
+     {"NtGdiDdDDISetDisplayMode", nullptr},
+     {"NtGdiDdDDISetDisplayPrivateDriverFormat", nullptr},
+     {"NtGdiDdDDISetGammaRamp", nullptr},
+     {"NtGdiDdDDISetProcessSchedulingPriorityClass", nullptr},
+     {"NtGdiDdDDISetQueuedLimit", nullptr},
+     {"NtGdiDdDDISetVidPnSourceOwner", nullptr},
+     {"NtGdiDdDDISharedPrimaryLockNotification", nullptr},
+     {"NtGdiDdDDISharedPrimaryUnLockNotification", nullptr},
+     {"NtGdiDdDDISignalSynchronizationObject", nullptr},
+     {"NtGdiDdDDIUnlock", nullptr},
+     {"NtGdiDdDDIUpdateOverlay", nullptr},
+     {"NtGdiDdDDIWaitForIdle", nullptr},
+     {"NtGdiDdDDIWaitForSynchronizationObject", nullptr},
+     {"NtGdiDdDDIWaitForVerticalBlankEvent", nullptr},
+     {"NtGdiDestroyOPMProtectedOutput", nullptr},
+     {"NtGdiDestroyPhysicalMonitor", nullptr},
+     {"NtGdiDwmGetDirtyRgn", nullptr},
+     {"NtGdiDwmGetSurfaceData", nullptr},
+     {"NtGdiGetCOPPCompatibleOPMInformation", nullptr},
+     {"NtGdiGetCertificate", nullptr},
+     {"NtGdiGetCertificateSize", nullptr},
+     {"NtGdiGetNumberOfPhysicalMonitors", nullptr},
+     {"NtGdiGetOPMInformation", nullptr},
+     {"NtGdiGetOPMRandomNumber", nullptr},
+     {"NtGdiGetPhysicalMonitorDescription", nullptr},
+     {"NtGdiGetPhysicalMonitors", nullptr},
+     {"NtGdiGetSuggestedOPMProtectedOutputArraySize", nullptr},
+     {"NtGdiSetOPMSigningKeyAndSequenceNumbers", nullptr},
+ };
+ 
+ static constexpr size_t g_generated_ntgdi_export_count =
+     sizeof(g_generated_ntgdi_exports) /
+     sizeof(g_generated_ntgdi_exports[0]);
+ 
+ static FARPROC ResolveNtGdiExport(const char* name)
+ {
+     if (!name)
+         return nullptr;
+ 
+     for (size_t i = 0; i < g_generated_ntgdi_export_count; ++i)
+     {
+         const GeneratedNtGdiExport& entry =
+             g_generated_ntgdi_exports[i];
+ 
+         if (std::strcmp(entry.name, name) == 0)
+             return entry.address;
+     }
+ 
+     return nullptr;
+ }
+
+/*
+ template <typename T>
+ static T PickHandle(const std::vector<T>& pool, Decoder& d)
+ {
+     if (pool.empty())
+         return T{};
+ 
+     const size_t index =
+         static_cast<size_t>(d.ReadU16()) % pool.size();
+ 
+     return pool[index];
+ }
+*/
+
 // One generated handler per syscall table entry.
 static void Handle_NtGdiInit(Decoder& d) {
     using Fn = BOOL (NTAPI*)(void);
@@ -2578,8 +2665,8 @@ static void Handle_NtGdiSetDIBitsToDeviceInternal(Decoder& d) {
 }
 
 static void Handle_NtGdiGetFontResourceInfoInternalW(Decoder& d) {
-    wchar_t arg0{};
-    d.ReadScalar(arg0);
+    OwnedBytes arg0_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg0 = reinterpret_cast<wchar_t*>(arg0_bytes.data());
     ULONG arg1{};
     d.ReadScalar(arg1);
     ULONG arg2{};
@@ -2593,30 +2680,33 @@ static void Handle_NtGdiGetFontResourceInfoInternalW(Decoder& d) {
     using Fn = BOOL (NTAPI*)(wchar_t *, ULONG, ULONG, UINT, DWORD *, uintptr_t *, DWORD);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetFontResourceInfoInternalW"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(&arg0, arg1, arg2, arg3, &arg4, &arg5, arg6);
+    BOOL result = fn(arg0, arg1, arg2, arg3, &arg4, &arg5, arg6);
     (void)result;
 }
 
 static void Handle_NtGdiGetGlyphIndicesW(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    wchar_t arg1{};
-    d.ReadScalar(arg1);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg1 = reinterpret_cast<wchar_t*>(arg1_bytes.data());
     int arg2{};
     d.ReadScalar(arg2);
-    WORD arg3{};
+    const size_t arg3_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(WORD));
+    OwnedBytes arg3_bytes = DecodeDerivedBytes(
+        d, arg3_capacity, false);
+    WORD* arg3 = reinterpret_cast<WORD*>(arg3_bytes.data());
     DWORD arg4{};
     d.ReadScalar(arg4);
     using Fn = uint32_t (NTAPI*)(HDC, wchar_t *, int, WORD *, DWORD);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetGlyphIndicesW"));
     if (!fn || !d.ok()) return;
-    uint32_t result = fn(arg0, &arg1, arg2, &arg3, arg4);
+    uint32_t result = fn(arg0, arg1, arg2, arg3, arg4);
     (void)result;
 }
 
 static void Handle_NtGdiGetGlyphIndicesWInternal(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    wchar_t arg1{};
-    d.ReadScalar(arg1);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg1 = reinterpret_cast<wchar_t*>(arg1_bytes.data());
     int arg2{};
     d.ReadScalar(arg2);
     WORD arg3{};
@@ -2627,7 +2717,7 @@ static void Handle_NtGdiGetGlyphIndicesWInternal(Decoder& d) {
     using Fn = uint32_t (NTAPI*)(HDC, wchar_t *, int, WORD *, DWORD, BOOL);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetGlyphIndicesWInternal"));
     if (!fn || !d.ok()) return;
-    uint32_t result = fn(arg0, &arg1, arg2, &arg3, arg4, arg5);
+    uint32_t result = fn(arg0, arg1, arg2, &arg3, arg4, arg5);
     (void)result;
 }
 
@@ -2644,9 +2734,10 @@ static void Handle_NtGdiCreatePaletteInternal(Decoder& d) {
 
 static void Handle_NtGdiArcInternal(Decoder& d) {
     // ARCTYPE arg0{};
-    //std::memset(&arg0, 0, sizeof(arg0)); // unknown type: ARCTYPE
+    // std::memset(&arg0, 0, sizeof(arg0)); // unknown type: ARCTYPE
+    
     int arg0{};
-    d.ReadScalar(arg0);
+
     HDC arg1 = PickHandle(g_handles_HDC, d);
     int arg2{};
     d.ReadScalar(arg2);
@@ -2664,7 +2755,6 @@ static void Handle_NtGdiArcInternal(Decoder& d) {
     d.ReadScalar(arg8);
     int arg9{};
     d.ReadScalar(arg9);
-    // using Fn = BOOL (NTAPI*)(ARCTYPE, HDC, int, int, int, int, int, int, int, int);
     using Fn = BOOL (NTAPI*)(int, HDC, int, int, int, int, int, int, int, int);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiArcInternal"));
     if (!fn || !d.ok()) return;
@@ -2677,7 +2767,8 @@ static void Handle_NtGdiGetOutlineTextMetricsInternalW(Decoder& d) {
     ULONG arg1{};
     d.ReadScalar(arg1);
     uintptr_t arg2{};
-    OwnedBytes arg3_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg3_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = uint32_t (NTAPI*)(HDC, ULONG, uintptr_t *, void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetOutlineTextMetricsInternalW"));
     if (!fn || !d.ok()) return;
@@ -2733,31 +2824,35 @@ static void Handle_NtGdiGetMonitorID(Decoder& d) {
 
 static void Handle_NtGdiGetLinkedUFIs(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg1_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
+    int* arg1 = reinterpret_cast<int*>(arg1_bytes.data());
     INT arg2{};
     d.ReadScalar(arg2);
     using Fn = int32_t (NTAPI*)(HDC, void *, INT);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetLinkedUFIs"));
     if (!fn || !d.ok()) return;
-    int32_t result = fn(arg0, arg1_bytes.data(), arg2);
+    int32_t result = fn(arg0, arg1, arg2);
     (void)result;
 }
 
 static void Handle_NtGdiSetLinkedUFIs(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
     OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    int* arg1 = reinterpret_cast<int*>(arg1_bytes.data());
     ULONG arg2{};
     d.ReadScalar(arg2);
     using Fn = BOOL (NTAPI*)(HDC, void *, ULONG);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiSetLinkedUFIs"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, arg1_bytes.data(), arg2);
+    BOOL result = fn(arg0, arg1, arg2);
     (void)result;
 }
 
 static void Handle_NtGdiGetUFI(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg1_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     DESIGNVECTOR arg2{};
     ULONG arg3{};
     ULONG arg4{};
@@ -2782,7 +2877,10 @@ static void Handle_NtGdiForceUFIMapping(Decoder& d) {
 static void Handle_NtGdiGetUFIPathname(Decoder& d) {
     OwnedBytes arg0_bytes = DecodeOwnedBytes(d);
     ULONG arg1{};
-    wchar_t arg2{};
+    const size_t arg2_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg1), sizeof(wchar_t));
+    OwnedBytes arg2_bytes = DecodeDerivedBytes(
+        d, arg2_capacity, false);
+    wchar_t* arg2 = reinterpret_cast<wchar_t*>(arg2_bytes.data());
     ULONG arg3{};
     FLONG arg4{};
     d.ReadScalar(arg4);
@@ -2794,7 +2892,7 @@ static void Handle_NtGdiGetUFIPathname(Decoder& d) {
     using Fn = BOOL (NTAPI*)(void *, ULONG *, wchar_t *, ULONG *, FLONG, BOOL *, ULONG *, PVOID *, BOOL *, ULONG *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetUFIPathname"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0_bytes.data(), &arg1, &arg2, &arg3, arg4, &arg5, &arg6, &arg7, &arg8, &arg9);
+    BOOL result = fn(arg0_bytes.data(), &arg1, arg2, &arg3, arg4, &arg5, &arg6, &arg7, &arg8, &arg9);
     (void)result;
 }
 
@@ -2868,12 +2966,14 @@ static void Handle_NtGdiAnyLinkedFonts(Decoder& d) {
 
 static void Handle_NtGdiGetEmbUFI(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg1_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     DESIGNVECTOR arg2{};
     ULONG arg3{};
     ULONG arg4{};
     FLONG arg5{};
-    OwnedBytes arg6_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg6_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = BOOL (NTAPI*)(HDC, void *, DESIGNVECTOR *, ULONG *, ULONG *, FLONG *, void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetEmbUFI"));
     if (!fn || !d.ok()) return;
@@ -2923,8 +3023,8 @@ static void Handle_NtGdiFontIsLinked(Decoder& d) {
 static void Handle_NtGdiPolyPolyDraw(Decoder& d) {
     uintptr_t arg0 = 0; // table marks this argument special-cased
     uintptr_t arg1 = 0; // table marks this argument special-cased
-    ULONG arg2{};
-    d.ReadScalar(arg2);
+    OwnedBytes arg2_bytes = DecodeOwnedBytes(d);
+    ULONG* arg2 = reinterpret_cast<ULONG*>(arg2_bytes.data());
     ULONG arg3{};
     d.ReadScalar(arg3);
     int arg4{};
@@ -2932,7 +3032,7 @@ static void Handle_NtGdiPolyPolyDraw(Decoder& d) {
     using Fn = uintptr_t (NTAPI*)(uintptr_t, uintptr_t, ULONG *, ULONG, int);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiPolyPolyDraw"));
     if (!fn || !d.ok()) return;
-    uintptr_t result = fn(arg0, arg1, &arg2, arg3, arg4);
+    uintptr_t result = fn(arg0, arg1, arg2, arg3, arg4);
     (void)result;
 }
 
@@ -2942,7 +3042,10 @@ static void Handle_NtGdiDoPalette(Decoder& d) {
     d.ReadScalar(arg1);
     WORD arg2{};
     d.ReadScalar(arg2);
-    PALETTEENTRY arg3{};
+    const size_t arg3_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(PALETTEENTRY));
+    OwnedBytes arg3_bytes = DecodeDerivedBytes(
+        d, arg3_capacity, false);
+    PALETTEENTRY* arg3 = reinterpret_cast<PALETTEENTRY*>(arg3_bytes.data());
     DWORD arg4{};
     d.ReadScalar(arg4);
     BOOL arg5{};
@@ -2950,7 +3053,7 @@ static void Handle_NtGdiDoPalette(Decoder& d) {
     using Fn = int32_t (NTAPI*)(HPALETTE, WORD, WORD, PALETTEENTRY *, DWORD, BOOL);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiDoPalette"));
     if (!fn || !d.ok()) return;
-    int32_t result = fn(arg0, arg1, arg2, &arg3, arg4, arg5);
+    int32_t result = fn(arg0, arg1, arg2, arg3, arg4, arg5);
     (void)result;
 }
 
@@ -2967,17 +3070,21 @@ static void Handle_NtGdiGetWidthTable(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
     ULONG arg1{};
     d.ReadScalar(arg1);
-    WCHAR arg2{};
-    d.ReadScalar(arg2);
+    OwnedBytes arg2_bytes = DecodeOwnedBytes(d);
+    WCHAR* arg2 = reinterpret_cast<WCHAR*>(arg2_bytes.data());
     ULONG arg3{};
     d.ReadScalar(arg3);
-    USHORT arg4{};
-    OwnedBytes arg5_bytes = DecodeOwnedBytes(d);
+    const size_t arg4_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg3), sizeof(USHORT));
+    OwnedBytes arg4_bytes = DecodeDerivedBytes(
+        d, arg4_capacity, false);
+    USHORT* arg4 = reinterpret_cast<USHORT*>(arg4_bytes.data());
+    OwnedBytes arg5_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     FLONG arg6{};
     using Fn = int32_t (NTAPI*)(HDC, ULONG, WCHAR *, ULONG, USHORT *, void *, FLONG *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetWidthTable"));
     if (!fn || !d.ok()) return;
-    int32_t result = fn(arg0, arg1, &arg2, arg3, &arg4, arg5_bytes.data(), &arg6);
+    int32_t result = fn(arg0, arg1, arg2, arg3, arg4, arg5_bytes.data(), &arg6);
     (void)result;
 }
 
@@ -3932,8 +4039,8 @@ static void Handle_NtGdiAlphaBlend(Decoder& d) {
 
 static void Handle_NtGdiGradientFill(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    TRIVERTEX arg1{};
-    Decode__TRIVERTEX(d, arg1);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    TRIVERTEX* arg1 = reinterpret_cast<TRIVERTEX*>(arg1_bytes.data());
     ULONG arg2{};
     d.ReadScalar(arg2);
     PVOID arg3{};
@@ -3945,7 +4052,7 @@ static void Handle_NtGdiGradientFill(Decoder& d) {
     using Fn = BOOL (NTAPI*)(HDC, TRIVERTEX *, ULONG, PVOID, ULONG, ULONG);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGradientFill"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, &arg1, arg2, arg3, arg4, arg5);
+    BOOL result = fn(arg0, arg1, arg2, arg3, arg4, arg5);
     (void)result;
 }
 
@@ -4051,14 +4158,16 @@ static void Handle_NtGdiColorCorrectPalette(Decoder& d) {
     d.ReadScalar(arg2);
     ULONG arg3{};
     d.ReadScalar(arg3);
-    PALETTEENTRY arg4{};
-    Decode_tagPALETTEENTRY(d, arg4);
+    const size_t arg4_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg3), sizeof(PALETTEENTRY));
+    OwnedBytes arg4_bytes = DecodeDerivedBytes(
+        d, arg4_capacity, true);
+    PALETTEENTRY* arg4 = reinterpret_cast<PALETTEENTRY*>(arg4_bytes.data());
     ULONG arg5{};
     d.ReadScalar(arg5);
     using Fn = uint32_t (NTAPI*)(HDC, HPALETTE, ULONG, ULONG, PALETTEENTRY *, ULONG);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiColorCorrectPalette"));
     if (!fn || !d.ok()) return;
-    uint32_t result = fn(arg0, arg1, arg2, arg3, &arg4, arg5);
+    uint32_t result = fn(arg0, arg1, arg2, arg3, arg4, arg5);
     (void)result;
 }
 
@@ -4181,14 +4290,18 @@ static void Handle_NtGdiDeleteObjectApp(Decoder& d) {
 
 static void Handle_NtGdiGetPath(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    POINT arg1{};
-    BYTE arg2{};
+    OwnedBytes arg1_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
+    POINT* arg1 = reinterpret_cast<POINT*>(arg1_bytes.data());
+    OwnedBytes arg2_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
+    BYTE* arg2 = reinterpret_cast<BYTE*>(arg2_bytes.data());
     int arg3{};
     d.ReadScalar(arg3);
     using Fn = int32_t (NTAPI*)(HDC, POINT *, BYTE *, int);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetPath"));
     if (!fn || !d.ok()) return;
-    int32_t result = fn(arg0, &arg1, &arg2, arg3);
+    int32_t result = fn(arg0, arg1, arg2, arg3);
     (void)result;
 }
 
@@ -4325,8 +4438,10 @@ static void Handle_NtGdiExtCreatePen(Decoder& d) {
     d.ReadScalar(arg5);
     ULONG arg6{};
     d.ReadScalar(arg6);
-    ULONG arg7{};
-    d.ReadScalar(arg7);
+    const size_t arg7_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg6), sizeof(ULONG));
+    OwnedBytes arg7_bytes = DecodeDerivedBytes(
+        d, arg7_capacity, true);
+    ULONG* arg7 = reinterpret_cast<ULONG*>(arg7_bytes.data());
     ULONG arg8{};
     d.ReadScalar(arg8);
     BOOL arg9{};
@@ -4335,7 +4450,7 @@ static void Handle_NtGdiExtCreatePen(Decoder& d) {
     using Fn = HANDLE (NTAPI*)(ULONG, ULONG, ULONG, ULONG, ULONG_PTR, ULONG_PTR, ULONG, ULONG *, ULONG, BOOL, HBRUSH);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiExtCreatePen"));
     if (!fn || !d.ok()) return;
-    HANDLE result = fn(arg0, arg1, arg2, arg3, arg4, arg5, arg6, &arg7, arg8, arg9, arg10);
+    HANDLE result = fn(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
     RememberHandle(g_handles_HANDLE, result);
 }
 
@@ -4428,23 +4543,23 @@ static void Handle_NtGdiMakeFontDir(Decoder& d) {
 
 static void Handle_NtGdiPolyDraw(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    POINT arg1{};
-    Decode_tagPOINT(d, arg1);
-    BYTE arg2{};
-    d.ReadScalar(arg2);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    POINT* arg1 = reinterpret_cast<POINT*>(arg1_bytes.data());
+    OwnedBytes arg2_bytes = DecodeOwnedBytes(d);
+    BYTE* arg2 = reinterpret_cast<BYTE*>(arg2_bytes.data());
     ULONG arg3{};
     d.ReadScalar(arg3);
     using Fn = BOOL (NTAPI*)(HDC, POINT *, BYTE *, ULONG);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiPolyDraw"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, &arg1, &arg2, arg3);
+    BOOL result = fn(arg0, arg1, arg2, arg3);
     (void)result;
 }
 
 static void Handle_NtGdiPolyTextOutW(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    POLYTEXTW arg1{};
-    Decode_tagPOLYTEXTW(d, arg1);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    POLYTEXTW* arg1 = reinterpret_cast<POLYTEXTW*>(arg1_bytes.data());
     UINT arg2{};
     d.ReadScalar(arg2);
     DWORD arg3{};
@@ -4452,7 +4567,7 @@ static void Handle_NtGdiPolyTextOutW(Decoder& d) {
     using Fn = BOOL (NTAPI*)(HDC, POLYTEXTW *, UINT, DWORD);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiPolyTextOutW"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, &arg1, arg2, arg3);
+    BOOL result = fn(arg0, arg1, arg2, arg3);
     (void)result;
 }
 
@@ -4528,8 +4643,8 @@ static void Handle_NtGdiRectVisible(Decoder& d) {
 }
 
 static void Handle_NtGdiRemoveFontResourceW(Decoder& d) {
-    WCHAR arg0{};
-    d.ReadScalar(arg0);
+    OwnedBytes arg0_bytes = DecodeOwnedBytes(d);
+    WCHAR* arg0 = reinterpret_cast<WCHAR*>(arg0_bytes.data());
     ULONG arg1{};
     d.ReadScalar(arg1);
     ULONG arg2{};
@@ -4543,7 +4658,7 @@ static void Handle_NtGdiRemoveFontResourceW(Decoder& d) {
     using Fn = BOOL (NTAPI*)(WCHAR *, ULONG, ULONG, ULONG, DWORD, DESIGNVECTOR *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiRemoveFontResourceW"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(&arg0, arg1, arg2, arg3, arg4, &arg5);
+    BOOL result = fn(arg0, arg1, arg2, arg3, arg4, &arg5);
     (void)result;
 }
 
@@ -4619,21 +4734,24 @@ static void Handle_NtGdiGetAppClipBox(Decoder& d) {
 
 static void Handle_NtGdiGetTextExtentExW(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    wchar_t arg1{};
-    d.ReadScalar(arg1);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg1 = reinterpret_cast<wchar_t*>(arg1_bytes.data());
     ULONG arg2{};
     d.ReadScalar(arg2);
     ULONG arg3{};
     d.ReadScalar(arg3);
     ULONG arg4{};
-    ULONG arg5{};
+    const size_t arg5_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(ULONG));
+    OwnedBytes arg5_bytes = DecodeDerivedBytes(
+        d, arg5_capacity, false);
+    ULONG* arg5 = reinterpret_cast<ULONG*>(arg5_bytes.data());
     SIZE arg6{};
     FLONG arg7{};
     d.ReadScalar(arg7);
     using Fn = BOOL (NTAPI*)(HDC, wchar_t *, ULONG, ULONG, ULONG *, ULONG *, SIZE *, FLONG);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetTextExtentExW"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, &arg1, arg2, arg3, &arg4, &arg5, &arg6, arg7);
+    BOOL result = fn(arg0, arg1, arg2, arg3, &arg4, arg5, &arg6, arg7);
     (void)result;
 }
 
@@ -4643,22 +4761,27 @@ static void Handle_NtGdiGetCharABCWidthsW(Decoder& d) {
     d.ReadScalar(arg1);
     ULONG arg2{};
     d.ReadScalar(arg2);
-    WCHAR arg3{};
-    d.ReadScalar(arg3);
+    const size_t arg3_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(WCHAR));
+    OwnedBytes arg3_bytes = DecodeDerivedBytes(
+        d, arg3_capacity, true);
+    WCHAR* arg3 = reinterpret_cast<WCHAR*>(arg3_bytes.data());
     FLONG arg4{};
     d.ReadScalar(arg4);
-    ABC arg5{};
+    const size_t arg5_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(ABC));
+    OwnedBytes arg5_bytes = DecodeDerivedBytes(
+        d, arg5_capacity, false);
+    ABC* arg5 = reinterpret_cast<ABC*>(arg5_bytes.data());
     using Fn = BOOL (NTAPI*)(HDC, UINT, ULONG, WCHAR *, FLONG, ABC *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetCharABCWidthsW"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, arg1, arg2, &arg3, arg4, &arg5);
+    BOOL result = fn(arg0, arg1, arg2, arg3, arg4, arg5);
     (void)result;
 }
 
 static void Handle_NtGdiGetCharacterPlacementW(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    wchar_t arg1{};
-    d.ReadScalar(arg1);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg1 = reinterpret_cast<wchar_t*>(arg1_bytes.data());
     int arg2{};
     d.ReadScalar(arg2);
     int arg3{};
@@ -4670,7 +4793,7 @@ static void Handle_NtGdiGetCharacterPlacementW(Decoder& d) {
     using Fn = uint32_t (NTAPI*)(HDC, wchar_t *, int, int, GCP_RESULTSW *, DWORD);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetCharacterPlacementW"));
     if (!fn || !d.ok()) return;
-    uint32_t result = fn(arg0, &arg1, arg2, arg3, &arg4, arg5);
+    uint32_t result = fn(arg0, arg1, arg2, arg3, &arg4, arg5);
     (void)result;
 }
 
@@ -5079,21 +5202,27 @@ static void Handle_NtGdiGetCharWidthW(Decoder& d) {
     d.ReadScalar(arg1);
     UINT arg2{};
     d.ReadScalar(arg2);
-    WCHAR arg3{};
-    d.ReadScalar(arg3);
+    const size_t arg3_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(WCHAR));
+    OwnedBytes arg3_bytes = DecodeDerivedBytes(
+        d, arg3_capacity, true);
+    WCHAR* arg3 = reinterpret_cast<WCHAR*>(arg3_bytes.data());
     FLONG arg4{};
     d.ReadScalar(arg4);
-    ULONG arg5{};
+    const size_t arg5_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(ULONG));
+    OwnedBytes arg5_bytes = DecodeDerivedBytes(
+        d, arg5_capacity, false);
+    ULONG* arg5 = reinterpret_cast<ULONG*>(arg5_bytes.data());
     using Fn = BOOL (NTAPI*)(HDC, UINT, UINT, WCHAR *, FLONG, ULONG *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetCharWidthW"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, arg1, arg2, &arg3, arg4, &arg5);
+    BOOL result = fn(arg0, arg1, arg2, arg3, arg4, arg5);
     (void)result;
 }
 
 static void Handle_NtGdiGetCharWidthInfo(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg1_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = BOOL (NTAPI*)(HDC, void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetCharWidthInfo"));
     if (!fn || !d.ok()) return;
@@ -5118,8 +5247,8 @@ static void Handle_NtGdiDrawEscape(Decoder& d) {
 
 static void Handle_NtGdiExtEscape(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    WCHAR arg1{};
-    d.ReadScalar(arg1);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    WCHAR* arg1 = reinterpret_cast<WCHAR*>(arg1_bytes.data());
     int arg2{};
     d.ReadScalar(arg2);
     int arg3{};
@@ -5134,7 +5263,7 @@ static void Handle_NtGdiExtEscape(Decoder& d) {
     using Fn = int32_t (NTAPI*)(HDC, WCHAR *, int, int, int, uintptr_t *, int, uintptr_t *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiExtEscape"));
     if (!fn || !d.ok()) return;
-    int32_t result = fn(arg0, &arg1, arg2, arg3, arg4, &arg5, arg6, &arg7);
+    int32_t result = fn(arg0, arg1, arg2, arg3, arg4, &arg5, arg6, &arg7);
     (void)result;
 }
 
@@ -5210,7 +5339,8 @@ static void Handle_NtGdiGetGlyphOutline(Decoder& d) {
 
 static void Handle_NtGdiGetETM(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg1_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = BOOL (NTAPI*)(HDC, void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetETM"));
     if (!fn || !d.ok()) return;
@@ -5233,11 +5363,14 @@ static void Handle_NtGdiGetKerningPairs(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
     ULONG arg1{};
     d.ReadScalar(arg1);
-    KERNINGPAIR arg2{};
+    const size_t arg2_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg1), sizeof(KERNINGPAIR));
+    OwnedBytes arg2_bytes = DecodeDerivedBytes(
+        d, arg2_capacity, false);
+    KERNINGPAIR* arg2 = reinterpret_cast<KERNINGPAIR*>(arg2_bytes.data());
     using Fn = uint32_t (NTAPI*)(HDC, ULONG, KERNINGPAIR *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetKerningPairs"));
     if (!fn || !d.ok()) return;
-    uint32_t result = fn(arg0, arg1, &arg2);
+    uint32_t result = fn(arg0, arg1, arg2);
     (void)result;
 }
 
@@ -5280,7 +5413,8 @@ static void Handle_NtGdiResetDC(Decoder& d) {
     Decode__devicemodeW(d, arg1);
     BOOL arg2{};
     OwnedBytes arg3_bytes = DecodeOwnedBytes(d);
-    OwnedBytes arg4_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg4_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = BOOL (NTAPI*)(HDC, DEVMODEW *, BOOL *, void *, void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiResetDC"));
     if (!fn || !d.ok()) return;
@@ -5461,9 +5595,11 @@ static void Handle_NtGdiCombineTransform(Decoder& d) {
 
 static void Handle_NtGdiTransformPoints(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    POINT arg1{};
-    Decode_tagPOINT(d, arg1);
-    POINT arg2{};
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    POINT* arg1 = reinterpret_cast<POINT*>(arg1_bytes.data());
+    OwnedBytes arg2_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
+    POINT* arg2 = reinterpret_cast<POINT*>(arg2_bytes.data());
     int arg3{};
     d.ReadScalar(arg3);
     int arg4{};
@@ -5471,7 +5607,7 @@ static void Handle_NtGdiTransformPoints(Decoder& d) {
     using Fn = BOOL (NTAPI*)(HDC, POINT *, POINT *, int, int);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiTransformPoints"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, &arg1, &arg2, arg3, arg4);
+    BOOL result = fn(arg0, arg1, arg2, arg3, arg4);
     (void)result;
 }
 
@@ -5696,8 +5832,8 @@ static void Handle_NtGdiTransparentBlt(Decoder& d) {
 
 static void Handle_NtGdiGetTextExtent(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    wchar_t arg1{};
-    d.ReadScalar(arg1);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg1 = reinterpret_cast<wchar_t*>(arg1_bytes.data());
     int arg2{};
     d.ReadScalar(arg2);
     SIZE arg3{};
@@ -5706,7 +5842,7 @@ static void Handle_NtGdiGetTextExtent(Decoder& d) {
     using Fn = BOOL (NTAPI*)(HDC, wchar_t *, int, SIZE *, UINT);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetTextExtent"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, &arg1, arg2, &arg3, arg4);
+    BOOL result = fn(arg0, arg1, arg2, &arg3, arg4);
     (void)result;
 }
 
@@ -5726,13 +5862,16 @@ static void Handle_NtGdiGetTextFaceW(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
     int arg1{};
     d.ReadScalar(arg1);
-    wchar_t arg2{};
+    const size_t arg2_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg1), sizeof(wchar_t));
+    OwnedBytes arg2_bytes = DecodeDerivedBytes(
+        d, arg2_capacity, false);
+    wchar_t* arg2 = reinterpret_cast<wchar_t*>(arg2_bytes.data());
     BOOL arg3{};
     d.ReadScalar(arg3);
     using Fn = int32_t (NTAPI*)(HDC, int, wchar_t *, BOOL);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetTextFaceW"));
     if (!fn || !d.ok()) return;
-    int32_t result = fn(arg0, arg1, &arg2, arg3);
+    int32_t result = fn(arg0, arg1, arg2, arg3);
     (void)result;
 }
 
@@ -5758,18 +5897,20 @@ static void Handle_NtGdiExtTextOutW(Decoder& d) {
     d.ReadScalar(arg3);
     RECT arg4{};
     Decode_tagRECT(d, arg4);
-    wchar_t arg5{};
-    d.ReadScalar(arg5);
+    OwnedBytes arg5_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg5 = reinterpret_cast<wchar_t*>(arg5_bytes.data());
     int arg6{};
     d.ReadScalar(arg6);
-    INT arg7{};
-    d.ReadScalar(arg7);
+    const size_t arg7_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg6), sizeof(INT));
+    OwnedBytes arg7_bytes = DecodeDerivedBytes(
+        d, arg7_capacity, true);
+    INT* arg7 = reinterpret_cast<INT*>(arg7_bytes.data());
     DWORD arg8{};
     d.ReadScalar(arg8);
     using Fn = BOOL (NTAPI*)(HDC, int, int, UINT, RECT *, wchar_t *, int, INT *, DWORD);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiExtTextOutW"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, arg1, arg2, arg3, &arg4, &arg5, arg6, &arg7, arg8);
+    BOOL result = fn(arg0, arg1, arg2, arg3, &arg4, arg5, arg6, arg7, arg8);
     (void)result;
 }
 
@@ -5830,6 +5971,7 @@ static void Handle_NtGdiPolyPatBlt(Decoder& d) {
     DWORD arg1{};
     d.ReadScalar(arg1);
     OwnedBytes arg2_bytes = DecodeOwnedBytes(d);
+    int* arg2 = reinterpret_cast<int*>(arg2_bytes.data());
     DWORD arg3{};
     d.ReadScalar(arg3);
     DWORD arg4{};
@@ -5837,7 +5979,7 @@ static void Handle_NtGdiPolyPatBlt(Decoder& d) {
     using Fn = BOOL (NTAPI*)(HDC, DWORD, void *, DWORD, DWORD);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiPolyPatBlt"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, arg1, arg2_bytes.data(), arg3, arg4);
+    BOOL result = fn(arg0, arg1, arg2, arg3, arg4);
     (void)result;
 }
 
@@ -5964,7 +6106,8 @@ static void Handle_NtGdiGetDeviceCaps(Decoder& d) {
 
 static void Handle_NtGdiGetDeviceCapsAll(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg1_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = BOOL (NTAPI*)(HDC, void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetDeviceCapsAll"));
     if (!fn || !d.ok()) return;
@@ -6276,8 +6419,10 @@ static void Handle_NtGdiEnumFonts(Decoder& d) {
     d.ReadScalar(arg2);
     ULONG arg3{};
     d.ReadScalar(arg3);
-    wchar_t arg4{};
-    d.ReadScalar(arg4);
+    const size_t arg4_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg3), sizeof(wchar_t));
+    OwnedBytes arg4_bytes = DecodeDerivedBytes(
+        d, arg4_capacity, true);
+    wchar_t* arg4 = reinterpret_cast<wchar_t*>(arg4_bytes.data());
     ULONG arg5{};
     d.ReadScalar(arg5);
     ULONG arg6{};
@@ -6286,19 +6431,21 @@ static void Handle_NtGdiEnumFonts(Decoder& d) {
     using Fn = BOOL (NTAPI*)(HDC, ULONG, FLONG, ULONG, wchar_t *, ULONG, ULONG *, uintptr_t *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiEnumFonts"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, arg1, arg2, arg3, &arg4, arg5, &arg6, &arg7);
+    BOOL result = fn(arg0, arg1, arg2, arg3, arg4, arg5, &arg6, &arg7);
     (void)result;
 }
 
 static void Handle_NtGdiQueryFonts(Decoder& d) {
-    OwnedBytes arg0_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg0_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
+    int* arg0 = reinterpret_cast<int*>(arg0_bytes.data());
     ULONG arg1{};
     d.ReadScalar(arg1);
     LARGE_INTEGER arg2{};
     using Fn = int32_t (NTAPI*)(void *, ULONG, LARGE_INTEGER *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiQueryFonts"));
     if (!fn || !d.ok()) return;
-    int32_t result = fn(arg0_bytes.data(), arg1, &arg2);
+    int32_t result = fn(arg0, arg1, &arg2);
     (void)result;
 }
 
@@ -6322,12 +6469,12 @@ static void Handle_NtGdiEnableEudc(Decoder& d) {
 }
 
 static void Handle_NtGdiEudcLoadUnloadLink(Decoder& d) {
-    wchar_t arg0{};
-    d.ReadScalar(arg0);
+    OwnedBytes arg0_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg0 = reinterpret_cast<wchar_t*>(arg0_bytes.data());
     UINT arg1{};
     d.ReadScalar(arg1);
-    wchar_t arg2{};
-    d.ReadScalar(arg2);
+    OwnedBytes arg2_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg2 = reinterpret_cast<wchar_t*>(arg2_bytes.data());
     UINT arg3{};
     d.ReadScalar(arg3);
     INT arg4{};
@@ -6339,7 +6486,7 @@ static void Handle_NtGdiEudcLoadUnloadLink(Decoder& d) {
     using Fn = BOOL (NTAPI*)(wchar_t *, UINT, wchar_t *, UINT, INT, INT, BOOL);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiEudcLoadUnloadLink"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(&arg0, arg1, &arg2, arg3, arg4, arg5, arg6);
+    BOOL result = fn(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
     (void)result;
 }
 
@@ -6360,8 +6507,8 @@ static void Handle_NtGdiGetStringBitmapW(Decoder& d) {
 }
 
 static void Handle_NtGdiGetEudcTimeStampEx(Decoder& d) {
-    wchar_t arg0{};
-    d.ReadScalar(arg0);
+    OwnedBytes arg0_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg0 = reinterpret_cast<wchar_t*>(arg0_bytes.data());
     ULONG arg1{};
     d.ReadScalar(arg1);
     BOOL arg2{};
@@ -6369,7 +6516,7 @@ static void Handle_NtGdiGetEudcTimeStampEx(Decoder& d) {
     using Fn = uint32_t (NTAPI*)(wchar_t *, ULONG, BOOL);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetEudcTimeStampEx"));
     if (!fn || !d.ok()) return;
-    uint32_t result = fn(&arg0, arg1, arg2);
+    uint32_t result = fn(arg0, arg1, arg2);
     (void)result;
 }
 
@@ -6394,7 +6541,8 @@ static void Handle_NtGdiGetFontUnicodeRanges(Decoder& d) {
 
 static void Handle_NtGdiGetRealizationInfo(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg1_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = BOOL (NTAPI*)(HDC, void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetRealizationInfo"));
     if (!fn || !d.ok()) return;
@@ -6443,7 +6591,7 @@ static void Handle_NtGdiEngEraseSurface(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     RECTL arg1{};
@@ -6497,7 +6645,7 @@ static void Handle_NtGdiEngUnlockSurface(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     using Fn = void (NTAPI*)(SURFOBJ *);
@@ -6545,13 +6693,13 @@ static void Handle_NtGdiEngCopyBits(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     SURFOBJ arg1{};
     Decode__SURFOBJ(d, arg1);
     OwnedBytes arg1_surface_bytes = DecodeOwnedBytes(d);
-    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.bytes.size());
+    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.size);
     arg1.pvBits = arg1_surface_bytes.data();
     arg1.pvScan0 = arg1_surface_bytes.data();
     CLIPOBJ arg2{};
@@ -6573,19 +6721,19 @@ static void Handle_NtGdiEngStretchBlt(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     SURFOBJ arg1{};
     Decode__SURFOBJ(d, arg1);
     OwnedBytes arg1_surface_bytes = DecodeOwnedBytes(d);
-    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.bytes.size());
+    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.size);
     arg1.pvBits = arg1_surface_bytes.data();
     arg1.pvScan0 = arg1_surface_bytes.data();
     SURFOBJ arg2{};
     Decode__SURFOBJ(d, arg2);
     OwnedBytes arg2_surface_bytes = DecodeOwnedBytes(d);
-    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.bytes.size());
+    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.size);
     arg2.pvBits = arg2_surface_bytes.data();
     arg2.pvScan0 = arg2_surface_bytes.data();
     CLIPOBJ arg3{};
@@ -6615,19 +6763,19 @@ static void Handle_NtGdiEngBitBlt(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     SURFOBJ arg1{};
     Decode__SURFOBJ(d, arg1);
     OwnedBytes arg1_surface_bytes = DecodeOwnedBytes(d);
-    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.bytes.size());
+    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.size);
     arg1.pvBits = arg1_surface_bytes.data();
     arg1.pvScan0 = arg1_surface_bytes.data();
     SURFOBJ arg2{};
     Decode__SURFOBJ(d, arg2);
     OwnedBytes arg2_surface_bytes = DecodeOwnedBytes(d);
-    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.bytes.size());
+    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.size);
     arg2.pvBits = arg2_surface_bytes.data();
     arg2.pvScan0 = arg2_surface_bytes.data();
     CLIPOBJ arg3{};
@@ -6657,19 +6805,19 @@ static void Handle_NtGdiEngPlgBlt(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     SURFOBJ arg1{};
     Decode__SURFOBJ(d, arg1);
     OwnedBytes arg1_surface_bytes = DecodeOwnedBytes(d);
-    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.bytes.size());
+    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.size);
     arg1.pvBits = arg1_surface_bytes.data();
     arg1.pvScan0 = arg1_surface_bytes.data();
     SURFOBJ arg2{};
     Decode__SURFOBJ(d, arg2);
     OwnedBytes arg2_surface_bytes = DecodeOwnedBytes(d);
-    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.bytes.size());
+    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.size);
     arg2.pvBits = arg2_surface_bytes.data();
     arg2.pvScan0 = arg2_surface_bytes.data();
     CLIPOBJ arg3{};
@@ -6728,7 +6876,7 @@ static void Handle_NtGdiEngStrokePath(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     PATHOBJ arg1{};
@@ -6756,7 +6904,7 @@ static void Handle_NtGdiEngFillPath(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     PATHOBJ arg1{};
@@ -6782,7 +6930,7 @@ static void Handle_NtGdiEngStrokeAndFillPath(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     PATHOBJ arg1{};
@@ -6814,7 +6962,7 @@ static void Handle_NtGdiEngPaint(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     CLIPOBJ arg1{};
@@ -6836,7 +6984,7 @@ static void Handle_NtGdiEngLineTo(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     CLIPOBJ arg1{};
@@ -6866,13 +7014,13 @@ static void Handle_NtGdiEngAlphaBlend(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     SURFOBJ arg1{};
     Decode__SURFOBJ(d, arg1);
     OwnedBytes arg1_surface_bytes = DecodeOwnedBytes(d);
-    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.bytes.size());
+    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.size);
     arg1.pvBits = arg1_surface_bytes.data();
     arg1.pvScan0 = arg1_surface_bytes.data();
     CLIPOBJ arg2{};
@@ -6896,19 +7044,19 @@ static void Handle_NtGdiEngGradientFill(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     CLIPOBJ arg1{};
     Decode__CLIPOBJ(d, arg1);
     XLATEOBJ arg2{};
     Decode__XLATEOBJ(d, arg2);
-    TRIVERTEX arg3{};
-    Decode__TRIVERTEX(d, arg3);
+    OwnedBytes arg3_bytes = DecodeOwnedBytes(d);
+    TRIVERTEX* arg3 = reinterpret_cast<TRIVERTEX*>(arg3_bytes.data());
     ULONG arg4{};
     d.ReadScalar(arg4);
-    PVOID arg5{};
-    arg5 = nullptr; // raw pointer intentionally not deserialized
+    OwnedBytes arg5_bytes = DecodeOwnedBytes(d);
+    PVOID* arg5 = reinterpret_cast<PVOID*>(arg5_bytes.data());
     ULONG arg6{};
     d.ReadScalar(arg6);
     RECTL arg7{};
@@ -6920,7 +7068,7 @@ static void Handle_NtGdiEngGradientFill(Decoder& d) {
     using Fn = BOOL (NTAPI*)(SURFOBJ *, CLIPOBJ *, XLATEOBJ *, TRIVERTEX *, ULONG, PVOID *, ULONG, RECTL *, POINTL *, ULONG);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiEngGradientFill"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(&arg0, &arg1, &arg2, &arg3, arg4, &arg5, arg6, &arg7, &arg8, arg9);
+    BOOL result = fn(&arg0, &arg1, &arg2, arg3, arg4, arg5, arg6, &arg7, &arg8, arg9);
     (void)result;
 }
 
@@ -6928,13 +7076,13 @@ static void Handle_NtGdiEngTransparentBlt(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     SURFOBJ arg1{};
     Decode__SURFOBJ(d, arg1);
     OwnedBytes arg1_surface_bytes = DecodeOwnedBytes(d);
-    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.bytes.size());
+    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.size);
     arg1.pvBits = arg1_surface_bytes.data();
     arg1.pvScan0 = arg1_surface_bytes.data();
     CLIPOBJ arg2{};
@@ -6960,7 +7108,7 @@ static void Handle_NtGdiEngTextOut(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     STROBJ arg1{};
@@ -6992,19 +7140,19 @@ static void Handle_NtGdiEngStretchBltROP(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     SURFOBJ arg1{};
     Decode__SURFOBJ(d, arg1);
     OwnedBytes arg1_surface_bytes = DecodeOwnedBytes(d);
-    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.bytes.size());
+    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.size);
     arg1.pvBits = arg1_surface_bytes.data();
     arg1.pvScan0 = arg1_surface_bytes.data();
     SURFOBJ arg2{};
     Decode__SURFOBJ(d, arg2);
     OwnedBytes arg2_surface_bytes = DecodeOwnedBytes(d);
-    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.bytes.size());
+    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.size);
     arg2.pvBits = arg2_surface_bytes.data();
     arg2.pvScan0 = arg2_surface_bytes.data();
     CLIPOBJ arg3{};
@@ -7041,11 +7189,14 @@ static void Handle_NtGdiXLATEOBJ_cGetPalette(Decoder& d) {
     d.ReadScalar(arg1);
     ULONG arg2{};
     d.ReadScalar(arg2);
-    ULONG arg3{};
+    const size_t arg3_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(ULONG));
+    OwnedBytes arg3_bytes = DecodeDerivedBytes(
+        d, arg3_capacity, false);
+    ULONG* arg3 = reinterpret_cast<ULONG*>(arg3_bytes.data());
     using Fn = uint32_t (NTAPI*)(XLATEOBJ *, ULONG, ULONG, ULONG *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiXLATEOBJ_cGetPalette"));
     if (!fn || !d.ok()) return;
-    uint32_t result = fn(&arg0, arg1, arg2, &arg3);
+    uint32_t result = fn(&arg0, arg1, arg2, arg3);
     (void)result;
 }
 
@@ -7156,13 +7307,18 @@ static void Handle_NtGdiXFORMOBJ_bApplyXform(Decoder& d) {
     d.ReadScalar(arg1);
     ULONG arg2{};
     d.ReadScalar(arg2);
-    POINTL arg3{};
-    Decode__POINTL(d, arg3);
-    POINTL arg4{};
+    const size_t arg3_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(POINTL));
+    OwnedBytes arg3_bytes = DecodeDerivedBytes(
+        d, arg3_capacity, true);
+    POINTL* arg3 = reinterpret_cast<POINTL*>(arg3_bytes.data());
+    const size_t arg4_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(POINTL));
+    OwnedBytes arg4_bytes = DecodeDerivedBytes(
+        d, arg4_capacity, false);
+    POINTL* arg4 = reinterpret_cast<POINTL*>(arg4_bytes.data());
     using Fn = BOOL (NTAPI*)(XFORMOBJ *, ULONG, ULONG, POINTL *, POINTL *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiXFORMOBJ_bApplyXform"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(&arg0, arg1, arg2, &arg3, &arg4);
+    BOOL result = fn(&arg0, arg1, arg2, arg3, arg4);
     (void)result;
 }
 
@@ -7198,7 +7354,8 @@ static void Handle_NtGdiFONTOBJ_cGetGlyphs(Decoder& d) {
     d.ReadScalar(arg2);
     HGLYPH arg3{};
     arg3 = PickHandle(g_handles_HGLYPH, d);
-    OwnedBytes arg4_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg4_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = uint32_t (NTAPI*)(FONTOBJ *, ULONG, ULONG, HGLYPH *, void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiFONTOBJ_cGetGlyphs"));
     if (!fn || !d.ok()) return;
@@ -7276,11 +7433,14 @@ static void Handle_NtGdiSTROBJ_bEnum(Decoder& d) {
     Decode__STROBJ(d, arg0);
     ULONG arg1{};
     d.ReadScalar(arg1);
-    PGLYPHPOS arg2{};
+    const size_t arg2_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg1), sizeof(PGLYPHPOS));
+    OwnedBytes arg2_bytes = DecodeDerivedBytes(
+        d, arg2_capacity, false);
+    PGLYPHPOS* arg2 = reinterpret_cast<PGLYPHPOS*>(arg2_bytes.data());
     using Fn = BOOL (NTAPI*)(STROBJ *, ULONG *, PGLYPHPOS *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiSTROBJ_bEnum"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(&arg0, &arg1, &arg2);
+    BOOL result = fn(&arg0, &arg1, arg2);
     (void)result;
 }
 
@@ -7289,11 +7449,14 @@ static void Handle_NtGdiSTROBJ_bEnumPositionsOnly(Decoder& d) {
     Decode__STROBJ(d, arg0);
     ULONG arg1{};
     d.ReadScalar(arg1);
-    PGLYPHPOS arg2{};
+    const size_t arg2_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg1), sizeof(PGLYPHPOS));
+    OwnedBytes arg2_bytes = DecodeDerivedBytes(
+        d, arg2_capacity, false);
+    PGLYPHPOS* arg2 = reinterpret_cast<PGLYPHPOS*>(arg2_bytes.data());
     using Fn = BOOL (NTAPI*)(STROBJ *, ULONG *, PGLYPHPOS *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiSTROBJ_bEnumPositionsOnly"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(&arg0, &arg1, &arg2);
+    BOOL result = fn(&arg0, &arg1, arg2);
     (void)result;
 }
 
@@ -7323,11 +7486,14 @@ static void Handle_NtGdiSTROBJ_bGetAdvanceWidths(Decoder& d) {
     d.ReadScalar(arg1);
     ULONG arg2{};
     d.ReadScalar(arg2);
-    POINTQF arg3{};
+    const size_t arg3_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(POINTQF));
+    OwnedBytes arg3_bytes = DecodeDerivedBytes(
+        d, arg3_capacity, false);
+    POINTQF* arg3 = reinterpret_cast<POINTQF*>(arg3_bytes.data());
     using Fn = BOOL (NTAPI*)(STROBJ *, ULONG, ULONG, POINTQF *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiSTROBJ_bGetAdvanceWidths"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(&arg0, arg1, arg2, &arg3);
+    BOOL result = fn(&arg0, arg1, arg2, arg3);
     (void)result;
 }
 
@@ -7414,7 +7580,7 @@ static void Handle_NtGdiPATHOBJ_vEnumStartClipLines(Decoder& d) {
     SURFOBJ arg2{};
     Decode__SURFOBJ(d, arg2);
     OwnedBytes arg2_surface_bytes = DecodeOwnedBytes(d);
-    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.bytes.size());
+    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.size);
     arg2.pvBits = arg2_surface_bytes.data();
     arg2.pvScan0 = arg2_surface_bytes.data();
     LINEATTRS arg3{};
@@ -7442,7 +7608,7 @@ static void Handle_NtGdiEngCheckAbort(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     using Fn = BOOL (NTAPI*)(SURFOBJ *);
@@ -7476,7 +7642,6 @@ static void Handle_NtGdiHT_Get8BPPFormatPalette(Decoder& d) {
     (void)result;
 }
 
-/*
 static void Handle_NtGdiHT_Get8BPPMaskPalette(Decoder& d) {
     PALETTEENTRY arg0{};
     BOOL arg1{};
@@ -7494,49 +7659,6 @@ static void Handle_NtGdiHT_Get8BPPMaskPalette(Decoder& d) {
     if (!fn || !d.ok()) return;
     int32_t result = fn(&arg0, arg1, arg2, arg3, arg4, arg5);
     (void)result;
-}
-*/
-
-static void Handle_NtGdiHT_Get8BPPMaskPalette(Decoder& d)
-{
-    BOOL use_mask_palette{};
-    BYTE cmy_mask{};
-    USHORT red_gamma{};
-    USHORT green_gamma{};
-    USHORT blue_gamma{};
-
-    d.ReadScalar(use_mask_palette);
-    d.ReadScalar(cmy_mask);
-    d.ReadScalar(red_gamma);
-    d.ReadScalar(green_gamma);
-    d.ReadScalar(blue_gamma);
-
-    std::array<PALETTEENTRY, 256> palette{};
-
-    using Fn = LONG (NTAPI*)(
-        PALETTEENTRY*,
-        BOOL,
-        BYTE,
-        USHORT,
-        USHORT,
-        USHORT
-    );
-
-    static Fn fn = reinterpret_cast<Fn>(
-        ResolveNtGdiExport("NtGdiHT_Get8BPPMaskPalette"));
-
-    if (!fn || !d.ok())
-        return;
-
-    const LONG count = fn(
-        palette.data(),
-        use_mask_palette,
-        cmy_mask,
-        red_gamma,
-        green_gamma,
-        blue_gamma);
-
-    (void)count;
 }
 
 static void Handle_NtGdiUpdateTransform(Decoder& d) {
@@ -7716,7 +7838,8 @@ static void Handle_NtGdiSfmRegisterLogicalSurfaceForSignaling(Decoder& d) {
 }
 
 static void Handle_NtGdiDwmGetHighColorMode(Decoder& d) {
-    OwnedBytes arg0_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg0_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = BOOL (NTAPI*)(void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiDwmGetHighColorMode"));
     if (!fn || !d.ok()) return;
@@ -7725,9 +7848,9 @@ static void Handle_NtGdiDwmGetHighColorMode(Decoder& d) {
 }
 
 static void Handle_NtGdiDwmSetHighColorMode(Decoder& d) {
-    DXGI_FORMAT arg0{};
-    std::memset(&arg0, 0, sizeof(arg0)); // unknown type: DXGI_FORMAT
-    using Fn = BOOL (NTAPI*)(DXGI_FORMAT);
+    int arg0{};
+    std::memset(&arg0, 0, sizeof(arg0)); // unknown type: int
+    using Fn = BOOL (NTAPI*)(int);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiDwmSetHighColorMode"));
     if (!fn || !d.ok()) return;
     BOOL result = fn(arg0);
@@ -7737,9 +7860,9 @@ static void Handle_NtGdiDwmSetHighColorMode(Decoder& d) {
 static void Handle_NtGdiDwmCaptureScreen(Decoder& d) {
     RECT arg0{};
     Decode_tagRECT(d, arg0);
-    DXGI_FORMAT arg1{};
-    std::memset(&arg1, 0, sizeof(arg1)); // unknown type: DXGI_FORMAT
-    using Fn = HANDLE (NTAPI*)(RECT *, DXGI_FORMAT);
+    int arg1{};
+    std::memset(&arg1, 0, sizeof(arg1)); // unknown type: int
+    using Fn = HANDLE (NTAPI*)(RECT *, int);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiDwmCaptureScreen"));
     if (!fn || !d.ok()) return;
     HANDLE result = fn(&arg0, arg1);
@@ -7790,8 +7913,8 @@ static void Handle_NtGdiDdQueryVisRgnUniqueness(Decoder& d) {
 }
 
 static void Handle_NtGdiAddFontResourceW(Decoder& d) {
-    WCHAR arg0{};
-    d.ReadScalar(arg0);
+    OwnedBytes arg0_bytes = DecodeOwnedBytes(d);
+    WCHAR* arg0 = reinterpret_cast<WCHAR*>(arg0_bytes.data());
     ULONG arg1{};
     d.ReadScalar(arg1);
     ULONG arg2{};
@@ -7805,7 +7928,7 @@ static void Handle_NtGdiAddFontResourceW(Decoder& d) {
     using Fn = int32_t (NTAPI*)(WCHAR *, ULONG, ULONG, FLONG, DWORD, DESIGNVECTOR *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiAddFontResourceW"));
     if (!fn || !d.ok()) return;
-    int32_t result = fn(&arg0, arg1, arg2, arg3, arg4, &arg5);
+    int32_t result = fn(arg0, arg1, arg2, arg3, arg4, &arg5);
     (void)result;
 }
 
@@ -8532,7 +8655,7 @@ bool DispatchGeneratedNtGdi(const uint8_t* data, size_t size) {
         Handle_NtGdiArcInternal(d);
         return d.ok();
     case 7u:
-        // Handle_NtGdiGetOutlineTextMetricsInternalW(d);
+        Handle_NtGdiGetOutlineTextMetricsInternalW(d);
         return d.ok();
     case 8u:
         Handle_NtGdiGetAndSetDCDword(d);
@@ -8553,13 +8676,13 @@ bool DispatchGeneratedNtGdi(const uint8_t* data, size_t size) {
         Handle_NtGdiSetLinkedUFIs(d);
         return d.ok();
     case 14u:
-        // Handle_NtGdiGetUFI(d);
+        Handle_NtGdiGetUFI(d);
         return d.ok();
     case 15u:
         Handle_NtGdiForceUFIMapping(d);
         return d.ok();
     case 16u:
-        // Handle_NtGdiGetUFIPathname(d);
+        Handle_NtGdiGetUFIPathname(d);
         return d.ok();
     case 17u:
         Handle_NtGdiAddRemoteFontToDC(d);
@@ -8991,7 +9114,7 @@ bool DispatchGeneratedNtGdi(const uint8_t* data, size_t size) {
         Handle_NtGdiGetAppClipBox(d);
         return d.ok();
     case 160u:
-        // Handle_NtGdiGetTextExtentExW(d);
+        Handle_NtGdiGetTextExtentExW(d);
         return d.ok();
     case 161u:
         Handle_NtGdiGetCharABCWidthsW(d);
@@ -9228,10 +9351,10 @@ bool DispatchGeneratedNtGdi(const uint8_t* data, size_t size) {
         Handle_NtGdiGetTextExtent(d);
         return d.ok();
     case 239u:
-        // Handle_NtGdiGetTextMetricsW(d);
+        Handle_NtGdiGetTextMetricsW(d);
         return d.ok();
     case 240u:
-        // Handle_NtGdiGetTextFaceW(d);
+        Handle_NtGdiGetTextFaceW(d);
         return d.ok();
     case 241u:
         Handle_NtGdiGetRandomRgn(d);
@@ -9276,13 +9399,13 @@ bool DispatchGeneratedNtGdi(const uint8_t* data, size_t size) {
         Handle_NtGdiMoveTo(d);
         return d.ok();
     case 255u:
-        // Handle_NtGdiExtGetObjectW(d);
+        Handle_NtGdiExtGetObjectW(d);
         return d.ok();
     case 256u:
         Handle_NtGdiGetDeviceCaps(d);
         return d.ok();
     case 257u:
-        // Handle_NtGdiGetDeviceCapsAll(d);
+        Handle_NtGdiGetDeviceCapsAll(d);
         return d.ok();
     case 258u:
         Handle_NtGdiStretchBlt(d);
@@ -9573,7 +9696,7 @@ bool DispatchGeneratedNtGdi(const uint8_t* data, size_t size) {
         // Handle_NtGdiHT_Get8BPPFormatPalette(d);
         return d.ok();
     case 354u:
-        Handle_NtGdiHT_Get8BPPMaskPalette(d);
+        // Handle_NtGdiHT_Get8BPPMaskPalette(d);
         return d.ok();
     case 355u:
         Handle_NtGdiUpdateTransform(d);
@@ -9913,6 +10036,4 @@ bool DispatchGeneratedNtGdi(const uint8_t* data, size_t size) {
     }
 }
 
-
-// This is an extra paranthesis shit here...
-/// } // namespace generated_ntgdi
+// } // namespace generated_ntgdi

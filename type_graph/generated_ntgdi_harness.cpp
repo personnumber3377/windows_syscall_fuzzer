@@ -75,23 +75,96 @@ public:
         return true;
     }
 
+    // Copy as much serialized initialization data as remains and zero-pad the
+    // rest. This is useful for derived-size input/in-out arrays: their capacity
+    // comes from another syscall argument rather than from a length prefix.
+    size_t ReadBytesPadded(void* destination, size_t capacity) {
+        if (!destination || capacity == 0) return 0;
+        const size_t copied = (std::min)(capacity, remaining());
+        if (copied) std::memcpy(destination, cur_, copied);
+        if (copied < capacity)
+            std::memset(static_cast<uint8_t*>(destination) + copied, 0, capacity - copied);
+        cur_ += copied;
+        return copied;
+    }
+
 private:
     const uint8_t* cur_;
     const uint8_t* end_;
     bool ok_ = true;
 };
 
+static constexpr size_t kGeneratedScratchSize = 4u * 1024u * 1024u;
+static constexpr size_t kUnknownWritableCapacity = 4096u;
+
+alignas(64) static thread_local std::array<uint8_t, kGeneratedScratchSize>
+    g_generated_scratch{};
+static thread_local size_t g_generated_scratch_offset = 0;
+
+static void ResetGeneratedScratch() {
+    g_generated_scratch_offset = 0;
+}
+
+static size_t ClampGeneratedSize(size_t size) {
+    return (std::min)(size, kMaxGeneratedBuffer);
+}
+
+static size_t CheckedGeneratedProduct(size_t count, size_t element_size) {
+    if (element_size != 0 && count > kMaxGeneratedBuffer / element_size)
+        return kMaxGeneratedBuffer;
+    return ClampGeneratedSize(count * element_size);
+}
+
+static void* AllocateGeneratedScratch(size_t size, size_t alignment = alignof(std::max_align_t)) {
+    size = ClampGeneratedSize(size);
+    if (size == 0) size = 1;
+    if (alignment == 0 || (alignment & (alignment - 1)) != 0)
+        alignment = alignof(std::max_align_t);
+
+    const size_t aligned =
+        (g_generated_scratch_offset + alignment - 1) & ~(alignment - 1);
+    if (aligned > g_generated_scratch.size() ||
+        size > g_generated_scratch.size() - aligned)
+        return nullptr;
+
+    void* result = g_generated_scratch.data() + aligned;
+    g_generated_scratch_offset = aligned + size;
+    std::memset(result, 0, size);
+    return result;
+}
+
 struct OwnedBytes {
-    std::vector<uint8_t> bytes;
-    void* data() { return bytes.empty() ? nullptr : bytes.data(); }
-    const void* data() const { return bytes.empty() ? nullptr : bytes.data(); }
+    uint8_t* pointer = nullptr;
+    size_t size = 0;
+    void* data() { return pointer; }
+    const void* data() const { return pointer; }
 };
 
-static OwnedBytes DecodeOwnedBytes(Decoder& d, size_t maximum = kMaxGeneratedBuffer) {
+static OwnedBytes AllocateOwnedBytes(size_t capacity) {
     OwnedBytes result;
+    result.size = ClampGeneratedSize(capacity);
+    result.pointer = static_cast<uint8_t*>(AllocateGeneratedScratch(result.size));
+    if (!result.pointer) result.size = 0;
+    return result;
+}
+
+// Length-prefixed storage used when the table does not expose a relationship
+// to another argument. The memory still comes from the fixed scratch arena.
+static OwnedBytes DecodeOwnedBytes(Decoder& d, size_t maximum = kMaxGeneratedBuffer) {
     const size_t length = d.ReadBoundedLength(maximum);
-    result.bytes.resize(length);
-    d.ReadBytes(result.bytes.data(), result.bytes.size());
+    OwnedBytes result = AllocateOwnedBytes(length);
+    if (result.data() && result.size)
+        d.ReadBytes(result.data(), result.size);
+    return result;
+}
+
+static OwnedBytes DecodeDerivedBytes(
+    Decoder& d,
+    size_t capacity,
+    bool initialize_from_input) {
+    OwnedBytes result = AllocateOwnedBytes(capacity);
+    if (result.data() && result.size && initialize_from_input)
+        d.ReadBytesPadded(result.data(), result.size);
     return result;
 }
 
@@ -2058,8 +2131,8 @@ static void Handle_NtGdiSetDIBitsToDeviceInternal(Decoder& d) {
 }
 
 static void Handle_NtGdiGetFontResourceInfoInternalW(Decoder& d) {
-    wchar_t arg0{};
-    d.ReadScalar(arg0);
+    OwnedBytes arg0_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg0 = reinterpret_cast<wchar_t*>(arg0_bytes.data());
     ULONG arg1{};
     d.ReadScalar(arg1);
     ULONG arg2{};
@@ -2073,30 +2146,33 @@ static void Handle_NtGdiGetFontResourceInfoInternalW(Decoder& d) {
     using Fn = BOOL (NTAPI*)(wchar_t *, ULONG, ULONG, UINT, DWORD *, uintptr_t *, DWORD);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetFontResourceInfoInternalW"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(&arg0, arg1, arg2, arg3, &arg4, &arg5, arg6);
+    BOOL result = fn(arg0, arg1, arg2, arg3, &arg4, &arg5, arg6);
     (void)result;
 }
 
 static void Handle_NtGdiGetGlyphIndicesW(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    wchar_t arg1{};
-    d.ReadScalar(arg1);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg1 = reinterpret_cast<wchar_t*>(arg1_bytes.data());
     int arg2{};
     d.ReadScalar(arg2);
-    WORD arg3{};
+    const size_t arg3_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(WORD));
+    OwnedBytes arg3_bytes = DecodeDerivedBytes(
+        d, arg3_capacity, false);
+    WORD* arg3 = reinterpret_cast<WORD*>(arg3_bytes.data());
     DWORD arg4{};
     d.ReadScalar(arg4);
     using Fn = uint32_t (NTAPI*)(HDC, wchar_t *, int, WORD *, DWORD);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetGlyphIndicesW"));
     if (!fn || !d.ok()) return;
-    uint32_t result = fn(arg0, &arg1, arg2, &arg3, arg4);
+    uint32_t result = fn(arg0, arg1, arg2, arg3, arg4);
     (void)result;
 }
 
 static void Handle_NtGdiGetGlyphIndicesWInternal(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    wchar_t arg1{};
-    d.ReadScalar(arg1);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg1 = reinterpret_cast<wchar_t*>(arg1_bytes.data());
     int arg2{};
     d.ReadScalar(arg2);
     WORD arg3{};
@@ -2107,7 +2183,7 @@ static void Handle_NtGdiGetGlyphIndicesWInternal(Decoder& d) {
     using Fn = uint32_t (NTAPI*)(HDC, wchar_t *, int, WORD *, DWORD, BOOL);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetGlyphIndicesWInternal"));
     if (!fn || !d.ok()) return;
-    uint32_t result = fn(arg0, &arg1, arg2, &arg3, arg4, arg5);
+    uint32_t result = fn(arg0, arg1, arg2, &arg3, arg4, arg5);
     (void)result;
 }
 
@@ -2154,7 +2230,8 @@ static void Handle_NtGdiGetOutlineTextMetricsInternalW(Decoder& d) {
     ULONG arg1{};
     d.ReadScalar(arg1);
     uintptr_t arg2{};
-    OwnedBytes arg3_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg3_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = uint32_t (NTAPI*)(HDC, ULONG, uintptr_t *, void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetOutlineTextMetricsInternalW"));
     if (!fn || !d.ok()) return;
@@ -2210,31 +2287,35 @@ static void Handle_NtGdiGetMonitorID(Decoder& d) {
 
 static void Handle_NtGdiGetLinkedUFIs(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg1_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
+    UNIVERSAL_FONT_ID* arg1 = reinterpret_cast<UNIVERSAL_FONT_ID*>(arg1_bytes.data());
     INT arg2{};
     d.ReadScalar(arg2);
     using Fn = int32_t (NTAPI*)(HDC, void *, INT);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetLinkedUFIs"));
     if (!fn || !d.ok()) return;
-    int32_t result = fn(arg0, arg1_bytes.data(), arg2);
+    int32_t result = fn(arg0, arg1, arg2);
     (void)result;
 }
 
 static void Handle_NtGdiSetLinkedUFIs(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
     OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    UNIVERSAL_FONT_ID* arg1 = reinterpret_cast<UNIVERSAL_FONT_ID*>(arg1_bytes.data());
     ULONG arg2{};
     d.ReadScalar(arg2);
     using Fn = BOOL (NTAPI*)(HDC, void *, ULONG);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiSetLinkedUFIs"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, arg1_bytes.data(), arg2);
+    BOOL result = fn(arg0, arg1, arg2);
     (void)result;
 }
 
 static void Handle_NtGdiGetUFI(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg1_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     DESIGNVECTOR arg2{};
     ULONG arg3{};
     ULONG arg4{};
@@ -2259,7 +2340,10 @@ static void Handle_NtGdiForceUFIMapping(Decoder& d) {
 static void Handle_NtGdiGetUFIPathname(Decoder& d) {
     OwnedBytes arg0_bytes = DecodeOwnedBytes(d);
     ULONG arg1{};
-    wchar_t arg2{};
+    const size_t arg2_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg1), sizeof(wchar_t));
+    OwnedBytes arg2_bytes = DecodeDerivedBytes(
+        d, arg2_capacity, false);
+    wchar_t* arg2 = reinterpret_cast<wchar_t*>(arg2_bytes.data());
     ULONG arg3{};
     FLONG arg4{};
     d.ReadScalar(arg4);
@@ -2271,7 +2355,7 @@ static void Handle_NtGdiGetUFIPathname(Decoder& d) {
     using Fn = BOOL (NTAPI*)(void *, ULONG *, wchar_t *, ULONG *, FLONG, BOOL *, ULONG *, PVOID *, BOOL *, ULONG *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetUFIPathname"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0_bytes.data(), &arg1, &arg2, &arg3, arg4, &arg5, &arg6, &arg7, &arg8, &arg9);
+    BOOL result = fn(arg0_bytes.data(), &arg1, arg2, &arg3, arg4, &arg5, &arg6, &arg7, &arg8, &arg9);
     (void)result;
 }
 
@@ -2345,12 +2429,14 @@ static void Handle_NtGdiAnyLinkedFonts(Decoder& d) {
 
 static void Handle_NtGdiGetEmbUFI(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg1_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     DESIGNVECTOR arg2{};
     ULONG arg3{};
     ULONG arg4{};
     FLONG arg5{};
-    OwnedBytes arg6_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg6_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = BOOL (NTAPI*)(HDC, void *, DESIGNVECTOR *, ULONG *, ULONG *, FLONG *, void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetEmbUFI"));
     if (!fn || !d.ok()) return;
@@ -2400,8 +2486,8 @@ static void Handle_NtGdiFontIsLinked(Decoder& d) {
 static void Handle_NtGdiPolyPolyDraw(Decoder& d) {
     uintptr_t arg0 = 0; // table marks this argument special-cased
     uintptr_t arg1 = 0; // table marks this argument special-cased
-    ULONG arg2{};
-    d.ReadScalar(arg2);
+    OwnedBytes arg2_bytes = DecodeOwnedBytes(d);
+    ULONG* arg2 = reinterpret_cast<ULONG*>(arg2_bytes.data());
     ULONG arg3{};
     d.ReadScalar(arg3);
     int arg4{};
@@ -2409,7 +2495,7 @@ static void Handle_NtGdiPolyPolyDraw(Decoder& d) {
     using Fn = uintptr_t (NTAPI*)(uintptr_t, uintptr_t, ULONG *, ULONG, int);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiPolyPolyDraw"));
     if (!fn || !d.ok()) return;
-    uintptr_t result = fn(arg0, arg1, &arg2, arg3, arg4);
+    uintptr_t result = fn(arg0, arg1, arg2, arg3, arg4);
     (void)result;
 }
 
@@ -2419,7 +2505,10 @@ static void Handle_NtGdiDoPalette(Decoder& d) {
     d.ReadScalar(arg1);
     WORD arg2{};
     d.ReadScalar(arg2);
-    PALETTEENTRY arg3{};
+    const size_t arg3_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(PALETTEENTRY));
+    OwnedBytes arg3_bytes = DecodeDerivedBytes(
+        d, arg3_capacity, false);
+    PALETTEENTRY* arg3 = reinterpret_cast<PALETTEENTRY*>(arg3_bytes.data());
     DWORD arg4{};
     d.ReadScalar(arg4);
     BOOL arg5{};
@@ -2427,7 +2516,7 @@ static void Handle_NtGdiDoPalette(Decoder& d) {
     using Fn = int32_t (NTAPI*)(HPALETTE, WORD, WORD, PALETTEENTRY *, DWORD, BOOL);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiDoPalette"));
     if (!fn || !d.ok()) return;
-    int32_t result = fn(arg0, arg1, arg2, &arg3, arg4, arg5);
+    int32_t result = fn(arg0, arg1, arg2, arg3, arg4, arg5);
     (void)result;
 }
 
@@ -2444,17 +2533,21 @@ static void Handle_NtGdiGetWidthTable(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
     ULONG arg1{};
     d.ReadScalar(arg1);
-    WCHAR arg2{};
-    d.ReadScalar(arg2);
+    OwnedBytes arg2_bytes = DecodeOwnedBytes(d);
+    WCHAR* arg2 = reinterpret_cast<WCHAR*>(arg2_bytes.data());
     ULONG arg3{};
     d.ReadScalar(arg3);
-    USHORT arg4{};
-    OwnedBytes arg5_bytes = DecodeOwnedBytes(d);
+    const size_t arg4_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg3), sizeof(USHORT));
+    OwnedBytes arg4_bytes = DecodeDerivedBytes(
+        d, arg4_capacity, false);
+    USHORT* arg4 = reinterpret_cast<USHORT*>(arg4_bytes.data());
+    OwnedBytes arg5_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     FLONG arg6{};
     using Fn = int32_t (NTAPI*)(HDC, ULONG, WCHAR *, ULONG, USHORT *, void *, FLONG *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetWidthTable"));
     if (!fn || !d.ok()) return;
-    int32_t result = fn(arg0, arg1, &arg2, arg3, &arg4, arg5_bytes.data(), &arg6);
+    int32_t result = fn(arg0, arg1, arg2, arg3, arg4, arg5_bytes.data(), &arg6);
     (void)result;
 }
 
@@ -3409,8 +3502,8 @@ static void Handle_NtGdiAlphaBlend(Decoder& d) {
 
 static void Handle_NtGdiGradientFill(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    TRIVERTEX arg1{};
-    Decode__TRIVERTEX(d, arg1);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    TRIVERTEX* arg1 = reinterpret_cast<TRIVERTEX*>(arg1_bytes.data());
     ULONG arg2{};
     d.ReadScalar(arg2);
     PVOID arg3{};
@@ -3422,7 +3515,7 @@ static void Handle_NtGdiGradientFill(Decoder& d) {
     using Fn = BOOL (NTAPI*)(HDC, TRIVERTEX *, ULONG, PVOID, ULONG, ULONG);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGradientFill"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, &arg1, arg2, arg3, arg4, arg5);
+    BOOL result = fn(arg0, arg1, arg2, arg3, arg4, arg5);
     (void)result;
 }
 
@@ -3528,14 +3621,16 @@ static void Handle_NtGdiColorCorrectPalette(Decoder& d) {
     d.ReadScalar(arg2);
     ULONG arg3{};
     d.ReadScalar(arg3);
-    PALETTEENTRY arg4{};
-    Decode_tagPALETTEENTRY(d, arg4);
+    const size_t arg4_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg3), sizeof(PALETTEENTRY));
+    OwnedBytes arg4_bytes = DecodeDerivedBytes(
+        d, arg4_capacity, true);
+    PALETTEENTRY* arg4 = reinterpret_cast<PALETTEENTRY*>(arg4_bytes.data());
     ULONG arg5{};
     d.ReadScalar(arg5);
     using Fn = uint32_t (NTAPI*)(HDC, HPALETTE, ULONG, ULONG, PALETTEENTRY *, ULONG);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiColorCorrectPalette"));
     if (!fn || !d.ok()) return;
-    uint32_t result = fn(arg0, arg1, arg2, arg3, &arg4, arg5);
+    uint32_t result = fn(arg0, arg1, arg2, arg3, arg4, arg5);
     (void)result;
 }
 
@@ -3658,14 +3753,18 @@ static void Handle_NtGdiDeleteObjectApp(Decoder& d) {
 
 static void Handle_NtGdiGetPath(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    POINT arg1{};
-    BYTE arg2{};
+    OwnedBytes arg1_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
+    POINT* arg1 = reinterpret_cast<POINT*>(arg1_bytes.data());
+    OwnedBytes arg2_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
+    BYTE* arg2 = reinterpret_cast<BYTE*>(arg2_bytes.data());
     int arg3{};
     d.ReadScalar(arg3);
     using Fn = int32_t (NTAPI*)(HDC, POINT *, BYTE *, int);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetPath"));
     if (!fn || !d.ok()) return;
-    int32_t result = fn(arg0, &arg1, &arg2, arg3);
+    int32_t result = fn(arg0, arg1, arg2, arg3);
     (void)result;
 }
 
@@ -3802,8 +3901,10 @@ static void Handle_NtGdiExtCreatePen(Decoder& d) {
     d.ReadScalar(arg5);
     ULONG arg6{};
     d.ReadScalar(arg6);
-    ULONG arg7{};
-    d.ReadScalar(arg7);
+    const size_t arg7_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg6), sizeof(ULONG));
+    OwnedBytes arg7_bytes = DecodeDerivedBytes(
+        d, arg7_capacity, true);
+    ULONG* arg7 = reinterpret_cast<ULONG*>(arg7_bytes.data());
     ULONG arg8{};
     d.ReadScalar(arg8);
     BOOL arg9{};
@@ -3812,7 +3913,7 @@ static void Handle_NtGdiExtCreatePen(Decoder& d) {
     using Fn = HANDLE (NTAPI*)(ULONG, ULONG, ULONG, ULONG, ULONG_PTR, ULONG_PTR, ULONG, ULONG *, ULONG, BOOL, HBRUSH);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiExtCreatePen"));
     if (!fn || !d.ok()) return;
-    HANDLE result = fn(arg0, arg1, arg2, arg3, arg4, arg5, arg6, &arg7, arg8, arg9, arg10);
+    HANDLE result = fn(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
     RememberHandle(g_handles_HANDLE, result);
 }
 
@@ -3905,23 +4006,23 @@ static void Handle_NtGdiMakeFontDir(Decoder& d) {
 
 static void Handle_NtGdiPolyDraw(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    POINT arg1{};
-    Decode_tagPOINT(d, arg1);
-    BYTE arg2{};
-    d.ReadScalar(arg2);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    POINT* arg1 = reinterpret_cast<POINT*>(arg1_bytes.data());
+    OwnedBytes arg2_bytes = DecodeOwnedBytes(d);
+    BYTE* arg2 = reinterpret_cast<BYTE*>(arg2_bytes.data());
     ULONG arg3{};
     d.ReadScalar(arg3);
     using Fn = BOOL (NTAPI*)(HDC, POINT *, BYTE *, ULONG);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiPolyDraw"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, &arg1, &arg2, arg3);
+    BOOL result = fn(arg0, arg1, arg2, arg3);
     (void)result;
 }
 
 static void Handle_NtGdiPolyTextOutW(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    POLYTEXTW arg1{};
-    Decode_tagPOLYTEXTW(d, arg1);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    POLYTEXTW* arg1 = reinterpret_cast<POLYTEXTW*>(arg1_bytes.data());
     UINT arg2{};
     d.ReadScalar(arg2);
     DWORD arg3{};
@@ -3929,7 +4030,7 @@ static void Handle_NtGdiPolyTextOutW(Decoder& d) {
     using Fn = BOOL (NTAPI*)(HDC, POLYTEXTW *, UINT, DWORD);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiPolyTextOutW"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, &arg1, arg2, arg3);
+    BOOL result = fn(arg0, arg1, arg2, arg3);
     (void)result;
 }
 
@@ -4005,8 +4106,8 @@ static void Handle_NtGdiRectVisible(Decoder& d) {
 }
 
 static void Handle_NtGdiRemoveFontResourceW(Decoder& d) {
-    WCHAR arg0{};
-    d.ReadScalar(arg0);
+    OwnedBytes arg0_bytes = DecodeOwnedBytes(d);
+    WCHAR* arg0 = reinterpret_cast<WCHAR*>(arg0_bytes.data());
     ULONG arg1{};
     d.ReadScalar(arg1);
     ULONG arg2{};
@@ -4020,7 +4121,7 @@ static void Handle_NtGdiRemoveFontResourceW(Decoder& d) {
     using Fn = BOOL (NTAPI*)(WCHAR *, ULONG, ULONG, ULONG, DWORD, DESIGNVECTOR *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiRemoveFontResourceW"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(&arg0, arg1, arg2, arg3, arg4, &arg5);
+    BOOL result = fn(arg0, arg1, arg2, arg3, arg4, &arg5);
     (void)result;
 }
 
@@ -4096,21 +4197,24 @@ static void Handle_NtGdiGetAppClipBox(Decoder& d) {
 
 static void Handle_NtGdiGetTextExtentExW(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    wchar_t arg1{};
-    d.ReadScalar(arg1);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg1 = reinterpret_cast<wchar_t*>(arg1_bytes.data());
     ULONG arg2{};
     d.ReadScalar(arg2);
     ULONG arg3{};
     d.ReadScalar(arg3);
     ULONG arg4{};
-    ULONG arg5{};
+    const size_t arg5_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(ULONG));
+    OwnedBytes arg5_bytes = DecodeDerivedBytes(
+        d, arg5_capacity, false);
+    ULONG* arg5 = reinterpret_cast<ULONG*>(arg5_bytes.data());
     SIZE arg6{};
     FLONG arg7{};
     d.ReadScalar(arg7);
     using Fn = BOOL (NTAPI*)(HDC, wchar_t *, ULONG, ULONG, ULONG *, ULONG *, SIZE *, FLONG);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetTextExtentExW"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, &arg1, arg2, arg3, &arg4, &arg5, &arg6, arg7);
+    BOOL result = fn(arg0, arg1, arg2, arg3, &arg4, arg5, &arg6, arg7);
     (void)result;
 }
 
@@ -4120,22 +4224,27 @@ static void Handle_NtGdiGetCharABCWidthsW(Decoder& d) {
     d.ReadScalar(arg1);
     ULONG arg2{};
     d.ReadScalar(arg2);
-    WCHAR arg3{};
-    d.ReadScalar(arg3);
+    const size_t arg3_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(WCHAR));
+    OwnedBytes arg3_bytes = DecodeDerivedBytes(
+        d, arg3_capacity, true);
+    WCHAR* arg3 = reinterpret_cast<WCHAR*>(arg3_bytes.data());
     FLONG arg4{};
     d.ReadScalar(arg4);
-    ABC arg5{};
+    const size_t arg5_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(ABC));
+    OwnedBytes arg5_bytes = DecodeDerivedBytes(
+        d, arg5_capacity, false);
+    ABC* arg5 = reinterpret_cast<ABC*>(arg5_bytes.data());
     using Fn = BOOL (NTAPI*)(HDC, UINT, ULONG, WCHAR *, FLONG, ABC *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetCharABCWidthsW"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, arg1, arg2, &arg3, arg4, &arg5);
+    BOOL result = fn(arg0, arg1, arg2, arg3, arg4, arg5);
     (void)result;
 }
 
 static void Handle_NtGdiGetCharacterPlacementW(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    wchar_t arg1{};
-    d.ReadScalar(arg1);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg1 = reinterpret_cast<wchar_t*>(arg1_bytes.data());
     int arg2{};
     d.ReadScalar(arg2);
     int arg3{};
@@ -4147,7 +4256,7 @@ static void Handle_NtGdiGetCharacterPlacementW(Decoder& d) {
     using Fn = uint32_t (NTAPI*)(HDC, wchar_t *, int, int, GCP_RESULTSW *, DWORD);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetCharacterPlacementW"));
     if (!fn || !d.ok()) return;
-    uint32_t result = fn(arg0, &arg1, arg2, arg3, &arg4, arg5);
+    uint32_t result = fn(arg0, arg1, arg2, arg3, &arg4, arg5);
     (void)result;
 }
 
@@ -4556,21 +4665,27 @@ static void Handle_NtGdiGetCharWidthW(Decoder& d) {
     d.ReadScalar(arg1);
     UINT arg2{};
     d.ReadScalar(arg2);
-    WCHAR arg3{};
-    d.ReadScalar(arg3);
+    const size_t arg3_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(WCHAR));
+    OwnedBytes arg3_bytes = DecodeDerivedBytes(
+        d, arg3_capacity, true);
+    WCHAR* arg3 = reinterpret_cast<WCHAR*>(arg3_bytes.data());
     FLONG arg4{};
     d.ReadScalar(arg4);
-    ULONG arg5{};
+    const size_t arg5_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(ULONG));
+    OwnedBytes arg5_bytes = DecodeDerivedBytes(
+        d, arg5_capacity, false);
+    ULONG* arg5 = reinterpret_cast<ULONG*>(arg5_bytes.data());
     using Fn = BOOL (NTAPI*)(HDC, UINT, UINT, WCHAR *, FLONG, ULONG *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetCharWidthW"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, arg1, arg2, &arg3, arg4, &arg5);
+    BOOL result = fn(arg0, arg1, arg2, arg3, arg4, arg5);
     (void)result;
 }
 
 static void Handle_NtGdiGetCharWidthInfo(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg1_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = BOOL (NTAPI*)(HDC, void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetCharWidthInfo"));
     if (!fn || !d.ok()) return;
@@ -4595,8 +4710,8 @@ static void Handle_NtGdiDrawEscape(Decoder& d) {
 
 static void Handle_NtGdiExtEscape(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    WCHAR arg1{};
-    d.ReadScalar(arg1);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    WCHAR* arg1 = reinterpret_cast<WCHAR*>(arg1_bytes.data());
     int arg2{};
     d.ReadScalar(arg2);
     int arg3{};
@@ -4611,7 +4726,7 @@ static void Handle_NtGdiExtEscape(Decoder& d) {
     using Fn = int32_t (NTAPI*)(HDC, WCHAR *, int, int, int, uintptr_t *, int, uintptr_t *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiExtEscape"));
     if (!fn || !d.ok()) return;
-    int32_t result = fn(arg0, &arg1, arg2, arg3, arg4, &arg5, arg6, &arg7);
+    int32_t result = fn(arg0, arg1, arg2, arg3, arg4, &arg5, arg6, &arg7);
     (void)result;
 }
 
@@ -4687,7 +4802,8 @@ static void Handle_NtGdiGetGlyphOutline(Decoder& d) {
 
 static void Handle_NtGdiGetETM(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg1_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = BOOL (NTAPI*)(HDC, void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetETM"));
     if (!fn || !d.ok()) return;
@@ -4710,11 +4826,14 @@ static void Handle_NtGdiGetKerningPairs(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
     ULONG arg1{};
     d.ReadScalar(arg1);
-    KERNINGPAIR arg2{};
+    const size_t arg2_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg1), sizeof(KERNINGPAIR));
+    OwnedBytes arg2_bytes = DecodeDerivedBytes(
+        d, arg2_capacity, false);
+    KERNINGPAIR* arg2 = reinterpret_cast<KERNINGPAIR*>(arg2_bytes.data());
     using Fn = uint32_t (NTAPI*)(HDC, ULONG, KERNINGPAIR *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetKerningPairs"));
     if (!fn || !d.ok()) return;
-    uint32_t result = fn(arg0, arg1, &arg2);
+    uint32_t result = fn(arg0, arg1, arg2);
     (void)result;
 }
 
@@ -4757,7 +4876,8 @@ static void Handle_NtGdiResetDC(Decoder& d) {
     Decode__devicemodeW(d, arg1);
     BOOL arg2{};
     OwnedBytes arg3_bytes = DecodeOwnedBytes(d);
-    OwnedBytes arg4_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg4_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = BOOL (NTAPI*)(HDC, DEVMODEW *, BOOL *, void *, void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiResetDC"));
     if (!fn || !d.ok()) return;
@@ -4938,9 +5058,11 @@ static void Handle_NtGdiCombineTransform(Decoder& d) {
 
 static void Handle_NtGdiTransformPoints(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    POINT arg1{};
-    Decode_tagPOINT(d, arg1);
-    POINT arg2{};
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    POINT* arg1 = reinterpret_cast<POINT*>(arg1_bytes.data());
+    OwnedBytes arg2_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
+    POINT* arg2 = reinterpret_cast<POINT*>(arg2_bytes.data());
     int arg3{};
     d.ReadScalar(arg3);
     int arg4{};
@@ -4948,7 +5070,7 @@ static void Handle_NtGdiTransformPoints(Decoder& d) {
     using Fn = BOOL (NTAPI*)(HDC, POINT *, POINT *, int, int);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiTransformPoints"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, &arg1, &arg2, arg3, arg4);
+    BOOL result = fn(arg0, arg1, arg2, arg3, arg4);
     (void)result;
 }
 
@@ -5173,8 +5295,8 @@ static void Handle_NtGdiTransparentBlt(Decoder& d) {
 
 static void Handle_NtGdiGetTextExtent(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    wchar_t arg1{};
-    d.ReadScalar(arg1);
+    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg1 = reinterpret_cast<wchar_t*>(arg1_bytes.data());
     int arg2{};
     d.ReadScalar(arg2);
     SIZE arg3{};
@@ -5183,7 +5305,7 @@ static void Handle_NtGdiGetTextExtent(Decoder& d) {
     using Fn = BOOL (NTAPI*)(HDC, wchar_t *, int, SIZE *, UINT);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetTextExtent"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, &arg1, arg2, &arg3, arg4);
+    BOOL result = fn(arg0, arg1, arg2, &arg3, arg4);
     (void)result;
 }
 
@@ -5203,13 +5325,16 @@ static void Handle_NtGdiGetTextFaceW(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
     int arg1{};
     d.ReadScalar(arg1);
-    wchar_t arg2{};
+    const size_t arg2_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg1), sizeof(wchar_t));
+    OwnedBytes arg2_bytes = DecodeDerivedBytes(
+        d, arg2_capacity, false);
+    wchar_t* arg2 = reinterpret_cast<wchar_t*>(arg2_bytes.data());
     BOOL arg3{};
     d.ReadScalar(arg3);
     using Fn = int32_t (NTAPI*)(HDC, int, wchar_t *, BOOL);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetTextFaceW"));
     if (!fn || !d.ok()) return;
-    int32_t result = fn(arg0, arg1, &arg2, arg3);
+    int32_t result = fn(arg0, arg1, arg2, arg3);
     (void)result;
 }
 
@@ -5235,18 +5360,20 @@ static void Handle_NtGdiExtTextOutW(Decoder& d) {
     d.ReadScalar(arg3);
     RECT arg4{};
     Decode_tagRECT(d, arg4);
-    wchar_t arg5{};
-    d.ReadScalar(arg5);
+    OwnedBytes arg5_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg5 = reinterpret_cast<wchar_t*>(arg5_bytes.data());
     int arg6{};
     d.ReadScalar(arg6);
-    INT arg7{};
-    d.ReadScalar(arg7);
+    const size_t arg7_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg6), sizeof(INT));
+    OwnedBytes arg7_bytes = DecodeDerivedBytes(
+        d, arg7_capacity, true);
+    INT* arg7 = reinterpret_cast<INT*>(arg7_bytes.data());
     DWORD arg8{};
     d.ReadScalar(arg8);
     using Fn = BOOL (NTAPI*)(HDC, int, int, UINT, RECT *, wchar_t *, int, INT *, DWORD);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiExtTextOutW"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, arg1, arg2, arg3, &arg4, &arg5, arg6, &arg7, arg8);
+    BOOL result = fn(arg0, arg1, arg2, arg3, &arg4, arg5, arg6, arg7, arg8);
     (void)result;
 }
 
@@ -5307,6 +5434,7 @@ static void Handle_NtGdiPolyPatBlt(Decoder& d) {
     DWORD arg1{};
     d.ReadScalar(arg1);
     OwnedBytes arg2_bytes = DecodeOwnedBytes(d);
+    POLYPATBLT* arg2 = reinterpret_cast<POLYPATBLT*>(arg2_bytes.data());
     DWORD arg3{};
     d.ReadScalar(arg3);
     DWORD arg4{};
@@ -5314,7 +5442,7 @@ static void Handle_NtGdiPolyPatBlt(Decoder& d) {
     using Fn = BOOL (NTAPI*)(HDC, DWORD, void *, DWORD, DWORD);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiPolyPatBlt"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, arg1, arg2_bytes.data(), arg3, arg4);
+    BOOL result = fn(arg0, arg1, arg2, arg3, arg4);
     (void)result;
 }
 
@@ -5441,7 +5569,8 @@ static void Handle_NtGdiGetDeviceCaps(Decoder& d) {
 
 static void Handle_NtGdiGetDeviceCapsAll(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg1_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = BOOL (NTAPI*)(HDC, void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetDeviceCapsAll"));
     if (!fn || !d.ok()) return;
@@ -5753,8 +5882,10 @@ static void Handle_NtGdiEnumFonts(Decoder& d) {
     d.ReadScalar(arg2);
     ULONG arg3{};
     d.ReadScalar(arg3);
-    wchar_t arg4{};
-    d.ReadScalar(arg4);
+    const size_t arg4_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg3), sizeof(wchar_t));
+    OwnedBytes arg4_bytes = DecodeDerivedBytes(
+        d, arg4_capacity, true);
+    wchar_t* arg4 = reinterpret_cast<wchar_t*>(arg4_bytes.data());
     ULONG arg5{};
     d.ReadScalar(arg5);
     ULONG arg6{};
@@ -5763,19 +5894,21 @@ static void Handle_NtGdiEnumFonts(Decoder& d) {
     using Fn = BOOL (NTAPI*)(HDC, ULONG, FLONG, ULONG, wchar_t *, ULONG, ULONG *, uintptr_t *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiEnumFonts"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(arg0, arg1, arg2, arg3, &arg4, arg5, &arg6, &arg7);
+    BOOL result = fn(arg0, arg1, arg2, arg3, arg4, arg5, &arg6, &arg7);
     (void)result;
 }
 
 static void Handle_NtGdiQueryFonts(Decoder& d) {
-    OwnedBytes arg0_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg0_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
+    UNIVERSAL_FONT_ID* arg0 = reinterpret_cast<UNIVERSAL_FONT_ID*>(arg0_bytes.data());
     ULONG arg1{};
     d.ReadScalar(arg1);
     LARGE_INTEGER arg2{};
     using Fn = int32_t (NTAPI*)(void *, ULONG, LARGE_INTEGER *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiQueryFonts"));
     if (!fn || !d.ok()) return;
-    int32_t result = fn(arg0_bytes.data(), arg1, &arg2);
+    int32_t result = fn(arg0, arg1, &arg2);
     (void)result;
 }
 
@@ -5799,12 +5932,12 @@ static void Handle_NtGdiEnableEudc(Decoder& d) {
 }
 
 static void Handle_NtGdiEudcLoadUnloadLink(Decoder& d) {
-    wchar_t arg0{};
-    d.ReadScalar(arg0);
+    OwnedBytes arg0_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg0 = reinterpret_cast<wchar_t*>(arg0_bytes.data());
     UINT arg1{};
     d.ReadScalar(arg1);
-    wchar_t arg2{};
-    d.ReadScalar(arg2);
+    OwnedBytes arg2_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg2 = reinterpret_cast<wchar_t*>(arg2_bytes.data());
     UINT arg3{};
     d.ReadScalar(arg3);
     INT arg4{};
@@ -5816,7 +5949,7 @@ static void Handle_NtGdiEudcLoadUnloadLink(Decoder& d) {
     using Fn = BOOL (NTAPI*)(wchar_t *, UINT, wchar_t *, UINT, INT, INT, BOOL);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiEudcLoadUnloadLink"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(&arg0, arg1, &arg2, arg3, arg4, arg5, arg6);
+    BOOL result = fn(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
     (void)result;
 }
 
@@ -5837,8 +5970,8 @@ static void Handle_NtGdiGetStringBitmapW(Decoder& d) {
 }
 
 static void Handle_NtGdiGetEudcTimeStampEx(Decoder& d) {
-    wchar_t arg0{};
-    d.ReadScalar(arg0);
+    OwnedBytes arg0_bytes = DecodeOwnedBytes(d);
+    wchar_t* arg0 = reinterpret_cast<wchar_t*>(arg0_bytes.data());
     ULONG arg1{};
     d.ReadScalar(arg1);
     BOOL arg2{};
@@ -5846,7 +5979,7 @@ static void Handle_NtGdiGetEudcTimeStampEx(Decoder& d) {
     using Fn = uint32_t (NTAPI*)(wchar_t *, ULONG, BOOL);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetEudcTimeStampEx"));
     if (!fn || !d.ok()) return;
-    uint32_t result = fn(&arg0, arg1, arg2);
+    uint32_t result = fn(arg0, arg1, arg2);
     (void)result;
 }
 
@@ -5871,7 +6004,8 @@ static void Handle_NtGdiGetFontUnicodeRanges(Decoder& d) {
 
 static void Handle_NtGdiGetRealizationInfo(Decoder& d) {
     HDC arg0 = PickHandle(g_handles_HDC, d);
-    OwnedBytes arg1_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg1_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = BOOL (NTAPI*)(HDC, void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiGetRealizationInfo"));
     if (!fn || !d.ok()) return;
@@ -5920,7 +6054,7 @@ static void Handle_NtGdiEngEraseSurface(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     RECTL arg1{};
@@ -5974,7 +6108,7 @@ static void Handle_NtGdiEngUnlockSurface(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     using Fn = void (NTAPI*)(SURFOBJ *);
@@ -6022,13 +6156,13 @@ static void Handle_NtGdiEngCopyBits(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     SURFOBJ arg1{};
     Decode__SURFOBJ(d, arg1);
     OwnedBytes arg1_surface_bytes = DecodeOwnedBytes(d);
-    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.bytes.size());
+    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.size);
     arg1.pvBits = arg1_surface_bytes.data();
     arg1.pvScan0 = arg1_surface_bytes.data();
     CLIPOBJ arg2{};
@@ -6050,19 +6184,19 @@ static void Handle_NtGdiEngStretchBlt(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     SURFOBJ arg1{};
     Decode__SURFOBJ(d, arg1);
     OwnedBytes arg1_surface_bytes = DecodeOwnedBytes(d);
-    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.bytes.size());
+    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.size);
     arg1.pvBits = arg1_surface_bytes.data();
     arg1.pvScan0 = arg1_surface_bytes.data();
     SURFOBJ arg2{};
     Decode__SURFOBJ(d, arg2);
     OwnedBytes arg2_surface_bytes = DecodeOwnedBytes(d);
-    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.bytes.size());
+    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.size);
     arg2.pvBits = arg2_surface_bytes.data();
     arg2.pvScan0 = arg2_surface_bytes.data();
     CLIPOBJ arg3{};
@@ -6092,19 +6226,19 @@ static void Handle_NtGdiEngBitBlt(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     SURFOBJ arg1{};
     Decode__SURFOBJ(d, arg1);
     OwnedBytes arg1_surface_bytes = DecodeOwnedBytes(d);
-    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.bytes.size());
+    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.size);
     arg1.pvBits = arg1_surface_bytes.data();
     arg1.pvScan0 = arg1_surface_bytes.data();
     SURFOBJ arg2{};
     Decode__SURFOBJ(d, arg2);
     OwnedBytes arg2_surface_bytes = DecodeOwnedBytes(d);
-    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.bytes.size());
+    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.size);
     arg2.pvBits = arg2_surface_bytes.data();
     arg2.pvScan0 = arg2_surface_bytes.data();
     CLIPOBJ arg3{};
@@ -6134,19 +6268,19 @@ static void Handle_NtGdiEngPlgBlt(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     SURFOBJ arg1{};
     Decode__SURFOBJ(d, arg1);
     OwnedBytes arg1_surface_bytes = DecodeOwnedBytes(d);
-    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.bytes.size());
+    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.size);
     arg1.pvBits = arg1_surface_bytes.data();
     arg1.pvScan0 = arg1_surface_bytes.data();
     SURFOBJ arg2{};
     Decode__SURFOBJ(d, arg2);
     OwnedBytes arg2_surface_bytes = DecodeOwnedBytes(d);
-    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.bytes.size());
+    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.size);
     arg2.pvBits = arg2_surface_bytes.data();
     arg2.pvScan0 = arg2_surface_bytes.data();
     CLIPOBJ arg3{};
@@ -6205,7 +6339,7 @@ static void Handle_NtGdiEngStrokePath(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     PATHOBJ arg1{};
@@ -6233,7 +6367,7 @@ static void Handle_NtGdiEngFillPath(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     PATHOBJ arg1{};
@@ -6259,7 +6393,7 @@ static void Handle_NtGdiEngStrokeAndFillPath(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     PATHOBJ arg1{};
@@ -6291,7 +6425,7 @@ static void Handle_NtGdiEngPaint(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     CLIPOBJ arg1{};
@@ -6313,7 +6447,7 @@ static void Handle_NtGdiEngLineTo(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     CLIPOBJ arg1{};
@@ -6343,13 +6477,13 @@ static void Handle_NtGdiEngAlphaBlend(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     SURFOBJ arg1{};
     Decode__SURFOBJ(d, arg1);
     OwnedBytes arg1_surface_bytes = DecodeOwnedBytes(d);
-    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.bytes.size());
+    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.size);
     arg1.pvBits = arg1_surface_bytes.data();
     arg1.pvScan0 = arg1_surface_bytes.data();
     CLIPOBJ arg2{};
@@ -6373,19 +6507,19 @@ static void Handle_NtGdiEngGradientFill(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     CLIPOBJ arg1{};
     Decode__CLIPOBJ(d, arg1);
     XLATEOBJ arg2{};
     Decode__XLATEOBJ(d, arg2);
-    TRIVERTEX arg3{};
-    Decode__TRIVERTEX(d, arg3);
+    OwnedBytes arg3_bytes = DecodeOwnedBytes(d);
+    TRIVERTEX* arg3 = reinterpret_cast<TRIVERTEX*>(arg3_bytes.data());
     ULONG arg4{};
     d.ReadScalar(arg4);
-    PVOID arg5{};
-    arg5 = nullptr; // raw pointer intentionally not deserialized
+    OwnedBytes arg5_bytes = DecodeOwnedBytes(d);
+    PVOID* arg5 = reinterpret_cast<PVOID*>(arg5_bytes.data());
     ULONG arg6{};
     d.ReadScalar(arg6);
     RECTL arg7{};
@@ -6397,7 +6531,7 @@ static void Handle_NtGdiEngGradientFill(Decoder& d) {
     using Fn = BOOL (NTAPI*)(SURFOBJ *, CLIPOBJ *, XLATEOBJ *, TRIVERTEX *, ULONG, PVOID *, ULONG, RECTL *, POINTL *, ULONG);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiEngGradientFill"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(&arg0, &arg1, &arg2, &arg3, arg4, &arg5, arg6, &arg7, &arg8, arg9);
+    BOOL result = fn(&arg0, &arg1, &arg2, arg3, arg4, arg5, arg6, &arg7, &arg8, arg9);
     (void)result;
 }
 
@@ -6405,13 +6539,13 @@ static void Handle_NtGdiEngTransparentBlt(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     SURFOBJ arg1{};
     Decode__SURFOBJ(d, arg1);
     OwnedBytes arg1_surface_bytes = DecodeOwnedBytes(d);
-    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.bytes.size());
+    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.size);
     arg1.pvBits = arg1_surface_bytes.data();
     arg1.pvScan0 = arg1_surface_bytes.data();
     CLIPOBJ arg2{};
@@ -6437,7 +6571,7 @@ static void Handle_NtGdiEngTextOut(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     STROBJ arg1{};
@@ -6469,19 +6603,19 @@ static void Handle_NtGdiEngStretchBltROP(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     SURFOBJ arg1{};
     Decode__SURFOBJ(d, arg1);
     OwnedBytes arg1_surface_bytes = DecodeOwnedBytes(d);
-    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.bytes.size());
+    arg1.cjBits = static_cast<ULONG>(arg1_surface_bytes.size);
     arg1.pvBits = arg1_surface_bytes.data();
     arg1.pvScan0 = arg1_surface_bytes.data();
     SURFOBJ arg2{};
     Decode__SURFOBJ(d, arg2);
     OwnedBytes arg2_surface_bytes = DecodeOwnedBytes(d);
-    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.bytes.size());
+    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.size);
     arg2.pvBits = arg2_surface_bytes.data();
     arg2.pvScan0 = arg2_surface_bytes.data();
     CLIPOBJ arg3{};
@@ -6518,11 +6652,14 @@ static void Handle_NtGdiXLATEOBJ_cGetPalette(Decoder& d) {
     d.ReadScalar(arg1);
     ULONG arg2{};
     d.ReadScalar(arg2);
-    ULONG arg3{};
+    const size_t arg3_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(ULONG));
+    OwnedBytes arg3_bytes = DecodeDerivedBytes(
+        d, arg3_capacity, false);
+    ULONG* arg3 = reinterpret_cast<ULONG*>(arg3_bytes.data());
     using Fn = uint32_t (NTAPI*)(XLATEOBJ *, ULONG, ULONG, ULONG *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiXLATEOBJ_cGetPalette"));
     if (!fn || !d.ok()) return;
-    uint32_t result = fn(&arg0, arg1, arg2, &arg3);
+    uint32_t result = fn(&arg0, arg1, arg2, arg3);
     (void)result;
 }
 
@@ -6633,13 +6770,18 @@ static void Handle_NtGdiXFORMOBJ_bApplyXform(Decoder& d) {
     d.ReadScalar(arg1);
     ULONG arg2{};
     d.ReadScalar(arg2);
-    POINTL arg3{};
-    Decode__POINTL(d, arg3);
-    POINTL arg4{};
+    const size_t arg3_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(POINTL));
+    OwnedBytes arg3_bytes = DecodeDerivedBytes(
+        d, arg3_capacity, true);
+    POINTL* arg3 = reinterpret_cast<POINTL*>(arg3_bytes.data());
+    const size_t arg4_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(POINTL));
+    OwnedBytes arg4_bytes = DecodeDerivedBytes(
+        d, arg4_capacity, false);
+    POINTL* arg4 = reinterpret_cast<POINTL*>(arg4_bytes.data());
     using Fn = BOOL (NTAPI*)(XFORMOBJ *, ULONG, ULONG, POINTL *, POINTL *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiXFORMOBJ_bApplyXform"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(&arg0, arg1, arg2, &arg3, &arg4);
+    BOOL result = fn(&arg0, arg1, arg2, arg3, arg4);
     (void)result;
 }
 
@@ -6675,7 +6817,8 @@ static void Handle_NtGdiFONTOBJ_cGetGlyphs(Decoder& d) {
     d.ReadScalar(arg2);
     HGLYPH arg3{};
     arg3 = PickHandle(g_handles_HGLYPH, d);
-    OwnedBytes arg4_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg4_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = uint32_t (NTAPI*)(FONTOBJ *, ULONG, ULONG, HGLYPH *, void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiFONTOBJ_cGetGlyphs"));
     if (!fn || !d.ok()) return;
@@ -6753,11 +6896,14 @@ static void Handle_NtGdiSTROBJ_bEnum(Decoder& d) {
     Decode__STROBJ(d, arg0);
     ULONG arg1{};
     d.ReadScalar(arg1);
-    PGLYPHPOS arg2{};
+    const size_t arg2_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg1), sizeof(PGLYPHPOS));
+    OwnedBytes arg2_bytes = DecodeDerivedBytes(
+        d, arg2_capacity, false);
+    PGLYPHPOS* arg2 = reinterpret_cast<PGLYPHPOS*>(arg2_bytes.data());
     using Fn = BOOL (NTAPI*)(STROBJ *, ULONG *, PGLYPHPOS *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiSTROBJ_bEnum"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(&arg0, &arg1, &arg2);
+    BOOL result = fn(&arg0, &arg1, arg2);
     (void)result;
 }
 
@@ -6766,11 +6912,14 @@ static void Handle_NtGdiSTROBJ_bEnumPositionsOnly(Decoder& d) {
     Decode__STROBJ(d, arg0);
     ULONG arg1{};
     d.ReadScalar(arg1);
-    PGLYPHPOS arg2{};
+    const size_t arg2_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg1), sizeof(PGLYPHPOS));
+    OwnedBytes arg2_bytes = DecodeDerivedBytes(
+        d, arg2_capacity, false);
+    PGLYPHPOS* arg2 = reinterpret_cast<PGLYPHPOS*>(arg2_bytes.data());
     using Fn = BOOL (NTAPI*)(STROBJ *, ULONG *, PGLYPHPOS *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiSTROBJ_bEnumPositionsOnly"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(&arg0, &arg1, &arg2);
+    BOOL result = fn(&arg0, &arg1, arg2);
     (void)result;
 }
 
@@ -6800,11 +6949,14 @@ static void Handle_NtGdiSTROBJ_bGetAdvanceWidths(Decoder& d) {
     d.ReadScalar(arg1);
     ULONG arg2{};
     d.ReadScalar(arg2);
-    POINTQF arg3{};
+    const size_t arg3_capacity = CheckedGeneratedProduct(static_cast<size_t>(arg2), sizeof(POINTQF));
+    OwnedBytes arg3_bytes = DecodeDerivedBytes(
+        d, arg3_capacity, false);
+    POINTQF* arg3 = reinterpret_cast<POINTQF*>(arg3_bytes.data());
     using Fn = BOOL (NTAPI*)(STROBJ *, ULONG, ULONG, POINTQF *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiSTROBJ_bGetAdvanceWidths"));
     if (!fn || !d.ok()) return;
-    BOOL result = fn(&arg0, arg1, arg2, &arg3);
+    BOOL result = fn(&arg0, arg1, arg2, arg3);
     (void)result;
 }
 
@@ -6891,7 +7043,7 @@ static void Handle_NtGdiPATHOBJ_vEnumStartClipLines(Decoder& d) {
     SURFOBJ arg2{};
     Decode__SURFOBJ(d, arg2);
     OwnedBytes arg2_surface_bytes = DecodeOwnedBytes(d);
-    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.bytes.size());
+    arg2.cjBits = static_cast<ULONG>(arg2_surface_bytes.size);
     arg2.pvBits = arg2_surface_bytes.data();
     arg2.pvScan0 = arg2_surface_bytes.data();
     LINEATTRS arg3{};
@@ -6919,7 +7071,7 @@ static void Handle_NtGdiEngCheckAbort(Decoder& d) {
     SURFOBJ arg0{};
     Decode__SURFOBJ(d, arg0);
     OwnedBytes arg0_surface_bytes = DecodeOwnedBytes(d);
-    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.bytes.size());
+    arg0.cjBits = static_cast<ULONG>(arg0_surface_bytes.size);
     arg0.pvBits = arg0_surface_bytes.data();
     arg0.pvScan0 = arg0_surface_bytes.data();
     using Fn = BOOL (NTAPI*)(SURFOBJ *);
@@ -7149,7 +7301,8 @@ static void Handle_NtGdiSfmRegisterLogicalSurfaceForSignaling(Decoder& d) {
 }
 
 static void Handle_NtGdiDwmGetHighColorMode(Decoder& d) {
-    OwnedBytes arg0_bytes = DecodeOwnedBytes(d);
+    OwnedBytes arg0_bytes = DecodeDerivedBytes(
+        d, kUnknownWritableCapacity, false);
     using Fn = BOOL (NTAPI*)(void *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiDwmGetHighColorMode"));
     if (!fn || !d.ok()) return;
@@ -7223,8 +7376,8 @@ static void Handle_NtGdiDdQueryVisRgnUniqueness(Decoder& d) {
 }
 
 static void Handle_NtGdiAddFontResourceW(Decoder& d) {
-    WCHAR arg0{};
-    d.ReadScalar(arg0);
+    OwnedBytes arg0_bytes = DecodeOwnedBytes(d);
+    WCHAR* arg0 = reinterpret_cast<WCHAR*>(arg0_bytes.data());
     ULONG arg1{};
     d.ReadScalar(arg1);
     ULONG arg2{};
@@ -7238,7 +7391,7 @@ static void Handle_NtGdiAddFontResourceW(Decoder& d) {
     using Fn = int32_t (NTAPI*)(WCHAR *, ULONG, ULONG, FLONG, DWORD, DESIGNVECTOR *);
     static Fn fn = reinterpret_cast<Fn>(ResolveNtGdiExport("NtGdiAddFontResourceW"));
     if (!fn || !d.ok()) return;
-    int32_t result = fn(&arg0, arg1, arg2, arg3, arg4, &arg5);
+    int32_t result = fn(arg0, arg1, arg2, arg3, arg4, &arg5);
     (void)result;
 }
 

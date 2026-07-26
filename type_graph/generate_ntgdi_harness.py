@@ -40,7 +40,7 @@ from pathlib import Path
 from typing import Any, Iterable, Optional
 
 DEFAULT_GRAPH = "type_graph.json"
-DEFAULT_TABLE_CANDIDATES = ("table_windows_ntgdi.c", "table_windows_ntgdi.c")
+DEFAULT_TABLE_CANDIDATES = ("table_windows_ntgdi.c", "table_windows_ntgdi.cpp")
 DEFAULT_OUTPUT = "generated_ntgdi_harness.cpp"
 
 # Keep this intentionally broad: Windows handle typedefs are overwhelmingly H*.
@@ -226,6 +226,22 @@ class ArgSpec:
     @property
     def writable(self) -> bool:
         return bool(re.search(r"(?:^|\|)W(?:\||$)", self.flags))
+
+    @property
+    def size_in_elements(self) -> bool:
+        return "SYSARG_SIZE_IN_ELEMENTS" in self.flags
+
+    @property
+    def referenced_argument(self) -> Optional[int]:
+        """Return the argument index encoded by a negative size expression.
+
+        The DrSyscall tables use values such as -2 to mean that argument 2
+        supplies the element/byte count for this descriptor.
+        """
+        value = self.size_expr.strip()
+        if not re.fullmatch(r"-\d+", value):
+            return None
+        return abs(int(value, 10))
 
 
 @dataclass
@@ -476,11 +492,24 @@ class CppGenerator:
         return token_map.get(arg.drsys_type)
 
     def arg_by_index(self, syscall: SyscallSpec) -> dict[int, ArgSpec]:
-        # Prefer the richest descriptor when an index occurs multiple times.
+        # An argument can have multiple table descriptors. Prefer the one that
+        # gives us a concrete array relationship, then the descriptor with the
+        # most useful direction/type information. Stable comparison preserves
+        # the first equally rich descriptor (important for entries such as
+        # NtGdiGetTextExtentExW argument 5).
         result: dict[int, ArgSpec] = {}
+
+        def score(arg: ArgSpec) -> tuple[int, int, int, int]:
+            return (
+                1 if arg.size_in_elements and arg.referenced_argument is not None else 0,
+                1 if arg.writable else 0,
+                1 if arg.readable else 0,
+                len(arg.sizeof_types),
+            )
+
         for arg in syscall.args:
-            old = result.get(arg.index)
-            if old is None or len(arg.sizeof_types) > len(old.sizeof_types):
+            previous = result.get(arg.index)
+            if previous is None or score(arg) > score(previous):
                 result[arg.index] = arg
         return result
 
@@ -567,23 +596,96 @@ public:
         return true;
     }}
 
+    // Copy as much serialized initialization data as remains and zero-pad the
+    // rest. This is useful for derived-size input/in-out arrays: their capacity
+    // comes from another syscall argument rather than from a length prefix.
+    size_t ReadBytesPadded(void* destination, size_t capacity) {{
+        if (!destination || capacity == 0) return 0;
+        const size_t copied = (std::min)(capacity, remaining());
+        if (copied) std::memcpy(destination, cur_, copied);
+        if (copied < capacity)
+            std::memset(static_cast<uint8_t*>(destination) + copied, 0, capacity - copied);
+        cur_ += copied;
+        return copied;
+    }}
+
 private:
     const uint8_t* cur_;
     const uint8_t* end_;
     bool ok_ = true;
 }};
 
+static constexpr size_t kGeneratedScratchSize = 4u * 1024u * 1024u;
+static constexpr size_t kUnknownWritableCapacity = 4096u;
+
+alignas(64) static thread_local std::array<uint8_t, kGeneratedScratchSize>
+    g_generated_scratch{{}};
+static thread_local size_t g_generated_scratch_offset = 0;
+
+static void ResetGeneratedScratch() {{
+    g_generated_scratch_offset = 0;
+}}
+
+static size_t ClampGeneratedSize(size_t size) {{
+    return (std::min)(size, kMaxGeneratedBuffer);
+}}
+
+static size_t CheckedGeneratedProduct(size_t count, size_t element_size) {{
+    if (element_size != 0 && count > kMaxGeneratedBuffer / element_size)
+        return kMaxGeneratedBuffer;
+    return ClampGeneratedSize(count * element_size);
+}}
+
+static void* AllocateGeneratedScratch(size_t size, size_t alignment = alignof(std::max_align_t)) {{
+    size = ClampGeneratedSize(size);
+    if (size == 0) size = 1;
+    if (alignment == 0 || (alignment & (alignment - 1)) != 0)
+        alignment = alignof(std::max_align_t);
+
+    const size_t aligned =
+        (g_generated_scratch_offset + alignment - 1) & ~(alignment - 1);
+    if (aligned > g_generated_scratch.size() ||
+        size > g_generated_scratch.size() - aligned)
+        return nullptr;
+
+    void* result = g_generated_scratch.data() + aligned;
+    g_generated_scratch_offset = aligned + size;
+    std::memset(result, 0, size);
+    return result;
+}}
+
 struct OwnedBytes {{
-    std::vector<uint8_t> bytes;
-    void* data() {{ return bytes.empty() ? nullptr : bytes.data(); }}
-    const void* data() const {{ return bytes.empty() ? nullptr : bytes.data(); }}
+    uint8_t* pointer = nullptr;
+    size_t size = 0;
+    void* data() {{ return pointer; }}
+    const void* data() const {{ return pointer; }}
 }};
 
-static OwnedBytes DecodeOwnedBytes(Decoder& d, size_t maximum = kMaxGeneratedBuffer) {{
+static OwnedBytes AllocateOwnedBytes(size_t capacity) {{
     OwnedBytes result;
+    result.size = ClampGeneratedSize(capacity);
+    result.pointer = static_cast<uint8_t*>(AllocateGeneratedScratch(result.size));
+    if (!result.pointer) result.size = 0;
+    return result;
+}}
+
+// Length-prefixed storage used when the table does not expose a relationship
+// to another argument. The memory still comes from the fixed scratch arena.
+static OwnedBytes DecodeOwnedBytes(Decoder& d, size_t maximum = kMaxGeneratedBuffer) {{
     const size_t length = d.ReadBoundedLength(maximum);
-    result.bytes.resize(length);
-    d.ReadBytes(result.bytes.data(), result.bytes.size());
+    OwnedBytes result = AllocateOwnedBytes(length);
+    if (result.data() && result.size)
+        d.ReadBytes(result.data(), result.size);
+    return result;
+}}
+
+static OwnedBytes DecodeDerivedBytes(
+    Decoder& d,
+    size_t capacity,
+    bool initialize_from_input) {{
+    OwnedBytes result = AllocateOwnedBytes(capacity);
+    if (result.data() && result.size && initialize_from_input)
+        d.ReadBytesPadded(result.data(), result.size);
     return result;
 }}
 
@@ -743,6 +845,49 @@ static FARPROC ResolveNtGdiExport(const char* name) {{
             setup = [f"    {ctype} {prefix}{{}};"] + self.decode_expr(ctype, prefix)
             return (setup, prefix, post)
 
+        # Pointer-to-array arguments whose extent is expressed in elements.
+        # A negative size expression (for example -2) names the scalar argument
+        # that supplies the element count. The generated storage comes from the
+        # fixed per-thread scratch arena, not the process heap.
+        if arg.size_in_elements and arg.referenced_argument is not None:
+            count_index = arg.referenced_argument
+            if count_index < index:
+                capacity = (
+                    f"CheckedGeneratedProduct(static_cast<size_t>(arg{count_index}), "
+                    f"sizeof({ctype}))"
+                )
+                setup = [
+                    f"    const size_t {prefix}_capacity = {capacity};",
+                    f"    OwnedBytes {prefix}_bytes = DecodeDerivedBytes(",
+                    f"        d, {prefix}_capacity, {'true' if arg.readable else 'false'});",
+                    f"    {ctype}* {prefix} = reinterpret_cast<{ctype}*>({prefix}_bytes.data());",
+                ]
+            elif arg.readable:
+                # The controlling scalar appears later in the serialized argument
+                # stream. Preserve stream order by using a length-prefixed input
+                # region here. Writable capacity is at least the configured cap;
+                # once the table/generator supports deferred decoding this can be
+                # tightened to the later scalar exactly.
+                setup = [
+                    f"    OwnedBytes {prefix}_bytes = DecodeOwnedBytes(d);",
+                    f"    {ctype}* {prefix} = reinterpret_cast<{ctype}*>({prefix}_bytes.data());",
+                ]
+                self.warnings.append(
+                    f"{syscall.name} argument {index}: forward size reference "
+                    f"to argument {count_index}; using serialized length"
+                )
+            else:
+                setup = [
+                    f"    OwnedBytes {prefix}_bytes = DecodeDerivedBytes(",
+                    f"        d, kUnknownWritableCapacity, false);",
+                    f"    {ctype}* {prefix} = reinterpret_cast<{ctype}*>({prefix}_bytes.data());",
+                ]
+                self.warnings.append(
+                    f"{syscall.name} argument {index}: forward output-size reference "
+                    f"to argument {count_index}; using fallback capacity"
+                )
+            return (setup, prefix, post)
+
         # Non-inlined handle means a pointer to handle storage.
         if handle:
             setup = [f"    {ctype} {prefix}{{}};"]
@@ -759,7 +904,7 @@ static FARPROC ResolveNtGdiExport(const char* name) {{
             # Special ownership for SURFOBJ backing storage.
             if record in {"SURFOBJ", "_SURFOBJ"} and arg.readable:
                 setup += [f"    OwnedBytes {prefix}_surface_bytes = DecodeOwnedBytes(d);",
-                          f"    {prefix}.cjBits = static_cast<ULONG>({prefix}_surface_bytes.bytes.size());",
+                          f"    {prefix}.cjBits = static_cast<ULONG>({prefix}_surface_bytes.size);",
                           f"    {prefix}.pvBits = {prefix}_surface_bytes.data();",
                           f"    {prefix}.pvScan0 = {prefix}_surface_bytes.data();"]
             return (setup, f"&{prefix}", post)
@@ -770,8 +915,16 @@ static FARPROC ResolveNtGdiExport(const char* name) {{
             if arg.readable: setup += self.decode_expr(ctype, prefix)
             return (setup, f"&{prefix}", post)
 
-        # Unknown variable-sized memory: decode an owned bounded byte region.
-        setup = [f"    OwnedBytes {prefix}_bytes = DecodeOwnedBytes(d);"]
+        # Unknown variable-sized memory. Writable-only pointers receive a full
+        # fallback output region; readable/in-out pointers retain length-prefixed
+        # serialized initialization data.
+        if arg.writable and not arg.readable:
+            setup = [
+                f"    OwnedBytes {prefix}_bytes = DecodeDerivedBytes(",
+                f"        d, kUnknownWritableCapacity, false);"
+            ]
+        else:
+            setup = [f"    OwnedBytes {prefix}_bytes = DecodeOwnedBytes(d);"]
         return (setup, f"{prefix}_bytes.data()", post)
 
     def emit_syscall_handlers(self) -> str:

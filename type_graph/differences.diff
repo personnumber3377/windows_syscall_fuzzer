@@ -1,0 +1,661 @@
+19c19,20
+< #include <ntgdi.h>
+---
+> // #include <ntgdi.h>
+> // #include "ntgdi.h"
+33c34
+< namespace generated_ntgdi {
+---
+> // namespace generated_ntgdi {
+64c65,69
+<         return std::min({requested, cap, remaining()});
+---
+>         // return std::min({requested, cap, remaining()});
+>         size_t result = requested;
+>         result = (std::min)(result, cap);
+>         result = (std::min)(result, remaining());
+>         return result;
+97c102
+< 
+---
+> /*
+104a110,607
+> */
+> 
+> struct GeneratedNtGdiExport
+> {
+>     const char* name;
+>     FARPROC address;
+> };
+> 
+> static GeneratedNtGdiExport g_generated_ntgdi_exports[] =
+> {
+>     {"NtGdiInit", nullptr},
+>     {"NtGdiSetDIBitsToDeviceInternal", nullptr},
+>     {"NtGdiGetFontResourceInfoInternalW", nullptr},
+>     {"NtGdiGetGlyphIndicesW", nullptr},
+>     {"NtGdiGetGlyphIndicesWInternal", nullptr},
+>     {"NtGdiCreatePaletteInternal", nullptr},
+>     {"NtGdiArcInternal", nullptr},
+>     {"NtGdiGetOutlineTextMetricsInternalW", nullptr},
+>     {"NtGdiGetAndSetDCDword", nullptr},
+>     {"NtGdiGetDCObject", nullptr},
+>     {"NtGdiGetDCforBitmap", nullptr},
+>     {"NtGdiGetMonitorID", nullptr},
+>     {"NtGdiGetLinkedUFIs", nullptr},
+>     {"NtGdiSetLinkedUFIs", nullptr},
+>     {"NtGdiGetUFI", nullptr},
+>     {"NtGdiForceUFIMapping", nullptr},
+>     {"NtGdiGetUFIPathname", nullptr},
+>     {"NtGdiAddRemoteFontToDC", nullptr},
+>     {"NtGdiAddFontMemResourceEx", nullptr},
+>     {"NtGdiRemoveFontMemResourceEx", nullptr},
+>     {"NtGdiUnmapMemFont", nullptr},
+>     {"NtGdiRemoveMergeFont", nullptr},
+>     {"NtGdiAnyLinkedFonts", nullptr},
+>     {"NtGdiGetEmbUFI", nullptr},
+>     {"NtGdiGetEmbedFonts", nullptr},
+>     {"NtGdiChangeGhostFont", nullptr},
+>     {"NtGdiAddEmbFontToDC", nullptr},
+>     {"NtGdiFontIsLinked", nullptr},
+>     {"NtGdiPolyPolyDraw", nullptr},
+>     {"NtGdiDoPalette", nullptr},
+>     {"NtGdiComputeXformCoefficients", nullptr},
+>     {"NtGdiGetWidthTable", nullptr},
+>     {"NtGdiDescribePixelFormat", nullptr},
+>     {"NtGdiSetPixelFormat", nullptr},
+>     {"NtGdiSwapBuffers", nullptr},
+>     {"NtGdiDxgGenericThunk", nullptr},
+>     {"NtGdiDdAddAttachedSurface", nullptr},
+>     {"NtGdiDdAttachSurface", nullptr},
+>     {"NtGdiDdBlt", nullptr},
+>     {"NtGdiDdCanCreateSurface", nullptr},
+>     {"NtGdiDdColorControl", nullptr},
+>     {"NtGdiDdCreateDirectDrawObject", nullptr},
+>     {"NtGdiDdCreateSurface", nullptr},
+>     {"NtGdiDdChangeSurfacePointer", nullptr},
+>     {"NtGdiDdCreateSurfaceObject", nullptr},
+>     {"NtGdiDdDeleteSurfaceObject", nullptr},
+>     {"NtGdiDdDeleteDirectDrawObject", nullptr},
+>     {"NtGdiDdDestroySurface", nullptr},
+>     {"NtGdiDdFlip", nullptr},
+>     {"NtGdiDdGetAvailDriverMemory", nullptr},
+>     {"NtGdiDdGetBltStatus", nullptr},
+>     {"NtGdiDdGetDC", nullptr},
+>     {"NtGdiDdGetDriverInfo", nullptr},
+>     {"NtGdiDdGetFlipStatus", nullptr},
+>     {"NtGdiDdGetScanLine", nullptr},
+>     {"NtGdiDdSetExclusiveMode", nullptr},
+>     {"NtGdiDdFlipToGDISurface", nullptr},
+>     {"NtGdiDdLock", nullptr},
+>     {"NtGdiDdQueryDirectDrawObject", nullptr},
+>     {"NtGdiDdReenableDirectDrawObject", nullptr},
+>     {"NtGdiDdReleaseDC", nullptr},
+>     {"NtGdiDdResetVisrgn", nullptr},
+>     {"NtGdiDdSetColorKey", nullptr},
+>     {"NtGdiDdSetOverlayPosition", nullptr},
+>     {"NtGdiDdUnattachSurface", nullptr},
+>     {"NtGdiDdUnlock", nullptr},
+>     {"NtGdiDdUpdateOverlay", nullptr},
+>     {"NtGdiDdWaitForVerticalBlank", nullptr},
+>     {"NtGdiDdGetDxHandle", nullptr},
+>     {"NtGdiDdSetGammaRamp", nullptr},
+>     {"NtGdiDdLockD3D", nullptr},
+>     {"NtGdiDdUnlockD3D", nullptr},
+>     {"NtGdiDdCreateD3DBuffer", nullptr},
+>     {"NtGdiDdCanCreateD3DBuffer", nullptr},
+>     {"NtGdiDdDestroyD3DBuffer", nullptr},
+>     {"NtGdiD3dContextCreate", nullptr},
+>     {"NtGdiD3dContextDestroy", nullptr},
+>     {"NtGdiD3dContextDestroyAll", nullptr},
+>     {"NtGdiD3dValidateTextureStageState", nullptr},
+>     {"NtGdiD3dDrawPrimitives2", nullptr},
+>     {"NtGdiDdGetDriverState", nullptr},
+>     {"NtGdiDdCreateSurfaceEx", nullptr},
+>     {"NtGdiDvpCanCreateVideoPort", nullptr},
+>     {"NtGdiDvpColorControl", nullptr},
+>     {"NtGdiDvpCreateVideoPort", nullptr},
+>     {"NtGdiDvpDestroyVideoPort", nullptr},
+>     {"NtGdiDvpFlipVideoPort", nullptr},
+>     {"NtGdiDvpGetVideoPortBandwidth", nullptr},
+>     {"NtGdiDvpGetVideoPortField", nullptr},
+>     {"NtGdiDvpGetVideoPortFlipStatus", nullptr},
+>     {"NtGdiDvpGetVideoPortInputFormats", nullptr},
+>     {"NtGdiDvpGetVideoPortLine", nullptr},
+>     {"NtGdiDvpGetVideoPortOutputFormats", nullptr},
+>     {"NtGdiDvpGetVideoPortConnectInfo", nullptr},
+>     {"NtGdiDvpGetVideoSignalStatus", nullptr},
+>     {"NtGdiDvpUpdateVideoPort", nullptr},
+>     {"NtGdiDvpWaitForVideoPortSync", nullptr},
+>     {"NtGdiDvpAcquireNotification", nullptr},
+>     {"NtGdiDvpReleaseNotification", nullptr},
+>     {"NtGdiDdGetMoCompGuids", nullptr},
+>     {"NtGdiDdGetMoCompFormats", nullptr},
+>     {"NtGdiDdGetMoCompBuffInfo", nullptr},
+>     {"NtGdiDdGetInternalMoCompInfo", nullptr},
+>     {"NtGdiDdCreateMoComp", nullptr},
+>     {"NtGdiDdDestroyMoComp", nullptr},
+>     {"NtGdiDdBeginMoCompFrame", nullptr},
+>     {"NtGdiDdEndMoCompFrame", nullptr},
+>     {"NtGdiDdRenderMoComp", nullptr},
+>     {"NtGdiDdQueryMoCompStatus", nullptr},
+>     {"NtGdiDdAlphaBlt", nullptr},
+>     {"NtGdiAlphaBlend", nullptr},
+>     {"NtGdiGradientFill", nullptr},
+>     {"NtGdiSetIcmMode", nullptr},
+>     {"NtGdiCreateColorSpace", nullptr},
+>     {"NtGdiDeleteColorSpace", nullptr},
+>     {"NtGdiSetColorSpace", nullptr},
+>     {"NtGdiCreateColorTransform", nullptr},
+>     {"NtGdiDeleteColorTransform", nullptr},
+>     {"NtGdiCheckBitmapBits", nullptr},
+>     {"NtGdiColorCorrectPalette", nullptr},
+>     {"NtGdiGetColorSpaceforBitmap", nullptr},
+>     {"NtGdiGetDeviceGammaRamp", nullptr},
+>     {"NtGdiSetDeviceGammaRamp", nullptr},
+>     {"NtGdiIcmBrushInfo", nullptr},
+>     {"NtGdiFlush", nullptr},
+>     {"NtGdiCreateMetafileDC", nullptr},
+>     {"NtGdiMakeInfoDC", nullptr},
+>     {"NtGdiCreateClientObj", nullptr},
+>     {"NtGdiDeleteClientObj", nullptr},
+>     {"NtGdiGetBitmapBits", nullptr},
+>     {"NtGdiDeleteObjectApp", nullptr},
+>     {"NtGdiGetPath", nullptr},
+>     {"NtGdiCreateCompatibleDC", nullptr},
+>     {"NtGdiCreateDIBitmapInternal", nullptr},
+>     {"NtGdiCreateDIBSection", nullptr},
+>     {"NtGdiCreateSolidBrush", nullptr},
+>     {"NtGdiCreateDIBBrush", nullptr},
+>     {"NtGdiCreatePatternBrushInternal", nullptr},
+>     {"NtGdiCreateHatchBrushInternal", nullptr},
+>     {"NtGdiExtCreatePen", nullptr},
+>     {"NtGdiCreateEllipticRgn", nullptr},
+>     {"NtGdiCreateRoundRectRgn", nullptr},
+>     {"NtGdiCreateServerMetaFile", nullptr},
+>     {"NtGdiExtCreateRegion", nullptr},
+>     {"NtGdiMakeFontDir", nullptr},
+>     {"NtGdiPolyDraw", nullptr},
+>     {"NtGdiPolyTextOutW", nullptr},
+>     {"NtGdiGetServerMetaFileBits", nullptr},
+>     {"NtGdiEqualRgn", nullptr},
+>     {"NtGdiGetBitmapDimension", nullptr},
+>     {"NtGdiGetNearestPaletteIndex", nullptr},
+>     {"NtGdiPtVisible", nullptr},
+>     {"NtGdiRectVisible", nullptr},
+>     {"NtGdiRemoveFontResourceW", nullptr},
+>     {"NtGdiResizePalette", nullptr},
+>     {"NtGdiSetBitmapDimension", nullptr},
+>     {"NtGdiOffsetClipRgn", nullptr},
+>     {"NtGdiSetMetaRgn", nullptr},
+>     {"NtGdiSetTextJustification", nullptr},
+>     {"NtGdiGetAppClipBox", nullptr},
+>     {"NtGdiGetTextExtentExW", nullptr},
+>     {"NtGdiGetCharABCWidthsW", nullptr},
+>     {"NtGdiGetCharacterPlacementW", nullptr},
+>     {"NtGdiAngleArc", nullptr},
+>     {"NtGdiBeginPath", nullptr},
+>     {"NtGdiSelectClipPath", nullptr},
+>     {"NtGdiCloseFigure", nullptr},
+>     {"NtGdiEndPath", nullptr},
+>     {"NtGdiAbortPath", nullptr},
+>     {"NtGdiFillPath", nullptr},
+>     {"NtGdiStrokeAndFillPath", nullptr},
+>     {"NtGdiStrokePath", nullptr},
+>     {"NtGdiWidenPath", nullptr},
+>     {"NtGdiFlattenPath", nullptr},
+>     {"NtGdiPathToRegion", nullptr},
+>     {"NtGdiSetMiterLimit", nullptr},
+>     {"NtGdiSetFontXform", nullptr},
+>     {"NtGdiGetMiterLimit", nullptr},
+>     {"NtGdiEllipse", nullptr},
+>     {"NtGdiRectangle", nullptr},
+>     {"NtGdiRoundRect", nullptr},
+>     {"NtGdiPlgBlt", nullptr},
+>     {"NtGdiMaskBlt", nullptr},
+>     {"NtGdiExtFloodFill", nullptr},
+>     {"NtGdiFillRgn", nullptr},
+>     {"NtGdiFrameRgn", nullptr},
+>     {"NtGdiSetPixel", nullptr},
+>     {"NtGdiGetPixel", nullptr},
+>     {"NtGdiStartPage", nullptr},
+>     {"NtGdiEndPage", nullptr},
+>     {"NtGdiStartDoc", nullptr},
+>     {"NtGdiEndDoc", nullptr},
+>     {"NtGdiAbortDoc", nullptr},
+>     {"NtGdiUpdateColors", nullptr},
+>     {"NtGdiGetCharWidthW", nullptr},
+>     {"NtGdiGetCharWidthInfo", nullptr},
+>     {"NtGdiDrawEscape", nullptr},
+>     {"NtGdiExtEscape", nullptr},
+>     {"NtGdiGetFontData", nullptr},
+>     {"NtGdiGetFontFileData", nullptr},
+>     {"NtGdiGetFontFileInfo", nullptr},
+>     {"NtGdiGetGlyphOutline", nullptr},
+>     {"NtGdiGetETM", nullptr},
+>     {"NtGdiGetRasterizerCaps", nullptr},
+>     {"NtGdiGetKerningPairs", nullptr},
+>     {"NtGdiMonoBitmap", nullptr},
+>     {"NtGdiGetObjectBitmapHandle", nullptr},
+>     {"NtGdiEnumObjects", nullptr},
+>     {"NtGdiResetDC", nullptr},
+>     {"NtGdiSetBoundsRect", nullptr},
+>     {"NtGdiGetColorAdjustment", nullptr},
+>     {"NtGdiSetColorAdjustment", nullptr},
+>     {"NtGdiCancelDC", nullptr},
+>     {"NtGdiGetDCDword", nullptr},
+>     {"NtGdiGetDCPoint", nullptr},
+>     {"NtGdiScaleViewportExtEx", nullptr},
+>     {"NtGdiScaleWindowExtEx", nullptr},
+>     {"NtGdiSetVirtualResolution", nullptr},
+>     {"NtGdiSetSizeDevice", nullptr},
+>     {"NtGdiGetTransform", nullptr},
+>     {"NtGdiModifyWorldTransform", nullptr},
+>     {"NtGdiCombineTransform", nullptr},
+>     {"NtGdiTransformPoints", nullptr},
+>     {"NtGdiConvertMetafileRect", nullptr},
+>     {"NtGdiGetTextCharsetInfo", nullptr},
+>     {"NtGdiDoBanding", nullptr},
+>     {"NtGdiGetPerBandInfo", nullptr},
+>     {"NtGdiGetStats", nullptr},
+>     {"NtGdiSetMagicColors", nullptr},
+>     {"NtGdiSelectBrush", nullptr},
+>     {"NtGdiSelectPen", nullptr},
+>     {"NtGdiSelectBitmap", nullptr},
+>     {"NtGdiSelectFont", nullptr},
+>     {"NtGdiExtSelectClipRgn", nullptr},
+>     {"NtGdiCreatePen", nullptr},
+>     {"NtGdiBitBlt", nullptr},
+>     {"NtGdiTileBitBlt", nullptr},
+>     {"NtGdiTransparentBlt", nullptr},
+>     {"NtGdiGetTextExtent", nullptr},
+>     {"NtGdiGetTextMetricsW", nullptr},
+>     {"NtGdiGetTextFaceW", nullptr},
+>     {"NtGdiGetRandomRgn", nullptr},
+>     {"NtGdiExtTextOutW", nullptr},
+>     {"NtGdiIntersectClipRect", nullptr},
+>     {"NtGdiCreateRectRgn", nullptr},
+>     {"NtGdiPatBlt", nullptr},
+>     {"NtGdiPolyPatBlt", nullptr},
+>     {"NtGdiUnrealizeObject", nullptr},
+>     {"NtGdiGetStockObject", nullptr},
+>     {"NtGdiCreateCompatibleBitmap", nullptr},
+>     {"NtGdiCreateBitmapFromDxSurface", nullptr},
+>     {"NtGdiBeginGdiRendering", nullptr},
+>     {"NtGdiEndGdiRendering", nullptr},
+>     {"NtGdiLineTo", nullptr},
+>     {"NtGdiMoveTo", nullptr},
+>     {"NtGdiExtGetObjectW", nullptr},
+>     {"NtGdiGetDeviceCaps", nullptr},
+>     {"NtGdiGetDeviceCapsAll", nullptr},
+>     {"NtGdiStretchBlt", nullptr},
+>     {"NtGdiSetBrushOrg", nullptr},
+>     {"NtGdiCreateBitmap", nullptr},
+>     {"NtGdiCreateHalftonePalette", nullptr},
+>     {"NtGdiRestoreDC", nullptr},
+>     {"NtGdiExcludeClipRect", nullptr},
+>     {"NtGdiSaveDC", nullptr},
+>     {"NtGdiCombineRgn", nullptr},
+>     {"NtGdiSetRectRgn", nullptr},
+>     {"NtGdiSetBitmapBits", nullptr},
+>     {"NtGdiGetDIBitsInternal", nullptr},
+>     {"NtGdiOffsetRgn", nullptr},
+>     {"NtGdiGetRgnBox", nullptr},
+>     {"NtGdiRectInRegion", nullptr},
+>     {"NtGdiGetBoundsRect", nullptr},
+>     {"NtGdiPtInRegion", nullptr},
+>     {"NtGdiGetNearestColor", nullptr},
+>     {"NtGdiGetSystemPaletteUse", nullptr},
+>     {"NtGdiSetSystemPaletteUse", nullptr},
+>     {"NtGdiGetRegionData", nullptr},
+>     {"NtGdiInvertRgn", nullptr},
+>     {"NtGdiSetFontEnumeration", nullptr},
+>     {"NtGdiEnumFonts", nullptr},
+>     {"NtGdiQueryFonts", nullptr},
+>     {"NtGdiGetCharSet", nullptr},
+>     {"NtGdiEnableEudc", nullptr},
+>     {"NtGdiEudcLoadUnloadLink", nullptr},
+>     {"NtGdiGetStringBitmapW", nullptr},
+>     {"NtGdiGetEudcTimeStampEx", nullptr},
+>     {"NtGdiQueryFontAssocInfo", nullptr},
+>     {"NtGdiGetFontUnicodeRanges", nullptr},
+>     {"NtGdiGetRealizationInfo", nullptr},
+>     {"NtGdiAddRemoteMMInstanceToDC", nullptr},
+>     {"NtGdiUnloadPrinterDriver", nullptr},
+>     {"NtGdiEngAssociateSurface", nullptr},
+>     {"NtGdiEngEraseSurface", nullptr},
+>     {"NtGdiEngCreateBitmap", nullptr},
+>     {"NtGdiEngDeleteSurface", nullptr},
+>     {"NtGdiEngLockSurface", nullptr},
+>     {"NtGdiEngUnlockSurface", nullptr},
+>     {"NtGdiEngMarkBandingSurface", nullptr},
+>     {"NtGdiEngCreateDeviceSurface", nullptr},
+>     {"NtGdiEngCreateDeviceBitmap", nullptr},
+>     {"NtGdiEngCopyBits", nullptr},
+>     {"NtGdiEngStretchBlt", nullptr},
+>     {"NtGdiEngBitBlt", nullptr},
+>     {"NtGdiEngPlgBlt", nullptr},
+>     {"NtGdiEngCreatePalette", nullptr},
+>     {"NtGdiEngDeletePalette", nullptr},
+>     {"NtGdiEngStrokePath", nullptr},
+>     {"NtGdiEngFillPath", nullptr},
+>     {"NtGdiEngStrokeAndFillPath", nullptr},
+>     {"NtGdiEngPaint", nullptr},
+>     {"NtGdiEngLineTo", nullptr},
+>     {"NtGdiEngAlphaBlend", nullptr},
+>     {"NtGdiEngGradientFill", nullptr},
+>     {"NtGdiEngTransparentBlt", nullptr},
+>     {"NtGdiEngTextOut", nullptr},
+>     {"NtGdiEngStretchBltROP", nullptr},
+>     {"NtGdiXLATEOBJ_cGetPalette", nullptr},
+>     {"NtGdiCLIPOBJ_cEnumStart", nullptr},
+>     {"NtGdiCLIPOBJ_bEnum", nullptr},
+>     {"NtGdiCLIPOBJ_ppoGetPath", nullptr},
+>     {"NtGdiEngCreateClip", nullptr},
+>     {"NtGdiEngDeleteClip", nullptr},
+>     {"NtGdiBRUSHOBJ_pvAllocRbrush", nullptr},
+>     {"NtGdiBRUSHOBJ_pvGetRbrush", nullptr},
+>     {"NtGdiBRUSHOBJ_ulGetBrushColor", nullptr},
+>     {"NtGdiBRUSHOBJ_hGetColorTransform", nullptr},
+>     {"NtGdiXFORMOBJ_bApplyXform", nullptr},
+>     {"NtGdiXFORMOBJ_iGetXform", nullptr},
+>     {"NtGdiFONTOBJ_vGetInfo", nullptr},
+>     {"NtGdiFONTOBJ_cGetGlyphs", nullptr},
+>     {"NtGdiFONTOBJ_pxoGetXform", nullptr},
+>     {"NtGdiFONTOBJ_pifi", nullptr},
+>     {"NtGdiFONTOBJ_pfdg", nullptr},
+>     {"NtGdiFONTOBJ_cGetAllGlyphHandles", nullptr},
+>     {"NtGdiFONTOBJ_pvTrueTypeFontFile", nullptr},
+>     {"NtGdiFONTOBJ_pQueryGlyphAttrs", nullptr},
+>     {"NtGdiSTROBJ_bEnum", nullptr},
+>     {"NtGdiSTROBJ_bEnumPositionsOnly", nullptr},
+>     {"NtGdiSTROBJ_vEnumStart", nullptr},
+>     {"NtGdiSTROBJ_dwGetCodePage", nullptr},
+>     {"NtGdiSTROBJ_bGetAdvanceWidths", nullptr},
+>     {"NtGdiEngComputeGlyphSet", nullptr},
+>     {"NtGdiXLATEOBJ_iXlate", nullptr},
+>     {"NtGdiXLATEOBJ_hGetColorTransform", nullptr},
+>     {"NtGdiPATHOBJ_vGetBounds", nullptr},
+>     {"NtGdiPATHOBJ_bEnum", nullptr},
+>     {"NtGdiPATHOBJ_vEnumStart", nullptr},
+>     {"NtGdiEngDeletePath", nullptr},
+>     {"NtGdiPATHOBJ_vEnumStartClipLines", nullptr},
+>     {"NtGdiPATHOBJ_bEnumClipLines", nullptr},
+>     {"NtGdiEngCheckAbort", nullptr},
+>     {"NtGdiGetDhpdev", nullptr},
+>     {"NtGdiHT_Get8BPPFormatPalette", nullptr},
+>     {"NtGdiHT_Get8BPPMaskPalette", nullptr},
+>     {"NtGdiUpdateTransform", nullptr},
+>     {"NtGdiSetLayout", nullptr},
+>     {"NtGdiMirrorWindowOrg", nullptr},
+>     {"NtGdiGetDeviceWidth", nullptr},
+>     {"NtGdiSetPUMPDOBJ", nullptr},
+>     {"NtGdiBRUSHOBJ_DeleteRbrush", nullptr},
+>     {"NtGdiUMPDEngFreeUserMem", nullptr},
+>     {"NtGdiSetBitmapAttributes", nullptr},
+>     {"NtGdiClearBitmapAttributes", nullptr},
+>     {"NtGdiSetBrushAttributes", nullptr},
+>     {"NtGdiClearBrushAttributes", nullptr},
+>     {"NtGdiDrawStream", nullptr},
+>     {"NtGdiMakeObjectXferable", nullptr},
+>     {"NtGdiMakeObjectUnXferable", nullptr},
+>     {"NtGdiSfmGetNotificationTokens", nullptr},
+>     {"NtGdiSfmRegisterLogicalSurfaceForSignaling", nullptr},
+>     {"NtGdiDwmGetHighColorMode", nullptr},
+>     {"NtGdiDwmSetHighColorMode", nullptr},
+>     {"NtGdiDwmCaptureScreen", nullptr},
+>     {"NtGdiDdCreateFullscreenSprite", nullptr},
+>     {"NtGdiDdNotifyFullscreenSpriteUpdate", nullptr},
+>     {"NtGdiDdDestroyFullscreenSprite", nullptr},
+>     {"NtGdiDdQueryVisRgnUniqueness", nullptr},
+>     {"NtGdiAddFontResourceW", nullptr},
+>     {"NtGdiConsoleTextOut", nullptr},
+>     {"NtGdiEnumFontChunk", nullptr},
+>     {"NtGdiEnumFontClose", nullptr},
+>     {"NtGdiEnumFontOpen", nullptr},
+>     {"NtGdiFullscreenControl", nullptr},
+>     {"NtGdiGetSpoolMessage", nullptr},
+>     {"NtGdiInitSpool", nullptr},
+>     {"NtGdiSetupPublicCFONT", nullptr},
+>     {"NtGdiStretchDIBitsInternal", nullptr},
+>     {"NtGdiConfigureOPMProtectedOutput", nullptr},
+>     {"NtGdiCreateOPMProtectedOutputs", nullptr},
+>     {"NtGdiDDCCIGetCapabilitiesString", nullptr},
+>     {"NtGdiDDCCIGetCapabilitiesStringLength", nullptr},
+>     {"NtGdiDDCCIGetTimingReport", nullptr},
+>     {"NtGdiDDCCIGetVCPFeature", nullptr},
+>     {"NtGdiDDCCISaveCurrentSettings", nullptr},
+>     {"NtGdiDDCCISetVCPFeature", nullptr},
+>     {"NtGdiDdDDICheckExclusiveOwnership", nullptr},
+>     {"NtGdiDdDDICheckMonitorPowerState", nullptr},
+>     {"NtGdiDdDDICheckOcclusion", nullptr},
+>     {"NtGdiDdDDICloseAdapter", nullptr},
+>     {"NtGdiDdDDICreateAllocation", nullptr},
+>     {"NtGdiDdDDICreateContext", nullptr},
+>     {"NtGdiDdDDICreateDCFromMemory", nullptr},
+>     {"NtGdiDdDDICreateDevice", nullptr},
+>     {"NtGdiDdDDICreateOverlay", nullptr},
+>     {"NtGdiDdDDICreateSynchronizationObject", nullptr},
+>     {"NtGdiDdDDIDestroyAllocation", nullptr},
+>     {"NtGdiDdDDIDestroyContext", nullptr},
+>     {"NtGdiDdDDIDestroyDCFromMemory", nullptr},
+>     {"NtGdiDdDDIDestroyDevice", nullptr},
+>     {"NtGdiDdDDIDestroyOverlay", nullptr},
+>     {"NtGdiDdDDIDestroySynchronizationObject", nullptr},
+>     {"NtGdiDdDDIEscape", nullptr},
+>     {"NtGdiDdDDIFlipOverlay", nullptr},
+>     {"NtGdiDdDDIGetContextSchedulingPriority", nullptr},
+>     {"NtGdiDdDDIGetDeviceState", nullptr},
+>     {"NtGdiDdDDIGetDisplayModeList", nullptr},
+>     {"NtGdiDdDDIGetMultisampleMethodList", nullptr},
+>     {"NtGdiDdDDIGetPresentHistory", nullptr},
+>     {"NtGdiDdDDIGetProcessSchedulingPriorityClass", nullptr},
+>     {"NtGdiDdDDIGetRuntimeData", nullptr},
+>     {"NtGdiDdDDIGetScanLine", nullptr},
+>     {"NtGdiDdDDIGetSharedPrimaryHandle", nullptr},
+>     {"NtGdiDdDDIInvalidateActiveVidPn", nullptr},
+>     {"NtGdiDdDDILock", nullptr},
+>     {"NtGdiDdDDIOpenAdapterFromDeviceName", nullptr},
+>     {"NtGdiDdDDIOpenAdapterFromHdc", nullptr},
+>     {"NtGdiDdDDIOpenResource", nullptr},
+>     {"NtGdiDdDDIPollDisplayChildren", nullptr},
+>     {"NtGdiDdDDIPresent", nullptr},
+>     {"NtGdiDdDDIQueryAdapterInfo", nullptr},
+>     {"NtGdiDdDDIQueryAllocationResidency", nullptr},
+>     {"NtGdiDdDDIQueryResourceInfo", nullptr},
+>     {"NtGdiDdDDIQueryStatistics", nullptr},
+>     {"NtGdiDdDDIReleaseProcessVidPnSourceOwners", nullptr},
+>     {"NtGdiDdDDIRender", nullptr},
+>     {"NtGdiDdDDISetAllocationPriority", nullptr},
+>     {"NtGdiDdDDISetContextSchedulingPriority", nullptr},
+>     {"NtGdiDdDDISetDisplayMode", nullptr},
+>     {"NtGdiDdDDISetDisplayPrivateDriverFormat", nullptr},
+>     {"NtGdiDdDDISetGammaRamp", nullptr},
+>     {"NtGdiDdDDISetProcessSchedulingPriorityClass", nullptr},
+>     {"NtGdiDdDDISetQueuedLimit", nullptr},
+>     {"NtGdiDdDDISetVidPnSourceOwner", nullptr},
+>     {"NtGdiDdDDISharedPrimaryLockNotification", nullptr},
+>     {"NtGdiDdDDISharedPrimaryUnLockNotification", nullptr},
+>     {"NtGdiDdDDISignalSynchronizationObject", nullptr},
+>     {"NtGdiDdDDIUnlock", nullptr},
+>     {"NtGdiDdDDIUpdateOverlay", nullptr},
+>     {"NtGdiDdDDIWaitForIdle", nullptr},
+>     {"NtGdiDdDDIWaitForSynchronizationObject", nullptr},
+>     {"NtGdiDdDDIWaitForVerticalBlankEvent", nullptr},
+>     {"NtGdiDestroyOPMProtectedOutput", nullptr},
+>     {"NtGdiDestroyPhysicalMonitor", nullptr},
+>     {"NtGdiDwmGetDirtyRgn", nullptr},
+>     {"NtGdiDwmGetSurfaceData", nullptr},
+>     {"NtGdiGetCOPPCompatibleOPMInformation", nullptr},
+>     {"NtGdiGetCertificate", nullptr},
+>     {"NtGdiGetCertificateSize", nullptr},
+>     {"NtGdiGetNumberOfPhysicalMonitors", nullptr},
+>     {"NtGdiGetOPMInformation", nullptr},
+>     {"NtGdiGetOPMRandomNumber", nullptr},
+>     {"NtGdiGetPhysicalMonitorDescription", nullptr},
+>     {"NtGdiGetPhysicalMonitors", nullptr},
+>     {"NtGdiGetSuggestedOPMProtectedOutputArraySize", nullptr},
+>     {"NtGdiSetOPMSigningKeyAndSequenceNumbers", nullptr},
+> };
+> 
+> static constexpr size_t g_generated_ntgdi_export_count =
+>     sizeof(g_generated_ntgdi_exports) /
+>     sizeof(g_generated_ntgdi_exports[0]);
+> 
+> static FARPROC ResolveNtGdiExport(const char* name)
+> {
+>     if (!name)
+>         return nullptr;
+> 
+>     for (size_t i = 0; i < g_generated_ntgdi_export_count; ++i)
+>     {
+>         const GeneratedNtGdiExport& entry =
+>             g_generated_ntgdi_exports[i];
+> 
+>         if (std::strcmp(entry.name, name) == 0)
+>             return entry.address;
+>     }
+> 
+>     return nullptr;
+> }
+125a629
+> /*
+131a636,648
+> */
+> 
+> template <typename T>
+> static T PickHandle(const std::vector<T>& pool, Decoder& d)
+> {
+>     if (pool.empty())
+>         return T{};
+> 
+>     const size_t index =
+>         static_cast<size_t>(d.ReadU16()) % pool.size();
+> 
+>     return pool[index];
+> }
+151c668
+< static void Decode__D3dPrimCaps(Decoder& d, _D3dPrimCaps& out);
+---
+> // static void Decode__D3dPrimCaps(Decoder& d, _D3dPrimCaps& out);
+376a894
+> /*
+393a912
+> */
+404,405c923,924
+<     Decode__D3dPrimCaps(d, out.dpcLineCaps);
+<     Decode__D3dPrimCaps(d, out.dpcTriCaps);
+---
+>     // Decode__D3dPrimCaps(d, out.dpcLineCaps);
+>     // Decode__D3dPrimCaps(d, out.dpcTriCaps);
+1066a1586
+>     (void)d;
+2126,2127c2646,2649
+<     ARCTYPE arg0{};
+<     std::memset(&arg0, 0, sizeof(arg0)); // unknown type: ARCTYPE
+---
+>     // ARCTYPE arg0{};
+>     //std::memset(&arg0, 0, sizeof(arg0)); // unknown type: ARCTYPE
+>     int arg0{};
+>     d.ReadScalar(arg0);
+2145c2667,2668
+<     using Fn = BOOL (NTAPI*)(ARCTYPE, HDC, int, int, int, int, int, int, int, int);
+---
+>     // using Fn = BOOL (NTAPI*)(ARCTYPE, HDC, int, int, int, int, int, int, int, int);
+>     using Fn = BOOL (NTAPI*)(int, HDC, int, int, int, int, int, int, int, int);
+6955a7479
+> /*
+6973a7498,7540
+> */
+> 
+> static void Handle_NtGdiHT_Get8BPPMaskPalette(Decoder& d)
+> {
+>     BOOL use_mask_palette{};
+>     BYTE cmy_mask{};
+>     USHORT red_gamma{};
+>     USHORT green_gamma{};
+>     USHORT blue_gamma{};
+> 
+>     d.ReadScalar(use_mask_palette);
+>     d.ReadScalar(cmy_mask);
+>     d.ReadScalar(red_gamma);
+>     d.ReadScalar(green_gamma);
+>     d.ReadScalar(blue_gamma);
+> 
+>     std::array<PALETTEENTRY, 256> palette{};
+> 
+>     using Fn = LONG (NTAPI*)(
+>         PALETTEENTRY*,
+>         BOOL,
+>         BYTE,
+>         USHORT,
+>         USHORT,
+>         USHORT
+>     );
+> 
+>     static Fn fn = reinterpret_cast<Fn>(
+>         ResolveNtGdiExport("NtGdiHT_Get8BPPMaskPalette"));
+> 
+>     if (!fn || !d.ok())
+>         return;
+> 
+>     const LONG count = fn(
+>         palette.data(),
+>         use_mask_palette,
+>         cmy_mask,
+>         red_gamma,
+>         green_gamma,
+>         blue_gamma);
+> 
+>     (void)count;
+> }
+7968c8535
+<         Handle_NtGdiGetOutlineTextMetricsInternalW(d);
+---
+>         // Handle_NtGdiGetOutlineTextMetricsInternalW(d);
+7989c8556
+<         Handle_NtGdiGetUFI(d);
+---
+>         // Handle_NtGdiGetUFI(d);
+7995c8562
+<         Handle_NtGdiGetUFIPathname(d);
+---
+>         // Handle_NtGdiGetUFIPathname(d);
+8427c8994
+<         Handle_NtGdiGetTextExtentExW(d);
+---
+>         // Handle_NtGdiGetTextExtentExW(d);
+8664c9231
+<         Handle_NtGdiGetTextMetricsW(d);
+---
+>         // Handle_NtGdiGetTextMetricsW(d);
+8667c9234
+<         Handle_NtGdiGetTextFaceW(d);
+---
+>         // Handle_NtGdiGetTextFaceW(d);
+8712c9279
+<         Handle_NtGdiExtGetObjectW(d);
+---
+>         // Handle_NtGdiExtGetObjectW(d);
+8718c9285
+<         Handle_NtGdiGetDeviceCapsAll(d);
+---
+>         // Handle_NtGdiGetDeviceCapsAll(d);
+8778c9345
+<         Handle_NtGdiGetRegionData(d);
+---
+>         // Handle_NtGdiGetRegionData(d);
+8811c9378
+<         Handle_NtGdiGetFontUnicodeRanges(d);
+---
+>         // Handle_NtGdiGetFontUnicodeRanges(d);
+9006c9573
+<         Handle_NtGdiHT_Get8BPPFormatPalette(d);
+---
+>         // Handle_NtGdiHT_Get8BPPFormatPalette(d);
+9349c9916,9918
+< } // namespace generated_ntgdi
+---
+> 
+> // This is an extra paranthesis shit here...
+> /// } // namespace generated_ntgdi

@@ -562,14 +562,30 @@ static void RunWarmup(const WarmupConfig& config,
     std::printf("Running %zu lightweight mutation executions...\n",
                 config.mutation_iterations);
 
+    /*
     for (std::size_t iteration = 0;
          iteration < config.mutation_iterations;
          ++iteration) {
-        const Testcase& seed = corpus[RandomIndex(corpus.size())];
-        // const Testcase mutated = MutateTestcase(seed, corpus);
-        // InstallTestcase(mutated);
+    
+    if (!InitializeHandlePools()) {
+        std::fputs("InitializeHandlePools failed.\n", stderr);
+        DestroyHarnessResources();
+        return 1;
+    }
 
-        InstallTestcase(seed);
+    */
+
+    DestroyHarnessResources();
+
+    for (std::size_t iteration = 0;
+         1 < 2;
+         ++iteration) {
+        CreateHarnessResources();
+        const Testcase& seed = corpus[RandomIndex(corpus.size())];
+        const Testcase mutated = MutateTestcase(seed, corpus);
+        InstallTestcase(mutated);
+
+        // InstallTestcase(seed);
 
         if (!InvokeWarmupIteration()) {
             ++user_exceptions;
@@ -582,6 +598,7 @@ static void RunWarmup(const WarmupConfig& config,
                         config.mutation_iterations,
                         user_exceptions);
         }
+        DestroyHarnessResources();
     }
 
     ::GdiFlush();
