@@ -20,8 +20,6 @@ extern "C" {
 #include "nyx_api.h"
 }
 
-#define PAYLOAD_SIZE (128 * 1024)
-
 // The generated file intentionally stays in this translation unit because its
 // handle pools and export table have internal linkage.
 #include "generated_ntgdi_harness.cpp"
@@ -265,7 +263,47 @@ void SubmitInstrumentationRanges() {
     hprintf("[+] range buffer %p...\n", ranges);
     kAFL_hypercall(HYPERCALL_KAFL_USER_RANGE_ADVISE,
                    reinterpret_cast<UINT64>(ranges));
-    kAFL_hypercall(HYPERCALL_KAFL_USER_SUBMIT_MODE, KAFL_MODE_64);
+}
+
+// Mirrors toyharness/toy.cpp's submit_ip_ranges(): tell the hypervisor about
+// this executable's own .text section so IP-filtered PT tracing covers the
+// harness/dispatcher code, and pin those pages resident for libxdc.
+void SubmitOwnCodeRange() {
+    HMODULE module = GetModuleHandleW(nullptr);
+    if (!module) {
+        habort("Cannot get module handle\n");
+    }
+
+    auto* dos_header = reinterpret_cast<PIMAGE_DOS_HEADER>(module);
+    auto* nt_headers = reinterpret_cast<PIMAGE_NT_HEADERS>(
+        reinterpret_cast<PBYTE>(module) + dos_header->e_lfanew);
+    if (nt_headers->Signature != IMAGE_NT_SIGNATURE) {
+        habort("Invalid PE signature\n");
+    }
+
+    auto* section_headers = reinterpret_cast<PIMAGE_SECTION_HEADER>(
+        reinterpret_cast<PBYTE>(nt_headers) + sizeof(IMAGE_NT_HEADERS));
+    for (WORD i = 0; i < nt_headers->FileHeader.NumberOfSections; ++i) {
+        PIMAGE_SECTION_HEADER section = &section_headers[i];
+        if (std::memcmp(section->Name, ".text", 5) != 0) {
+            continue;
+        }
+
+        const auto code_start = reinterpret_cast<DWORD_PTR>(module) + section->VirtualAddress;
+        const DWORD_PTR code_end = code_start + section->Misc.VirtualSize;
+
+        UINT64 buffer[3] = {0};
+        buffer[0] = code_start; // low range
+        buffer[1] = code_end;   // high range
+        buffer[2] = 0;          // IP filter index [0-3]
+        kAFL_hypercall(HYPERCALL_KAFL_RANGE_SUBMIT, reinterpret_cast<UINT64>(buffer));
+
+        if (!VirtualLock(reinterpret_cast<LPVOID>(code_start), section->Misc.VirtualSize)) {
+            habort("Failed to lock .text section in resident memory\n");
+        }
+        return;
+    }
+    habort("Couldn't locate .text section in PE image\n");
 }
 
 } // namespace
@@ -295,30 +333,67 @@ int main() {
         return 1;
     }
 
-    // Match the initialization order of the working toy harness.
+    // Everything above this point becomes part of the pre-snapshot state;
+    // everything below runs once per fuzzing session after QEMU restores it.
     kAFL_hypercall(HYPERCALL_KAFL_LOCK, 0);
 
+    // kAFL/Nyx initialization handshake (nyx_api.h / hypercall_api.md).
+    // GET_HOST_CONFIG and SET_AGENT_CONFIG are mandatory: skipping either
+    // causes QEMU to abort the guest with
+    // "KVM_EXIT_KAFL_GET_HOST_CONFIG/SET_AGENT_CONFIG was not called".
+    kAFL_hypercall(HYPERCALL_KAFL_ACQUIRE, 0);
+    kAFL_hypercall(HYPERCALL_KAFL_RELEASE, 0);
+
+    kAFL_hypercall(HYPERCALL_KAFL_USER_SUBMIT_MODE, KAFL_MODE_64);
+
+    host_config_t host_config = {0};
+    kAFL_hypercall(HYPERCALL_KAFL_GET_HOST_CONFIG,
+                   reinterpret_cast<UINT64>(&host_config));
+    hprintf("[host_config] bitmap sizes = <0x%x,0x%x>\n",
+            host_config.bitmap_size, host_config.ijon_bitmap_size);
+    hprintf("[host_config] payload size = %dKB\n",
+            host_config.payload_buffer_size / 1024);
+    hprintf("[host_config] worker id = %02u\n", host_config.worker_id);
+
+    const SIZE_T payload_buffer_size = host_config.payload_buffer_size;
     hprintf("[+] Allocating kAFL payload buffer\n");
     auto* payload = static_cast<kAFL_payload*>(
-        VirtualAlloc(nullptr, PAYLOAD_SIZE,
+        VirtualAlloc(nullptr, payload_buffer_size,
                      MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
     if (!payload) {
         hprintf("[-] Payload allocation failed: %lu\n", GetLastError());
         return 1;
     }
-    std::memset(payload, 0, PAYLOAD_SIZE);
+    if (!VirtualLock(payload, payload_buffer_size)) {
+        hprintf("[-] WARNING: VirtualLock failed to lock payload buffer: %lu\n",
+                GetLastError());
+    }
+    std::memset(payload, 0, payload_buffer_size);
 
     hprintf("[+] Submitting payload buffer %p\n", payload);
     kAFL_hypercall(HYPERCALL_KAFL_GET_PAYLOAD,
                    reinterpret_cast<UINT64>(payload));
+
+    // Snapshot mode is enabled (agent_non_reload_mode left unset below), so a
+    // single SUBMIT_CR3 before the fuzz loop is sufficient.
+    kAFL_hypercall(HYPERCALL_KAFL_SUBMIT_CR3, 0);
+
+    agent_config_t agent_config = {};
+    agent_config.agent_magic = NYX_AGENT_MAGIC;
+    agent_config.agent_version = NYX_AGENT_VERSION;
+    kAFL_hypercall(HYPERCALL_KAFL_SET_AGENT_CONFIG,
+                   reinterpret_cast<UINT64>(&agent_config));
+
     SubmitInstrumentationRanges();
+    SubmitOwnCodeRange();
 
     hprintf("[+] Entering NtGdi fuzz loop\n");
     for (;;) {
         kAFL_hypercall(HYPERCALL_KAFL_NEXT_PAYLOAD, 0);
+        kAFL_hypercall(HYPERCALL_KAFL_ACQUIRE, 0);
 
         std::size_t size = static_cast<std::size_t>(payload->size);
-        const std::size_t capacity = PAYLOAD_SIZE - offsetof(kAFL_payload, data);
+        const std::size_t capacity = payload_buffer_size - offsetof(kAFL_payload, data);
         size = (std::min)(size, capacity);
 
         // The generated scratch arena is fixed-size and intentionally reused.
