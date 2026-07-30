@@ -802,6 +802,24 @@ int main() {
 
         // The generated scratch arena is fixed-size and intentionally reused.
         ResetGeneratedScratch();
+
+        // g_handles_* pools only ever grow (RememberHandle() appends every
+        // handle a syscall hands back), and PickHandle() selects an entry
+        // via `index % pool.size()` -- so the same payload bytes resolve to
+        // a different handle depending on how much prior execution grew the
+        // pool. QEMU-Nyx's full snapshot restore between iterations resets
+        // this incidentally when reload=1, but that makes reproducibility
+        // silently depend on the fuzzer's -R setting (and, via --resume, on
+        // whatever -R a *previous* invocation of this campaign used).
+        // Re-seeding here makes every dispatch self-contained on purpose:
+        // cheap (just repopulates the vectors from already-valid handles/
+        // stock objects, no GDI resources are recreated), and it trades
+        // away discovering bugs that only manifest from state built up
+        // across a specific sequence of prior payloads. If that kind of
+        // multi-call exploration is wanted later, do it as a deliberate,
+        // separate campaign instead of relying on incidental persistence.
+        InitializeHandlePools();
+
         DispatchGeneratedNtGdi(payload->data, size);
 
         kAFL_hypercall(HYPERCALL_KAFL_RELEASE, 0);
