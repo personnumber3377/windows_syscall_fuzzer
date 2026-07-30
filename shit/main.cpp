@@ -20,6 +20,41 @@ extern "C" {
 #include "nyx_api.h"
 }
 
+// nyx_api.h's __MINGW64__ branch exists for an old MinGW without a real
+// <stdint.h> and unconditionally #defines uint8_t/uint32_t/uint64_t/
+// int32_t/u_long to the UINTn/INTn Windows types -- but modern mingw-w64
+// still defines __MINGW64__, so this fires here too, on top of the real
+// <cstdint> typedefs already included above. Left alone, it silently
+// mangles any *qualified* use later in this file (std::uint8_t becomes the
+// nonexistent std::UINT8) while plain uint8_t keeps compiling by accident.
+// nyx_api.h itself is already done using these macros by this point, so
+// it's safe to drop them and let the token mean the real typedef again.
+#ifdef __MINGW64__
+#undef uint64_t
+#undef int32_t
+#undef uint32_t
+#undef u_long
+#undef uint8_t
+#endif
+
+// KAFL_REPRO_MODE builds run standalone on real Windows (no Nyx hypervisor
+// underneath), so they must never execute a kAFL hypercall (vmcall) --
+// hprintf/habort do exactly that and would fault immediately. Route all
+// logging/abort call sites through these macros instead of calling
+// hprintf/habort directly, so the same source compiles into either binary.
+#ifdef KAFL_REPRO_MODE
+#define HLOG(...) do { fprintf(stderr, __VA_ARGS__); fflush(stderr); } while (0)
+[[noreturn]] inline void ReproAbort(const char* msg) {
+    fprintf(stderr, "[repro] ABORT: %s", msg);
+    fflush(stderr);
+    ExitProcess(1);
+}
+#define HABORT(msg) ReproAbort(msg)
+#else
+#define HLOG(...) hprintf(__VA_ARGS__)
+#define HABORT(msg) habort(msg)
+#endif
+
 // The generated file intentionally stays in this translation unit because its
 // handle pools and export table have internal linkage.
 #include "generated_ntgdi_harness.cpp"
@@ -44,8 +79,47 @@ struct HarnessResources {
 HarnessResources g_resources;
 PVOID g_vectored_handler = nullptr;
 
-[[noreturn]] void KaflPanic(std::uintptr_t code) noexcept {
-    kAFL_hypercall(HYPERCALL_KAFL_PANIC, static_cast<UINT64>(code));
+#ifdef KAFL_REPRO_MODE
+
+// No hypervisor underneath in repro builds: report the crash on stdio and
+// terminate instead of issuing a kAFL hypercall.
+LONG CALLBACK ExceptionHandler(EXCEPTION_POINTERS* info) noexcept {
+    const DWORD code = info && info->ExceptionRecord
+        ? info->ExceptionRecord->ExceptionCode
+        : 0;
+    const void* address = info && info->ExceptionRecord
+        ? info->ExceptionRecord->ExceptionAddress
+        : nullptr;
+
+    switch (code) {
+    case EXCEPTION_ACCESS_VIOLATION:
+    case EXCEPTION_ILLEGAL_INSTRUCTION:
+    case EXCEPTION_STACK_OVERFLOW:
+    case STATUS_STACK_BUFFER_OVERRUN:
+    case STATUS_FATAL_APP_EXIT:
+    case 0xC0000374u: // STATUS_HEAP_CORRUPTION
+        fprintf(stderr, "[repro] CRASH: exception 0x%08lX at %p\n",
+                code, address);
+        fflush(stderr);
+        TerminateProcess(GetCurrentProcess(), code);
+        for (;;) {} // TerminateProcess does not return
+    default:
+        return EXCEPTION_CONTINUE_SEARCH;
+    }
+}
+
+#else
+
+// Reached only through our own VEH below, i.e. a usermode exception inside
+// the harness/dispatcher/decoder itself (an out-of-bounds read/write on the
+// generated input/output buffers, a bad handle dereference, etc). This is a
+// harness-side bug, not a target (kernel) crash, so it is reported via
+// KASAN rather than PANIC: kAFL's stats bucket KASAN hits under "AddSan"
+// and PANIC hits under "Crash", which is what actually lets the two be
+// told apart at triage time -- see SubmitKernelPanicHooks() below for how
+// real win32k/ntoskrnl bugchecks get reported as "Crash" instead.
+[[noreturn]] void ReportHarnessFault(std::uintptr_t code) noexcept {
+    kAFL_hypercall(HYPERCALL_KAFL_KASAN, static_cast<UINT64>(code));
     for (;;) {
         YieldProcessor();
     }
@@ -63,11 +137,13 @@ LONG CALLBACK ExceptionHandler(EXCEPTION_POINTERS* info) noexcept {
     case STATUS_STACK_BUFFER_OVERRUN:
     case STATUS_FATAL_APP_EXIT:
     case 0xC0000374u: // STATUS_HEAP_CORRUPTION
-        KaflPanic(static_cast<std::uintptr_t>(code));
+        ReportHarnessFault(static_cast<std::uintptr_t>(code));
     default:
         return EXCEPTION_CONTINUE_SEARCH;
     }
 }
+
+#endif // KAFL_REPRO_MODE
 
 template <typename T>
 void AddIfNonNull(std::vector<T>& pool, T value) {
@@ -105,20 +181,20 @@ bool CreateHarnessResources() {
     g_resources.desktop_window = GetDesktopWindow();
     g_resources.screen_dc = GetDC(nullptr);
     if (!g_resources.screen_dc) {
-        hprintf("[-] GetDC(NULL) failed: %lu\n", GetLastError());
+        HLOG("[-] GetDC(NULL) failed: %lu\n", GetLastError());
         return false;
     }
 
     g_resources.memory_dc = CreateCompatibleDC(g_resources.screen_dc);
     if (!g_resources.memory_dc) {
-        hprintf("[-] CreateCompatibleDC failed: %lu\n", GetLastError());
+        HLOG("[-] CreateCompatibleDC failed: %lu\n", GetLastError());
         return false;
     }
 
     g_resources.bitmap =
         CreateCompatibleBitmap(g_resources.screen_dc, 256, 256);
     if (!g_resources.bitmap) {
-        hprintf("[-] CreateCompatibleBitmap failed: %lu\n", GetLastError());
+        HLOG("[-] CreateCompatibleBitmap failed: %lu\n", GetLastError());
         return false;
     }
 
@@ -180,9 +256,9 @@ bool ResolveGeneratedExports() {
         resolved += address != nullptr;
     }
 
-    hprintf("[+] Resolved %llu/%llu generated exports\n",
-            static_cast<unsigned long long>(resolved),
-            static_cast<unsigned long long>(g_generated_ntgdi_export_count));
+    HLOG("[+] Resolved %llu/%llu generated exports\n",
+         static_cast<unsigned long long>(resolved),
+         static_cast<unsigned long long>(g_generated_ntgdi_export_count));
     return resolved != 0;
 }
 
@@ -250,35 +326,59 @@ bool InitializeHandlePools() {
     return true;
 }
 
+// ---------------------------------------------------------------------
+// Everything below this point issues kAFL hypercalls and only belongs in
+// the fuzzing binary; KAFL_REPRO_MODE builds never link it in, so there is
+// no way for the repro binary to accidentally execute a vmcall.
+// ---------------------------------------------------------------------
+#ifndef KAFL_REPRO_MODE
+
 void SubmitInstrumentationRanges() {
     auto* ranges = static_cast<kAFL_ranges*>(
         VirtualAlloc(nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
     if (!ranges) {
-        hprintf("[-] Cannot allocate kAFL range buffer: %lu\n", GetLastError());
+        HLOG("[-] Cannot allocate kAFL range buffer: %lu\n", GetLastError());
         kAFL_hypercall(HYPERCALL_KAFL_USER_ABORT, 0);
         return;
     }
 
     std::memset(ranges, 0xff, 0x1000);
-    hprintf("[+] range buffer %p...\n", ranges);
+    HLOG("[+] range buffer %p...\n", ranges);
     kAFL_hypercall(HYPERCALL_KAFL_USER_RANGE_ADVISE,
                    reinterpret_cast<UINT64>(ranges));
 }
 
-// Mirrors toyharness/toy.cpp's submit_ip_ranges(): tell the hypervisor about
-// this executable's own .text section so IP-filtered PT tracing covers the
-// harness/dispatcher code, and pin those pages resident for libxdc.
-void SubmitOwnCodeRange() {
-    HMODULE module = GetModuleHandleW(nullptr);
-    if (!module) {
-        habort("Cannot get module handle\n");
+// VirtualLock only succeeds for as many pages as fit in the process's
+// current working-set quota (by default a few hundred KB, shared across
+// every VirtualLock call the process makes). Grow it up front so locking
+// the payload buffer and the .text section below don't run out of budget.
+bool GrowWorkingSetQuota(SIZE_T extra_bytes) {
+    SIZE_T min_ws = 0, max_ws = 0;
+    if (!GetProcessWorkingSetSize(GetCurrentProcess(), &min_ws, &max_ws)) {
+        HLOG("[-] GetProcessWorkingSetSize failed: %lu\n", GetLastError());
+        return false;
     }
 
+    const SIZE_T slack = 4 * 1024 * 1024;
+    const SIZE_T new_min = min_ws + extra_bytes + slack;
+    const SIZE_T new_max = max_ws + extra_bytes + slack * 2;
+    if (!SetProcessWorkingSetSize(GetCurrentProcess(), new_min, new_max)) {
+        HLOG("[-] SetProcessWorkingSetSize(%zu, %zu) failed: %lu\n",
+             new_min, new_max, GetLastError());
+        return false;
+    }
+    return true;
+}
+
+// Parses the .text section (VirtualAddress/VirtualSize, i.e. RVAs) out of
+// an already-mapped PE image (own process image, or a system module loaded
+// solely to inspect its headers -- see LoadHeadersOnly() below).
+bool GetTextSectionRva(HMODULE module, DWORD_PTR& rva, DWORD_PTR& size) {
     auto* dos_header = reinterpret_cast<PIMAGE_DOS_HEADER>(module);
     auto* nt_headers = reinterpret_cast<PIMAGE_NT_HEADERS>(
         reinterpret_cast<PBYTE>(module) + dos_header->e_lfanew);
     if (nt_headers->Signature != IMAGE_NT_SIGNATURE) {
-        habort("Invalid PE signature\n");
+        return false;
     }
 
     auto* section_headers = reinterpret_cast<PIMAGE_SECTION_HEADER>(
@@ -288,47 +388,347 @@ void SubmitOwnCodeRange() {
         if (std::memcmp(section->Name, ".text", 5) != 0) {
             continue;
         }
+        rva = section->VirtualAddress;
+        size = section->Misc.VirtualSize;
+        return true;
+    }
+    return false;
+}
 
-        const auto code_start = reinterpret_cast<DWORD_PTR>(module) + section->VirtualAddress;
-        const DWORD_PTR code_end = code_start + section->Misc.VirtualSize;
+// Mirrors toyharness/toy.cpp's submit_ip_ranges(): tell the hypervisor about
+// this executable's own .text section (IP filter index 0) so PT tracing
+// covers the harness/dispatcher code, and pin those pages resident for
+// libxdc.
+//
+// Locking .text is a best-effort prefetch hint, not a correctness
+// requirement: QEMU-Nyx can dump code pages for the PT decoder even if
+// they weren't resident at snapshot time (see USER_RANGE_ADVISE in
+// hypercall_api.md), so a lock failure here must not abort the agent.
+void SubmitOwnCodeRange() {
+    HMODULE module = GetModuleHandleW(nullptr);
+    if (!module) {
+        HABORT("Cannot get module handle\n");
+    }
 
-        UINT64 buffer[3] = {0};
-        buffer[0] = code_start; // low range
-        buffer[1] = code_end;   // high range
-        buffer[2] = 0;          // IP filter index [0-3]
-        kAFL_hypercall(HYPERCALL_KAFL_RANGE_SUBMIT, reinterpret_cast<UINT64>(buffer));
+    DWORD_PTR rva = 0, size = 0;
+    if (!GetTextSectionRva(module, rva, size)) {
+        HABORT("Couldn't locate .text section in own PE image\n");
+    }
 
-        if (!VirtualLock(reinterpret_cast<LPVOID>(code_start), section->Misc.VirtualSize)) {
-            habort("Failed to lock .text section in resident memory\n");
+    const DWORD_PTR code_start = reinterpret_cast<DWORD_PTR>(module) + rva;
+    const DWORD_PTR code_end = code_start + size;
+
+    UINT64 buffer[3] = {0};
+    buffer[0] = code_start; // low range
+    buffer[1] = code_end;   // high range
+    buffer[2] = 0;          // IP filter index 0: harness/dispatcher code
+    kAFL_hypercall(HYPERCALL_KAFL_RANGE_SUBMIT, reinterpret_cast<UINT64>(buffer));
+
+    GrowWorkingSetQuota(size);
+    if (!VirtualLock(reinterpret_cast<LPVOID>(code_start), size)) {
+        HLOG("[-] WARNING: Failed to lock own .text section resident: %lu\n",
+             GetLastError());
+    }
+}
+
+// EnumDeviceDrivers()/GetDeviceDriverBaseNameA() below only return real
+// (non-zeroed) kernel addresses to callers holding SeDebugPrivilege --
+// otherwise Windows treats it as a KASLR leak and returns garbage. Even on
+// an Administrator token, that privilege exists but is *disabled* by
+// default and has to be explicitly turned on; this is normally a silent
+// failure (everything "succeeds", the addresses are just useless), so call
+// this once before any kernel module resolution rather than hoping the
+// account this harness runs under already has it enabled.
+bool EnableDebugPrivilege() {
+    HANDLE token = nullptr;
+    if (!OpenProcessToken(GetCurrentProcess(),
+                          TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token)) {
+        HLOG("[-] WARNING: OpenProcessToken failed: %lu\n", GetLastError());
+        return false;
+    }
+
+    LUID luid;
+    if (!LookupPrivilegeValueA(nullptr, "SeDebugPrivilege", &luid)) {
+        HLOG("[-] WARNING: LookupPrivilegeValue(SeDebugPrivilege) failed: %lu\n",
+             GetLastError());
+        CloseHandle(token);
+        return false;
+    }
+
+    TOKEN_PRIVILEGES privileges = {};
+    privileges.PrivilegeCount = 1;
+    privileges.Privileges[0].Luid = luid;
+    privileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+
+    const BOOL adjusted = AdjustTokenPrivileges(
+        token, FALSE, &privileges, sizeof(privileges), nullptr, nullptr);
+    const DWORD adjust_error = GetLastError();
+    CloseHandle(token);
+
+    if (!adjusted || adjust_error == ERROR_NOT_ALL_ASSIGNED) {
+        HLOG("[-] WARNING: Could not enable SeDebugPrivilege (%lu) -- kernel "
+             "module base addresses may resolve to garbage/zero. Run this "
+             "harness as Administrator.\n", adjust_error);
+        return false;
+    }
+    return true;
+}
+
+// Finds a currently-loaded KERNEL driver/module by (case-insensitive) base
+// file name, using the same EnumDeviceDrivers()/GetDeviceDriverBaseNameA()
+// technique the reference driver/vuln_test.c harness uses to locate its
+// target .sys and ntoskrnl.exe from usermode (see driver/target.md, "Set IP
+// ranges"). Returns the module's real kernel-mode base address. Call
+// EnableDebugPrivilege() first (see above) or this will silently return
+// zeroed/bogus addresses.
+bool FindKernelModuleBase(const char* target_base_name, DWORD_PTR& kernel_base) {
+    DWORD needed = 0;
+    EnumDeviceDrivers(nullptr, 0, &needed);
+    if (needed == 0) {
+        return false;
+    }
+
+    std::vector<LPVOID> drivers(needed / sizeof(LPVOID));
+    DWORD actually_needed = 0;
+    if (!EnumDeviceDrivers(drivers.data(),
+                            static_cast<DWORD>(drivers.size() * sizeof(LPVOID)),
+                            &actually_needed)) {
+        return false;
+    }
+    const std::size_t count =
+        (std::min)(drivers.size(), actually_needed / sizeof(LPVOID));
+
+    char name[MAX_PATH];
+    for (std::size_t i = 0; i < count; ++i) {
+        if (!GetDeviceDriverBaseNameA(drivers[i], name, MAX_PATH)) {
+            continue;
         }
+        if (_stricmp(name, target_base_name) == 0) {
+            kernel_base = reinterpret_cast<DWORD_PTR>(drivers[i]);
+            return true;
+        }
+    }
+    return false;
+}
+
+// Loads a private, non-executing copy of a system module purely to read its
+// PE headers: DONT_RESOLVE_DLL_REFERENCES skips running the entry point and
+// resolving imports, but still maps the image at RVA-correct section
+// layout (same layout an ordinary LoadLibrary() would use), which is
+// exactly what GetTextSectionRva()/GetProcAddress() below expect -- MSDN
+// explicitly documents this flag as intended for reading headers/exports.
+HMODULE LoadHeadersOnly(const char* base_file_name) {
+    char system_dir[MAX_PATH];
+    if (!GetSystemDirectoryA(system_dir, MAX_PATH)) {
+        return nullptr;
+    }
+    char full_path[MAX_PATH];
+    std::snprintf(full_path, MAX_PATH, "%s\\%s", system_dir, base_file_name);
+    return LoadLibraryExA(full_path, nullptr, DONT_RESOLVE_DLL_REFERENCES);
+}
+
+// Submits one kernel module's .text section as an IP filter range, so PT
+// tracing/coverage actually reaches the win32k code the harness exercises
+// instead of stopping at the thin usermode win32u.dll syscall stubs.
+// `filter_index` is one of the 4 hardware IP-filter slots (0-3); index 0
+// is already used by SubmitOwnCodeRange() for the harness itself.
+void SubmitKernelModuleRange(const char* base_file_name, int filter_index) {
+    DWORD_PTR kernel_base = 0;
+    if (!FindKernelModuleBase(base_file_name, kernel_base)) {
+        HLOG("[-] WARNING: %s not found among loaded kernel modules, "
+             "skipping IP range %d\n", base_file_name, filter_index);
         return;
     }
-    habort("Couldn't locate .text section in PE image\n");
+
+    HMODULE local_copy = LoadHeadersOnly(base_file_name);
+    if (!local_copy) {
+        HLOG("[-] WARNING: Could not map %s locally to read its headers: %lu\n",
+             base_file_name, GetLastError());
+        return;
+    }
+
+    DWORD_PTR rva = 0, size = 0;
+    const bool found_text = GetTextSectionRva(local_copy, rva, size);
+    FreeLibrary(local_copy);
+    if (!found_text) {
+        HLOG("[-] WARNING: %s has no .text section, skipping IP range %d\n",
+             base_file_name, filter_index);
+        return;
+    }
+
+    const DWORD_PTR range_start = kernel_base + rva;
+    const DWORD_PTR range_end = range_start + size;
+
+    UINT64 buffer[3] = {0};
+    buffer[0] = range_start;
+    buffer[1] = range_end;
+    buffer[2] = static_cast<UINT64>(filter_index);
+    kAFL_hypercall(HYPERCALL_KAFL_RANGE_SUBMIT, reinterpret_cast<UINT64>(buffer));
+
+    HLOG("[+] IP filter %d = %s [0x%p - 0x%p]\n", filter_index, base_file_name,
+         reinterpret_cast<void*>(range_start), reinterpret_cast<void*>(range_end));
+    // Kernel pages can't be VirtualLock'd from usermode; QEMU-Nyx can dump
+    // them for the PT decoder on demand regardless (hypercall_api.md).
 }
+
+// Uses all 4 hardware IP filter slots on the actual GDI/USER kernel code
+// path: our own dispatcher (0), then the real NtGdi implementation, which
+// on modern Windows is split across win32kbase.sys/win32kfull.sys, with
+// win32k.sys itself reduced to a thin loader/shim (1-3).
+//
+// Deliberately targeted rather than one giant range spanning all
+// addressable memory: Intel PT only has 4 hardware IP-filter slots total
+// (a CPU limit, not a kAFL one), so a single catch-all range wouldn't give
+// "more" coverage -- it would burn one of only 4 slots on a range that
+// also includes every unrelated ntoskrnl subsystem, other kernel drivers,
+// the scheduler, interrupts, etc, drowning the coverage bitmap in noise
+// that has nothing to do with GDI and slowing down trace decoding/exec
+// throughput for no benefit. Precision beats breadth here.
+void SubmitKernelCodeRanges() {
+    SubmitKernelModuleRange("win32kbase.sys", 1);
+    SubmitKernelModuleRange("win32kfull.sys", 2);
+    SubmitKernelModuleRange("win32k.sys", 3);
+}
+
+// Mirrors driver/target.md's resolve_KeBugCheck(): rewrites the KeBugCheck/
+// KeBugCheckEx entry points in the kernel with a PANIC hypercall payload,
+// so an actual kernel bugcheck (BSOD) is reported to kAFL as a genuine
+// "Crash" finding -- distinct from the "AddSan" findings
+// ReportHarnessFault() produces for usermode harness bugs above -- instead
+// of just hanging the guest until the fuzzer's timeout detector kills it.
+void SubmitKernelPanicHooks() {
+    DWORD_PTR kernel_base = 0;
+    if (!FindKernelModuleBase("ntoskrnl.exe", kernel_base)) {
+        HLOG("[-] WARNING: ntoskrnl.exe not found, kernel BSODs will only "
+             "show up as timeouts, not Crash findings\n");
+        return;
+    }
+
+    HMODULE local_copy = LoadHeadersOnly("ntoskrnl.exe");
+    if (!local_copy) {
+        HLOG("[-] WARNING: Could not map ntoskrnl.exe locally: %lu\n",
+             GetLastError());
+        return;
+    }
+
+    static const char* const symbols[] = {"KeBugCheck", "KeBugCheckEx"};
+    for (const char* symbol : symbols) {
+        FARPROC local_proc = GetProcAddress(local_copy, symbol);
+        if (!local_proc) {
+            HLOG("[-] WARNING: %s not exported by ntoskrnl.exe\n", symbol);
+            continue;
+        }
+        const DWORD_PTR rva = reinterpret_cast<DWORD_PTR>(local_proc) -
+                               reinterpret_cast<DWORD_PTR>(local_copy);
+        const DWORD_PTR kernel_addr = kernel_base + rva;
+        kAFL_hypercall(HYPERCALL_KAFL_SUBMIT_PANIC,
+                       static_cast<UINT64>(kernel_addr));
+        HLOG("[+] SUBMIT_PANIC %s @ 0x%p\n", symbol,
+             reinterpret_cast<void*>(kernel_addr));
+    }
+    FreeLibrary(local_copy);
+}
+
+#endif // !KAFL_REPRO_MODE
 
 } // namespace
 
-int main() {
-    hprintf("[+] Initializing generated NtGdi kAFL harness\n");
+#ifdef KAFL_REPRO_MODE
+
+// Standalone crash-repro binary: replays a single saved testcase through
+// the exact same DispatchGeneratedNtGdi() call the fuzzing binary makes,
+// with no kAFL/Nyx hypercalls anywhere in the process. Run this directly
+// (e.g. under WinDbg, or with a debugger attached) on a Windows box -- the
+// fuzzing VM itself, or any other Windows machine with a matching-enough
+// win32k build -- to reproduce and debug a crash found while fuzzing.
+int main(int argc, char** argv) {
+    if (argc < 2) {
+        fprintf(stderr, "usage: %s <input-file>\n", argv[0]);
+        fprintf(stderr,
+                "Replays a single kAFL testcase through the generated NtGdi "
+                "dispatcher, without any kAFL/Nyx hypercalls.\n");
+        return 2;
+    }
 
     if (!CreateHarnessResources()) {
         DestroyHarnessResources();
         return 1;
     }
     if (!ResolveGeneratedExports()) {
-        hprintf("[-] No generated NtGdi exports could be resolved\n");
+        HLOG("[-] No generated NtGdi exports could be resolved\n");
         DestroyHarnessResources();
         return 1;
     }
     if (!InitializeHandlePools()) {
-        hprintf("[-] Handle-pool initialization failed\n");
+        HLOG("[-] Handle-pool initialization failed\n");
         DestroyHarnessResources();
         return 1;
     }
 
     g_vectored_handler = AddVectoredExceptionHandler(1, ExceptionHandler);
     if (!g_vectored_handler) {
-        hprintf("[-] AddVectoredExceptionHandler failed: %lu\n", GetLastError());
+        HLOG("[-] AddVectoredExceptionHandler failed: %lu\n", GetLastError());
+        DestroyHarnessResources();
+        return 1;
+    }
+
+    FILE* f = fopen(argv[1], "rb");
+    if (!f) {
+        fprintf(stderr, "[-] Cannot open %s\n", argv[1]);
+        return 1;
+    }
+    fseek(f, 0, SEEK_END);
+    const long file_size = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    if (file_size <= 0) {
+        fprintf(stderr, "[-] %s is empty or unreadable\n", argv[1]);
+        fclose(f);
+        return 1;
+    }
+
+    std::vector<std::uint8_t> buffer(static_cast<std::size_t>(file_size));
+    const std::size_t bytes_read = fread(buffer.data(), 1, buffer.size(), f);
+    fclose(f);
+    if (bytes_read != buffer.size()) {
+        fprintf(stderr, "[-] Short read on %s (%zu/%zu bytes)\n", argv[1],
+                bytes_read, buffer.size());
+        return 1;
+    }
+
+    fprintf(stderr, "[+] Replaying %s (%zu bytes)\n", argv[1], buffer.size());
+    fflush(stderr);
+
+    ResetGeneratedScratch();
+    DispatchGeneratedNtGdi(buffer.data(), buffer.size());
+
+    fprintf(stderr, "[+] Dispatch returned without crashing.\n");
+    DestroyHarnessResources();
+    return 0;
+}
+
+#else
+
+int main() {
+    HLOG("[+] Initializing generated NtGdi kAFL harness\n");
+
+    if (!CreateHarnessResources()) {
+        DestroyHarnessResources();
+        return 1;
+    }
+    if (!ResolveGeneratedExports()) {
+        HLOG("[-] No generated NtGdi exports could be resolved\n");
+        DestroyHarnessResources();
+        return 1;
+    }
+    if (!InitializeHandlePools()) {
+        HLOG("[-] Handle-pool initialization failed\n");
+        DestroyHarnessResources();
+        return 1;
+    }
+
+    g_vectored_handler = AddVectoredExceptionHandler(1, ExceptionHandler);
+    if (!g_vectored_handler) {
+        HLOG("[-] AddVectoredExceptionHandler failed: %lu\n", GetLastError());
         DestroyHarnessResources();
         return 1;
     }
@@ -349,28 +749,29 @@ int main() {
     host_config_t host_config = {0};
     kAFL_hypercall(HYPERCALL_KAFL_GET_HOST_CONFIG,
                    reinterpret_cast<UINT64>(&host_config));
-    hprintf("[host_config] bitmap sizes = <0x%x,0x%x>\n",
-            host_config.bitmap_size, host_config.ijon_bitmap_size);
-    hprintf("[host_config] payload size = %dKB\n",
-            host_config.payload_buffer_size / 1024);
-    hprintf("[host_config] worker id = %02u\n", host_config.worker_id);
+    HLOG("[host_config] bitmap sizes = <0x%x,0x%x>\n",
+         host_config.bitmap_size, host_config.ijon_bitmap_size);
+    HLOG("[host_config] payload size = %dKB\n",
+         host_config.payload_buffer_size / 1024);
+    HLOG("[host_config] worker id = %02u\n", host_config.worker_id);
 
     const SIZE_T payload_buffer_size = host_config.payload_buffer_size;
-    hprintf("[+] Allocating kAFL payload buffer\n");
+    HLOG("[+] Allocating kAFL payload buffer\n");
     auto* payload = static_cast<kAFL_payload*>(
         VirtualAlloc(nullptr, payload_buffer_size,
                      MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
     if (!payload) {
-        hprintf("[-] Payload allocation failed: %lu\n", GetLastError());
+        HLOG("[-] Payload allocation failed: %lu\n", GetLastError());
         return 1;
     }
+    GrowWorkingSetQuota(payload_buffer_size);
     if (!VirtualLock(payload, payload_buffer_size)) {
-        hprintf("[-] WARNING: VirtualLock failed to lock payload buffer: %lu\n",
-                GetLastError());
+        HLOG("[-] WARNING: VirtualLock failed to lock payload buffer: %lu\n",
+             GetLastError());
     }
     std::memset(payload, 0, payload_buffer_size);
 
-    hprintf("[+] Submitting payload buffer %p\n", payload);
+    HLOG("[+] Submitting payload buffer %p\n", payload);
     kAFL_hypercall(HYPERCALL_KAFL_GET_PAYLOAD,
                    reinterpret_cast<UINT64>(payload));
 
@@ -386,8 +787,11 @@ int main() {
 
     SubmitInstrumentationRanges();
     SubmitOwnCodeRange();
+    EnableDebugPrivilege();
+    SubmitKernelCodeRanges();
+    SubmitKernelPanicHooks();
 
-    hprintf("[+] Entering NtGdi fuzz loop\n");
+    HLOG("[+] Entering NtGdi fuzz loop\n");
     for (;;) {
         kAFL_hypercall(HYPERCALL_KAFL_NEXT_PAYLOAD, 0);
         kAFL_hypercall(HYPERCALL_KAFL_ACQUIRE, 0);
@@ -403,3 +807,5 @@ int main() {
         kAFL_hypercall(HYPERCALL_KAFL_RELEASE, 0);
     }
 }
+
+#endif // KAFL_REPRO_MODE
