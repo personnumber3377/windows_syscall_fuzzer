@@ -33,6 +33,7 @@ mkdir -p "$OUT_DIR"
   main.cpp \
   -o "$OUT_DIR/ntgdi_fuzzer.exe" \
   -Wl,--subsystem,windows \
+  -static -static-libgcc -static-libstdc++ \
   -luser32 -lgdi32 -lpsapi
 
 echo "Built: $OUT_DIR/ntgdi_fuzzer.exe"
