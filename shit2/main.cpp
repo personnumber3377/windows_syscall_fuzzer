@@ -832,6 +832,9 @@ int main() {
         // across a specific sequence of prior payloads. If that kind of
         // multi-call exploration is wanted later, do it as a deliberate,
         // separate campaign instead of relying on incidental persistence.
+        
+        // Actually, don't initialize the handles on each system call, since that defeats the purpose of multiple system calls.
+
         InitializeHandlePools();
 
         DispatchGeneratedNtGdi(payload->data, size);
